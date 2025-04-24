@@ -59,6 +59,10 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -76,11 +80,57 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
+  fonts:
+    - family: Metropolis-Regular
+      fonts:
+      - asset: assets/fonts/Metropolis-Regular.otf
+    - family: Metropolis-Bold
+      fonts:
+      - asset: assets/fonts/Metropolis-Bold.otf
+    - family: Metropolis-Medium
+      fonts:
+      - asset: assets/fonts/Metropolis-Medium.otf
+    - family: Metropolis-Light
+      fonts:
+      - asset: assets/fonts/Metropolis-Light.otf
+    - family: Metropolis-Thin
+      fonts:
+      - asset: assets/fonts/Metropolis-Thin.otf
+    - family: Metropolis-Black
+      fonts:
+      - asset: assets/fonts/Metropolis-Black.otf
+    - family: Metropolis-ExtraBold
+      fonts:
+      - asset: assets/fonts/Metropolis-ExtraBold.otf
+    - family: Metropolis-ExtraLight
+      fonts:
+      - asset: assets/fonts/Metropolis-ExtraLight.otf
+    - family: Metropolis-BlackItalic
+      fonts:
+      - asset: assets/fonts/Metropolis-BlackItalic.otf
+    - family: Metropolis-BoldItalic
+      fonts:
+      - asset: assets/fonts/Metropolis-BoldItalic.otf
+    - family: Metropolis-MediumItalic
+      fonts:
+      - asset: assets/fonts/Metropolis-MediumItalic.otf
+    - family: Metropolis-LightItalic
+      fonts:
+      - asset: assets/fonts/Metropolis-LightItalic.otf
+    - family: Metropolis-ThinItalic
+      fonts:
+      - asset: assets/fonts/Metropolis-ThinItalic.otf
+    - family: Metropolis-ExtraBoldItalic
+      fonts:
+      - asset: assets/fonts/Metropolis-ExtraBoldItalic.otf
+    - family: Metropolis-ExtraLightItalic
+      fonts:
+      - asset: assets/fonts/Metropolis-ExtraLightItalic.otf
+
+      #     weight: 700
+      # fonts:
+      #   - asset: fonts/Schyler-Regular.ttf
+      #   - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
   #     fonts:

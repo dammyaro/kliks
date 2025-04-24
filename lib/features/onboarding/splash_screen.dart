@@ -16,23 +16,20 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _navigateToNext() async {
-    // Add any initialization logic here
     await Future.delayed(const Duration(seconds: 2));
-    
-    // Check if user is logged in (pseudo-code)
-    // final isLoggedIn = await AuthService.isLoggedIn();
-    // if (isLoggedIn) {
-    //   Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
-    // } else {
-      Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
-    // }
+    Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFBBD953), // Set background color
       body: Center(
-        child: Image.asset('assets/logo.svg'), // Replace with your logo
+        child: Image.asset(
+          'assets/logo.png',
+          height: 100, // Adjust height
+          width: 100,  // Adjust width
+        ),
       ),
     );
   }
