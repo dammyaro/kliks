@@ -31,8 +31,13 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context); // Fetch the current theme
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Sign Up')),
+      appBar: AppBar(
+        title: const Text('Sign Up'),
+        backgroundColor: theme.primaryColor, // Use theme's primary color
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Form(
@@ -41,7 +46,10 @@ class _SignupPageState extends State<SignupPage> {
             children: [
               TextFormField(
                 controller: _emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  labelStyle: theme.textTheme.bodyLarge, // Use theme's text style
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your email';
@@ -51,7 +59,10 @@ class _SignupPageState extends State<SignupPage> {
               ),
               TextFormField(
                 controller: _passwordController,
-                decoration: const InputDecoration(labelText: 'Password'),
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  labelStyle: theme.textTheme.bodyLarge, // Use theme's text style
+                ),
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -65,7 +76,10 @@ class _SignupPageState extends State<SignupPage> {
               ),
               TextFormField(
                 controller: _confirmPasswordController,
-                decoration: const InputDecoration(labelText: 'Confirm Password'),
+                decoration: InputDecoration(
+                  labelText: 'Confirm Password',
+                  labelStyle: theme.textTheme.bodyLarge, // Use theme's text style
+                ),
                 obscureText: true,
                 validator: (value) {
                   if (value != _passwordController.text) {
@@ -77,11 +91,17 @@ class _SignupPageState extends State<SignupPage> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _signup,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: theme.primaryColor, // Use theme's primary color
+                ),
                 child: const Text('Sign Up'),
               ),
               TextButton(
                 onPressed: () => Navigator.pushNamed(context, AppRoutes.login),
-                child: const Text('Already have an account? Login'),
+                child: Text(
+                  'Already have an account? Login',
+                  style: theme.textTheme.bodyLarge, // Use theme's text style
+                ),
               ),
             ],
           ),

@@ -38,6 +38,7 @@ class OnboardingPage extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Metropolis-ExtraBold',
                             letterSpacing: -2,
+                            color: Colors.black, // Set text color to black
                           ),
                         ),
                         TextSpan(
@@ -47,24 +48,39 @@ class OnboardingPage extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Metropolis-ExtraBold',
                             letterSpacing: -2,
+                            color: Colors.black,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(height: screenHeight * 0.01), // Responsive spacing
-                  const Text(
-                    'Create, book spots, attend events, and earn\nrewards, all in one app. Join Kliks now!',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontFamily: 'Metropolis-Regular',
-                      letterSpacing: -1,
+                  const Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'Create, book spots, attend events, and earn\nrewards, all in one app. ',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontFamily: 'Metropolis-Regular',
+                            letterSpacing: -1,
+                            color: Colors.black, // Set text color to black
+                          ),
+                        ),
+                        TextSpan(
+                          text: 'Join Kliks now!',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontFamily: 'Metropolis-Bold',
+                            letterSpacing: -1,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(height: screenHeight * 0.05), // Responsive spacing
                   OutlinedButton(
-                    onPressed: () => Navigator.pushNamed(context, AppRoutes.login),
+                    onPressed: () => Navigator.pushNamed(context, AppRoutes.signup),
                     style: FilledButton.styleFrom(
                       backgroundColor: Colors.black, // Button background color
                       side: const BorderSide(color: Colors.black), // Border color
@@ -84,7 +100,7 @@ class OnboardingPage extends StatelessWidget {
                   ),
                   SizedBox(height: screenHeight * 0.02), // Responsive spacing
                   OutlinedButton(
-                    onPressed: () => Navigator.pushNamed(context, AppRoutes.signup),
+                    onPressed: () => Navigator.pushNamed(context, AppRoutes.login),
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: Colors.black), // Border color
                       shape: RoundedRectangleBorder(
@@ -108,7 +124,7 @@ class OnboardingPage extends StatelessWidget {
           Image.asset(
             'assets/images/onboarding_image.png',
             fit: BoxFit.cover, // Ensure the image covers the width
-            height: screenHeight * 0.3, // Responsive height
+            height: screenHeight * 0.43, // Responsive height
             width: double.infinity, // Full width
           ),
         ],
