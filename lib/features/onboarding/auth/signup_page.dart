@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter/gestures.dart'; // Import for TapGestureRecognizer
 import 'package:kliks/core/routes.dart';
+import 'package:kliks/shared/widgets/button.dart'; // Import the CustomButton widget
+import 'package:kliks/shared/widgets/icon_button.dart'; // Import the IconButtonWidget
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -13,12 +17,14 @@ class _SignupPageState extends State<SignupPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _referralCodeController = TextEditingController(); // Controller for referral code
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _referralCodeController.dispose(); // Dispose referral code controller
     super.dispose();
   }
 
@@ -31,76 +37,221 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context); // Fetch the current theme
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sign Up'),
-        backgroundColor: theme.primaryColor, // Use theme's primary color
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Form(
-          key: _formKey,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: 20.w), // Add horizontal padding
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextFormField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  labelStyle: theme.textTheme.bodyLarge, // Use theme's text style
+              SizedBox(height: 40.h), // Responsive spacing from the top
+              Image.asset(
+                'assets/logo-inner.png',
+                height: 80.h, // Adjust logo height dynamically
+                width: 60.w,  // Adjust logo width dynamically
+              ),
+              SizedBox(height: 10.h), // Responsive spacing between logo and text
+              Text(
+                'Welcome',
+                style: TextStyle(
+                  fontSize: 24.sp, // Responsive font size
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Metropolis-ExtraBold',
+                  letterSpacing: 0,
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  return null;
+              ),
+              SizedBox(height: 8.h), // Reduced spacing between "Welcome" and subtext
+              Text(
+                'Join our community. Fill in the details below\nto create your account.',
+                style: Theme.of(context).textTheme.bodySmall, // Use bodySmall from theme config
+              ),
+              SizedBox(height: 18.h), // Add spacing before form fields
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        labelStyle: Theme.of(context).textTheme.labelSmall, // Responsive label text size
+                        contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w), // Adjust padding for height
+                        filled: true,
+                        fillColor: Colors.white.withOpacity(0.07), // White background with 2% opacity
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(50.r), // Rounded corners
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
+                          borderSide: const BorderSide(color: Color(0xFF3B3B3B)), // Border color
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.r), // Rounded corners for enabled state
+                          borderSide: const BorderSide(color: Color(0xFFBBD953)), // Border color
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your email';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 20.h), // Add spacing between fields
+                    TextFormField(
+                      controller: _passwordController,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        labelStyle: Theme.of(context).textTheme.labelSmall, // Responsive label text size
+                        contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w), // Adjust padding for height
+                        filled: true,
+                        fillColor: Colors.white.withOpacity(0.07), // White background with 2% opacity
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
+                          borderSide: const BorderSide(color: Color(0xFF3B3B3B)), // Border color
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
+                          borderSide: const BorderSide(color: Color(0xFF3B3B3B)), // Border color
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
+                          borderSide: const BorderSide(color: Color(0xFFBBD953)), // Border color
+                        ),
+                      ),
+                      obscureText: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        if (value.length < 6) {
+                          return 'Password must be at least 6 characters';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 20.h), // Add spacing between fields
+                    TextFormField(
+                      controller: _confirmPasswordController,
+                      decoration: InputDecoration(
+                        labelText: 'Retype password',
+                        labelStyle: Theme.of(context).textTheme.labelSmall, // Responsive label text size
+                        contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w), // Adjust padding for height
+                        filled: true,
+                        fillColor: Colors.white.withOpacity(0.07), // White background with 2% opacity
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.r), // Rounded corners
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
+                          borderSide: const BorderSide(color: Color(0xFF3B3B3B)), // Border color
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
+                          borderSide: const BorderSide(color: Color(0xFFBBD953)), // Border color
+                        ),
+                      ),
+                      obscureText: true,
+                      validator: (value) {
+                        if (value != _passwordController.text) {
+                          return 'Passwords do not match';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 20.h), // Add spacing between fields
+                    TextFormField(
+                      controller: _referralCodeController,
+                      decoration: InputDecoration(
+                        labelText: 'Referral code',
+                        labelStyle: Theme.of(context).textTheme.labelSmall, // Responsive label text size
+                        contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w), // Adjust padding for height
+                        filled: true,
+                        fillColor: Colors.white.withOpacity(0.07), // White background with 2% opacity
+                        border: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Color(0xFF3B3B3B)), // Border color
+                          borderRadius: BorderRadius.circular(30.r), // Rounded corners
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
+                          borderSide: const BorderSide(color: Color(0xFF3B3B3B)), // Border color
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
+                          borderSide: const BorderSide(color: Color(0xFFBBD953)), // Border color
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 40.h), // Add spacing before the button
+              CustomButton(
+                text: 'Continue', // Set the button text
+                onPressed: _signup, // Call the signup function
+              ),
+              SizedBox(height: 20.h), // Add spacing before the divider
+              Row(
+                children: [
+                  Expanded(
+                    child: Divider(
+                      color: Color(0xFF3B3B3B),
+                      thickness: 1,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    child: Text(
+                      'Or sign up with',
+                      style: Theme.of(context).textTheme.labelSmall, // Use bodySmall from theme config
+                    ),
+                  ),
+                  Expanded(
+                    child: Divider(
+                      color: Color(0xFF3B3B3B),
+                      thickness: 1,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20.h), // Add spacing before the buttons
+              IconButtonWidget(
+                text: 'Sign in with Google',
+                imagePath: 'assets/google_logo.png', // Path to Google logo
+                onPressed: () {
+                  // Handle Google sign-in
                 },
               ),
-              TextFormField(
-                controller: _passwordController,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  labelStyle: theme.textTheme.bodyLarge, // Use theme's text style
-                ),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your password';
-                  }
-                  if (value.length < 6) {
-                    return 'Password must be at least 6 characters';
-                  }
-                  return null;
+              SizedBox(height: 20.h), // Add spacing before the buttons
+              IconButtonWidget(
+                text: 'Sign in with Apple',
+                imagePath: Theme.of(context).brightness == Brightness.dark
+                    ? 'assets/apple_logo_white.png'
+                    : 'assets/apple_logo_black.png', // Path to Apple logo based on theme
+                onPressed: () {
+                  // Handle Apple sign-in
                 },
               ),
-              TextFormField(
-                controller: _confirmPasswordController,
-                decoration: InputDecoration(
-                  labelText: 'Confirm Password',
-                  labelStyle: theme.textTheme.bodyLarge, // Use theme's text style
-                ),
-                obscureText: true,
-                validator: (value) {
-                  if (value != _passwordController.text) {
-                    return 'Passwords do not match';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _signup,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: theme.primaryColor, // Use theme's primary color
-                ),
-                child: const Text('Sign Up'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pushNamed(context, AppRoutes.login),
-                child: Text(
-                  'Already have an account? Login',
-                  style: theme.textTheme.bodyLarge, // Use theme's text style
+              SizedBox(height: 20.h), // Add spacing before the text
+              Center(
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'Already have an account? ',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      TextSpan(
+                        text: 'Sign in',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            // Handle sign-in navigation
+                            Navigator.pushNamed(context, AppRoutes.login);
+                          },
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
