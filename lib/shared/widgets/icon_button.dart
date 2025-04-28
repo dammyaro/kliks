@@ -17,6 +17,7 @@ class IconButtonWidget extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
+        elevation: 0, // Remove button elevation
         backgroundColor: Theme.of(context).scaffoldBackgroundColor, // White background for the button
         foregroundColor: Colors.black, // Black text color
         side: const BorderSide(width: 1, color: Color(0xFF3B3B3B)), // Border with width 1 and black color
@@ -24,7 +25,7 @@ class IconButtonWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(30), // Rounded corners
         ),
         minimumSize: const Size(double.infinity, 50), // Full-width button
-        elevation: 2, // Slight shadow for the button
+        
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min, // Ensure the Row takes up minimal space

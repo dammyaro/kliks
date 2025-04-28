@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/gestures.dart'; // Import for TapGestureRecognizer
+import 'package:flutter/services.dart'; // Import for Clipboard
 import 'package:kliks/core/routes.dart';
 import 'package:kliks/shared/widgets/button.dart'; // Import the CustomButton widget
 import 'package:kliks/shared/widgets/icon_button.dart'; // Import the IconButtonWidget
@@ -14,6 +15,7 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
+  bool _isPasswordVisible = false; // Add this variable to track password visibility
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -45,11 +47,13 @@ class _SignupPageState extends State<SignupPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 40.h), // Responsive spacing from the top
-              Image.asset(
-                'assets/logo-inner.png',
+                Image.asset(
+                Theme.of(context).brightness == Brightness.light
+                  ? 'assets/logo-inner.png'
+                  : 'assets/logo-dark.png',
                 height: 80.h, // Adjust logo height dynamically
                 width: 60.w,  // Adjust logo width dynamically
-              ),
+                ),
               SizedBox(height: 10.h), // Responsive spacing between logo and text
               Text(
                 'Welcome',
@@ -69,117 +73,153 @@ class _SignupPageState extends State<SignupPage> {
               Form(
                 key: _formKey,
                 child: Column(
-                  children: [
+                    children: [
                     TextFormField(
                       controller: _emailController,
                       decoration: InputDecoration(
-                        labelText: 'Email',
-                        labelStyle: Theme.of(context).textTheme.labelSmall, // Responsive label text size
-                        contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w), // Adjust padding for height
-                        filled: true,
-                        fillColor: Colors.white.withOpacity(0.07), // White background with 2% opacity
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(50.r), // Rounded corners
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
-                          borderSide: const BorderSide(color: Color(0xFF3B3B3B)), // Border color
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.r), // Rounded corners for enabled state
-                          borderSide: const BorderSide(color: Color(0xFFBBD953)), // Border color
-                        ),
+                      labelText: 'Email',
+                      labelStyle: Theme.of(context).textTheme.labelSmall, // Responsive label text size
+                      contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w), // Adjust padding for height
+                      filled: true,
+                      fillColor: Colors.white.withOpacity(0.03), // White background with 2% opacity
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(50.r), // Rounded corners
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
+                        borderSide: BorderSide(color: Color(0xFF3B3B3B).withOpacity(0.2)), // Border color with 20% opacity
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15.r), // Rounded corners for enabled state
+                        borderSide: const BorderSide(color: Color(0xFFBBD953)), // Border color
+                      ),
                       ),
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        }
-                        return null;
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your email';
+                      }
+                      return null;
                       },
                     ),
                     SizedBox(height: 20.h), // Add spacing between fields
                     TextFormField(
                       controller: _passwordController,
                       decoration: InputDecoration(
-                        labelText: 'Password',
-                        labelStyle: Theme.of(context).textTheme.labelSmall, // Responsive label text size
-                        contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w), // Adjust padding for height
-                        filled: true,
-                        fillColor: Colors.white.withOpacity(0.07), // White background with 2% opacity
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
-                          borderSide: const BorderSide(color: Color(0xFF3B3B3B)), // Border color
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
-                          borderSide: const BorderSide(color: Color(0xFF3B3B3B)), // Border color
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
-                          borderSide: const BorderSide(color: Color(0xFFBBD953)), // Border color
-                        ),
+                      labelText: 'Password',
+                      labelStyle: Theme.of(context).textTheme.labelSmall, // Responsive label text size
+                      contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w), // Adjust padding for height
+                      filled: true,
+                      fillColor: Colors.white.withOpacity(0.03), // White background with 2% opacity
+                      border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
+                      borderSide: const BorderSide(color: Color(0xFF3B3B3B)), // Border color
                       ),
-                      obscureText: true,
+                      enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
+                      borderSide: BorderSide(color: Color(0xFF3B3B3B).withOpacity(0.2)), // Border color with 20% opacity
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
+                      borderSide: const BorderSide(color: Color(0xFFBBD953)), // Border color
+                      ),
+                      suffixIcon: IconButton(
+                      icon: Icon(
+                      _isPasswordVisible ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                      color: Theme.of(context).iconTheme.color?.withOpacity(0.3),
+                      ),
+                      onPressed: () {
+                      setState(() {
+                        _isPasswordVisible = !_isPasswordVisible;
+                      });
+                      },
+                      ),
+                      ),
+                      obscureText: !_isPasswordVisible,
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
-                        }
-                        if (value.length < 6) {
-                          return 'Password must be at least 6 characters';
-                        }
-                        return null;
+                      if (value == null || value.isEmpty) {
+                      return 'Please enter your password';
+                      }
+                      if (value.length < 6) {
+                      return 'Password must be at least 6 characters';
+                      }
+                      return null;
                       },
                     ),
                     SizedBox(height: 20.h), // Add spacing between fields
                     TextFormField(
                       controller: _confirmPasswordController,
                       decoration: InputDecoration(
-                        labelText: 'Retype password',
-                        labelStyle: Theme.of(context).textTheme.labelSmall, // Responsive label text size
-                        contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w), // Adjust padding for height
-                        filled: true,
-                        fillColor: Colors.white.withOpacity(0.07), // White background with 2% opacity
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.r), // Rounded corners
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
-                          borderSide: const BorderSide(color: Color(0xFF3B3B3B)), // Border color
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
-                          borderSide: const BorderSide(color: Color(0xFFBBD953)), // Border color
-                        ),
+                      labelText: 'Retype password',
+                      labelStyle: Theme.of(context).textTheme.labelSmall, // Responsive label text size
+                      contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w), // Adjust padding for height
+                      filled: true,
+                      fillColor: Colors.white.withOpacity(0.03), // White background with 2% opacity
+                      border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.r), // Rounded corners
                       ),
-                      obscureText: true,
+                      enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
+                      borderSide: BorderSide(color: Color(0xFF3B3B3B).withOpacity(0.2)), // Border color with 20% opacity
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
+                      borderSide: const BorderSide(color: Color(0xFFBBD953)), // Border color
+                      ),
+                      suffixIcon: IconButton(
+                      icon: Icon(
+                      _isPasswordVisible ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                      color: Theme.of(context).iconTheme.color?.withOpacity(0.3),
+                      ),
+                      onPressed: () {
+                      setState(() {
+                      _isPasswordVisible = !_isPasswordVisible;
+                      });
+                      },
+                      ),
+                      ),
+                      obscureText: !_isPasswordVisible,
                       validator: (value) {
-                        if (value != _passwordController.text) {
-                          return 'Passwords do not match';
-                        }
-                        return null;
+                      if (value != _passwordController.text) {
+                      return 'Passwords do not match';
+                      }
+                      return null;
                       },
                     ),
                     SizedBox(height: 20.h), // Add spacing between fields
                     TextFormField(
                       controller: _referralCodeController,
                       decoration: InputDecoration(
-                        labelText: 'Referral code',
-                        labelStyle: Theme.of(context).textTheme.labelSmall, // Responsive label text size
-                        contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w), // Adjust padding for height
-                        filled: true,
-                        fillColor: Colors.white.withOpacity(0.07), // White background with 2% opacity
-                        border: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Color(0xFF3B3B3B)), // Border color
-                          borderRadius: BorderRadius.circular(30.r), // Rounded corners
+                      labelText: 'Referral code',
+                      labelStyle: Theme.of(context).textTheme.labelSmall, // Responsive label text size
+                      contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w), // Adjust padding for height
+                      filled: true,
+                      fillColor: Colors.white.withOpacity(0.03), // White background with 2% opacity
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Color(0xFF3B3B3B)), // Border color
+                        borderRadius: BorderRadius.circular(30.r), // Rounded corners
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
+                        borderSide: BorderSide(color: Color(0xFF3B3B3B).withOpacity(0.2)), // Border color with 20% opacity
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
+                        borderSide: const BorderSide(color: Color(0xFFBBD953)), // Border color
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                        Icons.paste_outlined,
+                        color: Color(0xFFBBD953),
                         ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
-                          borderSide: const BorderSide(color: Color(0xFF3B3B3B)), // Border color
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
-                          borderSide: const BorderSide(color: Color(0xFFBBD953)), // Border color
-                        ),
+                        onPressed: () {
+                        // Handle paste action
+                        Clipboard.getData(Clipboard.kTextPlain).then((value) {
+                          if (value != null) {
+                          _referralCodeController.text = value.text ?? '';
+                          }
+                        });
+                        },
+                      ),
                       ),
                     ),
                   ],
