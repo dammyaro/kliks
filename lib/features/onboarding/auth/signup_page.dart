@@ -228,7 +228,10 @@ class _SignupPageState extends State<SignupPage> {
               SizedBox(height: 40.h), // Add spacing before the button
               CustomButton(
                 text: 'Continue', // Set the button text
-                onPressed: _signup, // Call the signup function
+                // onPressed: _signup, // Call the signup function
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, AppRoutes.emailVerification);
+                },
               ),
               SizedBox(height: 20.h), // Add spacing before the divider
               Row(
