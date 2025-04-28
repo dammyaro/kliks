@@ -16,23 +16,23 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    return TextButton(
       onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: backgroundColor ?? Theme.of(context).primaryColor, // Default to theme's primary color
-        foregroundColor: textColor ?? Theme.of(context).scaffoldBackgroundColor, // Default to white text
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30), // Rounded corners
-        ),
-        minimumSize: const Size(double.infinity, 50), // Full-width button
+      style: TextButton.styleFrom(
+      backgroundColor: backgroundColor ?? Theme.of(context).primaryColor, // Default to theme's primary color
+      foregroundColor: textColor ?? Theme.of(context).scaffoldBackgroundColor, // Default to white text
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30), // Rounded corners
+      ),
+      minimumSize: const Size(double.infinity, 50), // Full-width button
       ),
       child: Text(
-        text,
-        style: Theme.of(context).textTheme.bodySmall ?.copyWith(
-          fontSize: 16, // Adjust font size as needed
-          fontWeight: FontWeight.bold,
-          color: textColor ?? Theme.of(context).scaffoldBackgroundColor, // Default to white text
-        ),
+      text,
+      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+        fontSize: 16, // Adjust font size as needed
+        fontWeight: FontWeight.bold,
+        color: textColor ?? Theme.of(context).scaffoldBackgroundColor, // Default to white text
+      ),
       ),
     );
   }
