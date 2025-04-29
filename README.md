@@ -59,7 +59,7 @@ Before running the project, ensure you have the following installed:
 
 Clone the Kliks repository to your local machine:
 ```bash
-git clone https://github.com/your-username/kliks.git
+git clone https://github.com/dammyaro/kliks.git
 cd kliks
 ```
 
