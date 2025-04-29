@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:kliks/core/routes.dart';
 import 'package:kliks/shared/widgets/button.dart'; // Import the CustomButton widget
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/gestures.dart'; // Import for TapGestureRecognizer
@@ -111,6 +112,7 @@ class EmailVerificationPage extends StatelessWidget {
               text: 'Continue',
               onPressed: () {
                 // Handle continue logic
+               Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
               },
             ),
           ],

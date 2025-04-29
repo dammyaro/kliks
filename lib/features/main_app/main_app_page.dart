@@ -28,22 +28,77 @@ class _MainAppPageState extends State<MainAppPage> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
+        
         type: BottomNavigationBarType.fixed,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Image.asset(
+              Theme.of(context).brightness == Brightness.dark
+            ? (_currentIndex == 0
+                ? 'assets/icons/home-darkmode-active.png'
+                : 'assets/icons/home-darkmode-inactive.png')
+            : (_currentIndex == 0
+                ? 'assets/icons/home-lightmode-active.png'
+                : 'assets/icons/home-lightmode-inactive.png'),
+              width: 24,
+              height: 24,
+            ),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance_wallet),
+            icon: Image.asset(
+              Theme.of(context).brightness == Brightness.dark
+            ? (_currentIndex == 1
+                ? 'assets/icons/wallet-darkmode-active.png'
+                : 'assets/icons/wallet-darkmode-inactive.png')
+            : (_currentIndex == 1
+                ? 'assets/icons/wallet-lightmode-active.png'
+                : 'assets/icons/wallet-lightmode-inactive.png'),
+              width: 24,
+              height: 24,
+            ),
             label: 'Wallet',
           ),
+            // BottomNavigationBarItem(
+            // icon: Image.asset(
+            //   Theme.of(context).brightness == Brightness.dark
+            // ? (_currentIndex == 2
+            //   ? 'assets/icons/fab-darkmode-active.png'
+            //   : 'assets/icons/fab-darkmode-inactive.png')
+            // : (_currentIndex == 2
+            //   ? 'assets/icons/fab-lightmode-active.png'
+            //   : 'assets/icons/fab-lightmode-inactive.png'),
+            //   width: 24,
+            //   height: 24,
+            // ),
+            // label: 'FAB',
+            // ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_bag),
+            icon: Image.asset(
+              Theme.of(context).brightness == Brightness.dark
+            ? (_currentIndex == 2
+                ? 'assets/icons/marketplace-darkmode-active.png'
+                : 'assets/icons/marketplace-darkmode-inactive.png')
+            : (_currentIndex == 2
+                ? 'assets/icons/marketplace-lightmode-active.png'
+                : 'assets/icons/marketplace-lightmode-inactive.png'),
+              width: 24,
+              height: 24,
+            ),
             label: 'Marketplace',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.analytics),
+            icon: Image.asset(
+              Theme.of(context).brightness == Brightness.dark
+            ? (_currentIndex == 3
+                ? 'assets/icons/activity-darkmode-active.png'
+                : 'assets/icons/activity-darkmode-inactive.png')
+            : (_currentIndex == 3
+                ? 'assets/icons/activity-lightmode-active.png'
+                : 'assets/icons/activity-lightmode-inactive.png'),
+              width: 24,
+              height: 24,
+            ),
             label: 'Activities',
           ),
         ],
