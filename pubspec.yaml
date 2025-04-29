@@ -127,6 +127,9 @@ flutter:
     - family: Metropolis-ExtraLightItalic
       fonts:
       - asset: assets/fonts/Metropolis-ExtraLightItalic.otf
+    - family: Metropolis-SemiBold
+      fonts:
+      - asset: assets/fonts/Metropolis-SemiBold.otf
 
       #     weight: 700
       # fonts:

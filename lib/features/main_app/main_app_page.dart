@@ -59,20 +59,16 @@ class _MainAppPageState extends State<MainAppPage> {
             ),
             label: 'Wallet',
           ),
-            // BottomNavigationBarItem(
-            // icon: Image.asset(
-            //   Theme.of(context).brightness == Brightness.dark
-            // ? (_currentIndex == 2
-            //   ? 'assets/icons/fab-darkmode-active.png'
-            //   : 'assets/icons/fab-darkmode-inactive.png')
-            // : (_currentIndex == 2
-            //   ? 'assets/icons/fab-lightmode-active.png'
-            //   : 'assets/icons/fab-lightmode-inactive.png'),
-            //   width: 24,
-            //   height: 24,
-            // ),
-            // label: 'FAB',
-            // ),
+              BottomNavigationBarItem(
+              icon: Image.asset(
+                Theme.of(context).brightness == Brightness.dark
+                  ? 'assets/icons/map-darkmode.png'
+                  : 'assets/icons/map-lightmode.png',
+                width: 50,
+                height: 50,
+              ),
+              label: '',
+              ),
           BottomNavigationBarItem(
             icon: Image.asset(
               Theme.of(context).brightness == Brightness.dark
