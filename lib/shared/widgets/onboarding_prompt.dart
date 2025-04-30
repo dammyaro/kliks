@@ -10,7 +10,7 @@ class OnboardingPrompt extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.9, // Reduce width to 90% of the screen
+      width: MediaQuery.of(context).size.width * 1, // Reduce width to 90% of the screen
       // height: MediaQuery.of(context).size.width * 0.5,
       child: Container(
         padding: EdgeInsets.all(20.w), // Adjust padding inside the box
@@ -24,9 +24,10 @@ class OnboardingPrompt extends StatelessWidget {
           mainAxisSize: MainAxisSize.min, // Reduce height to fit content
           children: [
             Text(
-              "You're almost done",
+              "You're almost done!",
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     fontFamily: 'Metropolis-SemiBold',
+                    letterSpacing: -1,
                     fontSize: 20.sp, // Adjust font size
                     color: Colors.black, // Black text color
                     fontWeight: FontWeight.bold,
@@ -34,10 +35,11 @@ class OnboardingPrompt extends StatelessWidget {
             ),
             SizedBox(height: 8.h), // Spacing between main text and subtext
             Text(
-              "Hi, let's get you a personalized experience on Kliks Please continue by providing some details.",
+                "Hi, let's get you a personalized experience on Kliks\nPlease continue by providing some details.",
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Colors.black.withOpacity(0.9),
-                    fontSize: 11.sp, // Adjust font size
+                    letterSpacing: -1,
+                    fontSize: 13.sp, // Adjust font size
                   ),
             ),
             SizedBox(height: 10.h), // Spacing before the button

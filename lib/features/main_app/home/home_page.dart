@@ -14,16 +14,19 @@ class HomePage extends StatelessWidget {
         children: [
           SizedBox(height: 40.h), // Responsive spacing from the top
           const MainAppBar(), // Custom app bar widget
-          SizedBox(height: 40.h), // Responsive spacing from the top
+          SizedBox(height: 5.h), // Responsive spacing from the top
           const EventFilter(),
           Expanded(
             child: DefaultTabController(
               length: 4,
               child: Column(
                 children: [
-                  TabBar(
+                    TabBar(
                     labelColor: Theme.of(context).textTheme.bodyLarge?.color,
                     unselectedLabelColor: Theme.of(context).textTheme.bodySmall?.color,
+                    labelStyle: const TextStyle(
+                      fontFamily: 'Metropolis-SemiBold',
+                    ),
                     tabs: const [
                       Tab(text: 'All events'),
                       Tab(text: 'Social'),
@@ -50,19 +53,19 @@ class HomePage extends StatelessWidget {
                                   children: [
                                     Icon(
                                       Icons.location_off_outlined,
-                                      size: 48,
-                                      color: Theme.of(context).iconTheme.color,
+                                      size: 35.sp,
+                                      color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
                                     ),
                                     SizedBox(height: 16.h),
                                     Text(
-                                      'No events to show here',
+                                      'No Events to show here',
                                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                         fontSize: 15.sp,
                                         fontFamily: 'Metropolis-SemiBold',
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
-                                    SizedBox(height: 8.h),
+                                    SizedBox(height: 2.h),
                                     Text(
                                       'There are no events around you',
                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(

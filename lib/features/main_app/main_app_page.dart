@@ -30,10 +30,13 @@ class _MainAppPageState extends State<MainAppPage> {
           // Handle FAB action here
           print('FAB pressed');
         },
-        backgroundColor: Theme.of(context).primaryColor, // Use the app's primary color
-        child: const Icon(Icons.add, color: Colors.white), // Add icon
+        backgroundColor: const Color(0xffbbd953), // Custom background color
+        shape: CircleBorder(
+          side: BorderSide(color: Colors.black, width: 2), // Black outline
+        ),
+        child: const Icon(Icons.add, color: Colors.black), // Black plus icon
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked, // Position FAB in the center
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat, // Shift FAB up slightly
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),

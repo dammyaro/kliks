@@ -24,12 +24,12 @@ class SmallButton extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10), // Rounded corners
       ),
-      minimumSize: const Size(double.infinity, 35), // Full-width button
+      minimumSize: const Size(double.infinity, 30), // Full-width button
       ),
       child: Text(
       text,
       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-        fontSize: 16, // Adjust font size as needed
+        fontSize: 12, // Adjust font size as needed
         fontWeight: FontWeight.bold,
         color: textColor ?? Theme.of(context).scaffoldBackgroundColor, // Default to white text
       ),
