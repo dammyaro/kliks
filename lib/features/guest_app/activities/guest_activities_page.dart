@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kliks/shared/widgets/guest_create_account_prompt.dart';
 
 class GuestActivitiesPage extends StatelessWidget {
   const GuestActivitiesPage({super.key});
@@ -6,12 +7,8 @@ class GuestActivitiesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Guest Activities'),
-        centerTitle: true,
-      ),
       body: const Center(
-        child: Text('Welcome to the Guest Activities Page'),
+        child: GuestCreateAccountPrompt(),
       ),
     );
   }
