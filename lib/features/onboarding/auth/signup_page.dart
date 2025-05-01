@@ -263,6 +263,7 @@ class _SignupPageState extends State<SignupPage> {
                 imagePath: 'assets/google_logo.png', // Path to Google logo
                 onPressed: () {
                   // Handle Google sign-in
+                   Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
                 },
               ),
               SizedBox(height: 20.h), // Add spacing before the buttons
@@ -273,6 +274,7 @@ class _SignupPageState extends State<SignupPage> {
                     : 'assets/apple_logo_black.png', // Path to Apple logo based on theme
                 onPressed: () {
                   // Handle Apple sign-in
+                  Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
                 },
               ),
               SizedBox(height: 20.h), // Add spacing before the text

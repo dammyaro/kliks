@@ -38,6 +38,7 @@ class OnboardingPage extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Metropolis-ExtraBold',
                             letterSpacing: -2,
+                            height: 1.2,
                             color: Colors.black, // Set text color to black
                           ),
                         ),
@@ -48,6 +49,7 @@ class OnboardingPage extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Metropolis-ExtraBold',
                             letterSpacing: -2,
+                            height: 1.2,
                             color: Colors.black,
                           ),
                         ),
@@ -100,7 +102,7 @@ class OnboardingPage extends StatelessWidget {
                   ),
                   SizedBox(height: screenHeight * 0.02), // Responsive spacing
                   OutlinedButton(
-                    onPressed: () => Navigator.pushNamed(context, AppRoutes.login),
+                    onPressed: () => Navigator.pushNamed(context, AppRoutes.guestApp),
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: Colors.black), // Border color
                       shape: RoundedRectangleBorder(

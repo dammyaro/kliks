@@ -178,6 +178,7 @@ class _LoginPageState extends State<LoginPage> {
                 imagePath: 'assets/google_logo.png', // Path to Google logo
                 onPressed: () {
                   // Handle Google log-in
+                  Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
                 },
               ),
               SizedBox(height: 20.h), // Add spacing before the buttons
@@ -188,9 +189,10 @@ class _LoginPageState extends State<LoginPage> {
                     : 'assets/apple_logo_black.png', // Path to Apple logo based on theme
                 onPressed: () {
                   // Handle Apple log-in
+                  Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
                 },
               ),
-              SizedBox(height: 20.h), // Add spacing before the text
+              SizedBox(height: 40.h), // Add spacing before the text
               Center(
                 child: Text.rich(
                   TextSpan(
