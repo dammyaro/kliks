@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:kliks/core/routes.dart';
 import 'package:kliks/shared/widgets/button.dart'; // Import the CustomButton widget
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -40,7 +39,9 @@ class EmailVerificationPage extends StatelessWidget {
             const SizedBox(height: 10),
             RichText(
               text: TextSpan(
-              style: Theme.of(context).textTheme.bodySmall,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontSize: 12.sp,
+                  ),
               children: [
                 const TextSpan(
                 text: 'We have sent a code to verify \nkunlearo@gmail.com ',
@@ -48,7 +49,7 @@ class EmailVerificationPage extends StatelessWidget {
                 TextSpan(
                 text: 'Wrong Email?',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    // fontWeight: FontWeight.bold,
+                    fontSize: 12.sp,
                     color: const Color(0xffbbd953),
                   ),
                 recognizer: TapGestureRecognizer()
@@ -87,7 +88,9 @@ class EmailVerificationPage extends StatelessWidget {
             const SizedBox(height: 10),
             RichText(
               text: TextSpan(
-              style: Theme.of(context).textTheme.bodySmall,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  fontSize: 12.sp,
+                ),
               children: [
                 const TextSpan(
                 text: 'Didn\'t get an email? ',
@@ -95,6 +98,7 @@ class EmailVerificationPage extends StatelessWidget {
                 TextSpan(
                 text: 'Resend',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  fontSize: 12.sp,
                   color: const Color(0xffbbd953),
                 ),
                 recognizer: TapGestureRecognizer()
