@@ -6,28 +6,28 @@ class OnboardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get screen dimensions
+    
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFBBD953), // Set background color
+      backgroundColor: const Color(0xFFBBD953), 
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.end, // Align content to the right
+        crossAxisAlignment: CrossAxisAlignment.end, 
         children: [
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(left: 20.0, right: 20.0), // Add left and right padding of 20
+              padding: const EdgeInsets.only(left: 20.0, right: 20.0), 
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start, // Align content to the left
+                crossAxisAlignment: CrossAxisAlignment.start, 
                 children: [
-                  SizedBox(height: screenHeight * 0.05), // Responsive spacing from the top
+                  SizedBox(height: screenHeight * 0.05), 
                   Image.asset(
                     'assets/logo-inner.png',
-                    height: screenHeight * 0.1, // Adjust logo height dynamically
-                    width: screenWidth * 0.2,  // Adjust logo width dynamically
+                    height: screenHeight * 0.1, 
+                    width: screenWidth * 0.2,  
                   ),
-                  SizedBox(height: screenHeight * 0.02), // Responsive spacing between logo and text
+                  SizedBox(height: screenHeight * 0.02), 
                   const Text.rich(
                     TextSpan(
                       children: [
@@ -39,7 +39,7 @@ class OnboardingPage extends StatelessWidget {
                             fontFamily: 'Metropolis-ExtraBold',
                             letterSpacing: -2,
                             height: 1.2,
-                            color: Colors.black, // Set text color to black
+                            color: Colors.black, 
                           ),
                         ),
                         TextSpan(
@@ -65,7 +65,7 @@ class OnboardingPage extends StatelessWidget {
                             fontSize: 18,
                             fontFamily: 'Metropolis-Regular',
                             letterSpacing: -1,
-                            color: Colors.black, // Set text color to black
+                            color: Colors.black, 
                           ),
                         ),
                         TextSpan(
@@ -80,16 +80,16 @@ class OnboardingPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  SizedBox(height: screenHeight * 0.05), // Responsive spacing
+                  SizedBox(height: screenHeight * 0.05), 
                   OutlinedButton(
                     onPressed: () => Navigator.pushNamed(context, AppRoutes.signup),
                     style: FilledButton.styleFrom(
-                      backgroundColor: Colors.black, // Button background color
-                      side: const BorderSide(color: Colors.black), // Border color
+                      backgroundColor: Colors.black, 
+                      side: const BorderSide(color: Colors.black), 
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30), // Border radius
+                        borderRadius: BorderRadius.circular(30), 
                       ),
-                      minimumSize: Size(screenWidth * 0.9, screenHeight * 0.07), // Responsive button size
+                      minimumSize: Size(screenWidth * 0.9, screenHeight * 0.07), 
                     ),
                     child: const Text(
                       'Get Started',
@@ -97,18 +97,18 @@ class OnboardingPage extends StatelessWidget {
                         color: Colors.white,
                         fontFamily: 'Metropolis-Regular',
                         letterSpacing: -1,
-                      ), // Text color
+                      ), 
                     ),
                   ),
-                  SizedBox(height: screenHeight * 0.02), // Responsive spacing
+                  SizedBox(height: screenHeight * 0.02), 
                   OutlinedButton(
                     onPressed: () => Navigator.pushNamed(context, AppRoutes.guestApp),
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Colors.black), // Border color
+                      side: const BorderSide(color: Colors.black), 
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30), // Border radius
+                        borderRadius: BorderRadius.circular(30), 
                       ),
-                      minimumSize: Size(screenWidth * 0.9, screenHeight * 0.07), // Responsive button size
+                      minimumSize: Size(screenWidth * 0.9, screenHeight * 0.07), 
                     ),
                     child: const Text(
                       'Continue as Guest',
@@ -116,7 +116,7 @@ class OnboardingPage extends StatelessWidget {
                         color: Colors.black,
                         fontFamily: 'Metropolis-Regular',
                         letterSpacing: -1,
-                      ), // Text color
+                      ), 
                     ),
                   ),
                 ],
@@ -125,9 +125,9 @@ class OnboardingPage extends StatelessWidget {
           ),
           Image.asset(
             'assets/images/onboarding_image.png',
-            fit: BoxFit.cover, // Ensure the image covers the width
-            height: screenHeight * 0.43, // Responsive height
-            width: double.infinity, // Full width
+            fit: BoxFit.cover, 
+            height: screenHeight * 0.43, 
+            width: double.infinity, 
           ),
         ],
       ),

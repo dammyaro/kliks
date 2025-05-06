@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:kliks/shared/widgets/button.dart'; // Import the CustomButton widget
+import 'package:kliks/shared/widgets/button.dart'; 
 
 class TwoStepBottomSheet extends StatefulWidget {
   const TwoStepBottomSheet({super.key});
@@ -10,72 +10,72 @@ class TwoStepBottomSheet extends StatefulWidget {
 }
 
 class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
-  int _currentStep = 0; // Track the current step
+  int _currentStep = 0; 
   final List<String> _selectedInterests = [];
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.9, // Set height to 90% of the screen
+      height: MediaQuery.of(context).size.height * 0.9, 
       child: Padding(
-        padding: EdgeInsets.all(20.h), // Apply padding of 20.h
+        padding: EdgeInsets.all(20.h), 
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start, // Align content to the start vertically
-          crossAxisAlignment: CrossAxisAlignment.center, // Center content horizontally
+          mainAxisAlignment: MainAxisAlignment.start, 
+          crossAxisAlignment: CrossAxisAlignment.center, 
           children: [
-            // Step Indicator
+            
             Row(
-              mainAxisAlignment: MainAxisAlignment.start, // Align to the start of the screen
+              mainAxisAlignment: MainAxisAlignment.start, 
               children: [
-                // Step 1 Button
+                
                 SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.3, // Set width to 30% of the screen size
+                  width: MediaQuery.of(context).size.width * 0.3, 
                   height: 3.h,
                   child: ElevatedButton(
                   onPressed: () {
                     setState(() {
-                    _currentStep = 0; // Navigate to Step 1
+                    _currentStep = 0; 
                     });
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: (_currentStep == 0 || _currentStep == 1)
-                      ? const Color(0xffbbd953) // Selected background color
-                      : Colors.grey[300], // Unselected background color
+                      ? const Color(0xffbbd953) 
+                      : Colors.grey[300], 
                     shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.r), // Rounded corners
+                    borderRadius: BorderRadius.circular(20.r), 
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 3.h), // Reduced height to 3.h
+                    padding: EdgeInsets.symmetric(vertical: 3.h), 
                   ),
-                  child: const SizedBox.shrink(), // Empty content
+                  child: const SizedBox.shrink(), 
                   ),
                 ),
-                SizedBox(width: 30.h), // Space between buttons
+                SizedBox(width: 30.h), 
 
-                // Step 2 Button
+                
                 SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.3, // Set width to 30% of the screen size
+                  width: MediaQuery.of(context).size.width * 0.3, 
                   height: 3.h,
                   child: ElevatedButton(
                   onPressed: () {
                     setState(() {
-                    _currentStep = 1; // Navigate to Step 2
+                    _currentStep = 1; 
                     });
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _currentStep == 1
-                      ? const Color(0xffbbd953) // Selected background color
-                      : Colors.grey[300], // Unselected background color
+                      ? const Color(0xffbbd953) 
+                      : Colors.grey[300], 
                     shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.r), // Rounded corners
+                    borderRadius: BorderRadius.circular(20.r), 
                     ),
                     padding: EdgeInsets.symmetric(vertical: 3.h),
                   ),
-                  child: const SizedBox.shrink(), // Empty content
+                  child: const SizedBox.shrink(), 
                   ),
                 ),
 
-                // Step Progress Indicator (1/2 or 2/2)
-                Spacer(), // Push the progress indicator to the extreme right
+                
+                Spacer(), 
                 Text(
                   '${_currentStep + 1}/2',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -85,25 +85,25 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
                 ),
               ],
             ),
-            SizedBox(height: 80.h), // Spacing below the indicator
+            SizedBox(height: 80.h), 
 
-            // Step Content
+            
             if (_currentStep == 0)
               Column(
-                mainAxisAlignment: MainAxisAlignment.center, // Center content vertically
-                crossAxisAlignment: CrossAxisAlignment.center, // Center content horizontally
+                mainAxisAlignment: MainAxisAlignment.center, 
+                crossAxisAlignment: CrossAxisAlignment.center, 
                 children: [
-                  // Phone Icon
+                  
                   Icon(
                     Icons.phone_iphone_outlined,
                     size: 80.w,
                     color: Theme.of(context).brightness == Brightness.light
                         ? Colors.black
-                        : Colors.white, // Adjust color based on theme
+                        : Colors.white, 
                   ),
-                  SizedBox(height: 40.h), // Spacing below the icon
+                  SizedBox(height: 40.h), 
 
-                  // Text
+                  
                   Text(
                     "To use location services, allow Kliks to access your location",
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -111,30 +111,30 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Metropolis-ExtraBold',
                         ),
-                    textAlign: TextAlign.center, // Center text horizontally
+                    textAlign: TextAlign.center, 
                   ),
-                  SizedBox(height: 40.h), // Spacing below the text
+                  SizedBox(height: 40.h), 
 
-                  // Allow Location Access Button
+                  
                   CustomButton(
                     text: "Allow Location Access",
                     onPressed: () {
                       setState(() {
-                        _currentStep = 1; // Move to the next step
+                        _currentStep = 1; 
                       });
                     },
-                    backgroundColor: const Color(0xffbbd953), // Always use this background color
-                    textColor: Colors.black, // Black text color
+                    backgroundColor: const Color(0xffbbd953), 
+                    textColor: Colors.black, 
                   ),
                 ],
               )
 
             else if (_currentStep == 1)
               Column(
-                mainAxisAlignment: MainAxisAlignment.start, // Align content to the start vertically
-                crossAxisAlignment: CrossAxisAlignment.start, // Align content to the start horizontally
+                mainAxisAlignment: MainAxisAlignment.start, 
+                crossAxisAlignment: CrossAxisAlignment.start, 
                 children: [
-                  // Big Text
+                  
                   Text(
                     "Select your interests",
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -142,25 +142,25 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
                           fontSize: 28.sp,
                           fontFamily: 'Metropolis-ExtraBold',
                         ),
-                    textAlign: TextAlign.start, // Align text to the start
+                    textAlign: TextAlign.start, 
                   ),
-                  SizedBox(height: 10.h), // Spacing below the big text
+                  SizedBox(height: 10.h), 
 
-                  // Sub Text
+                  
                   Text(
                     "This will let us know what kind of events \nto show you",
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontSize: 16.sp,
                         ),
-                    textAlign: TextAlign.start, // Align text to the start
+                    textAlign: TextAlign.start, 
                   ),
-                  SizedBox(height: 40.h), // Spacing below the sub text
+                  SizedBox(height: 40.h), 
 
-                  // List of Interests
+                  
                   Wrap(
-                    spacing: 10.w, // Horizontal spacing between buttons
-                    runSpacing: 20.h, // Vertical spacing between rows
-                    alignment: WrapAlignment.start, // Align buttons to the start
+                    spacing: 10.w, 
+                    runSpacing: 20.h, 
+                    alignment: WrapAlignment.start, 
                     children: [
                       for (var interest in [
                         "Social & Networking",
@@ -179,9 +179,9 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
                           onTap: () {
                             setState(() {
                               if (_selectedInterests.contains(interest)) {
-                                _selectedInterests.remove(interest); // Deselect if already selected
+                                _selectedInterests.remove(interest); 
                               } else {
-                                _selectedInterests.add(interest); // Select if not already selected
+                                _selectedInterests.add(interest); 
                               }
                             });
                           },
@@ -189,18 +189,18 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
                             padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
                             decoration: BoxDecoration(
                               color: _selectedInterests.contains(interest)
-                                  ? Colors.white // Selected background color
-                                  : Colors.grey[800], // Unselected background color
-                              borderRadius: BorderRadius.circular(20.r), // Rounded corners
+                                  ? Colors.white 
+                                  : Colors.grey[800], 
+                              borderRadius: BorderRadius.circular(20.r), 
                             ),
                             child: Text(
                               interest,
                               style: TextStyle(
-                                fontSize: 14.sp, // Set text size to 14.sp
+                                fontSize: 14.sp, 
                                 fontWeight: FontWeight.bold,
                                 color: _selectedInterests.contains(interest)
-                                    ? Colors.black // Selected text color
-                                    : Colors.white, // Unselected text color
+                                    ? Colors.black 
+                                    : Colors.white, 
                               ),
                               textAlign: TextAlign.center,
                             ),
@@ -208,36 +208,36 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
                         ),
                     ],
                   ),
-                  SizedBox(height: 40.h), // Spacing below the list of interests
+                  SizedBox(height: 40.h), 
 
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween, // Space buttons evenly
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween, 
                     children: [
-                      // Left Button: "Do this later"
+                      
                         SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.4, // Set width to 30% of the screen size
+                        width: MediaQuery.of(context).size.width * 0.4, 
                         child: CustomButton(
                           text: "Do this later",
                           onPressed: () {
-                          Navigator.pop(context); // Handle "Do this later" action
+                          Navigator.pop(context); 
                           },
-                          backgroundColor: Colors.grey[600]!, // Grey background color
-                          textColor: Colors.white, // Black text color
+                          backgroundColor: Colors.grey[600]!, 
+                          textColor: Colors.white, 
                         ),
                       ),
-                      SizedBox(width: 10.w), // Spacing between the buttons
+                      SizedBox(width: 10.w), 
 
-                      // Right Button: "Continue"
+                      
                         SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.4, // Set width to 30% of the screen size
+                        width: MediaQuery.of(context).size.width * 0.4, 
                         child: CustomButton(
                           text: "Next",
                           onPressed: () {
-                          // Handle "Continue" action
-                          Navigator.pop(context); // Close the bottom sheet or navigate further
+                          
+                          Navigator.pop(context); 
                           },
-                          backgroundColor: const Color(0xffbbd953), // Green background color
-                          textColor: Colors.black, // Black text color
+                          backgroundColor: const Color(0xffbbd953), 
+                          textColor: Colors.black, 
                         
                         ),
                       ),

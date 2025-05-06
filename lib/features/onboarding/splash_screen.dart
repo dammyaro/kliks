@@ -16,14 +16,14 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _navigateToNext() async {
-    await Future.delayed(const Duration(seconds: 3)); // Delay for 3 seconds
-    Navigator.pushReplacementNamed(context, AppRoutes.onboarding); // Navigate to onboarding page
+    await Future.delayed(const Duration(seconds: 3)); 
+    Navigator.pushReplacementNamed(context, AppRoutes.onboarding); 
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFBBD953), // Fixed background color
+      backgroundColor: const Color(0xFFBBD953), 
       body: Center(
         child: Image.asset(
           'assets/logo.png',

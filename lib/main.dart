@@ -24,15 +24,9 @@ class MyApp extends StatelessWidget {
           darkTheme: ThemeConfig.darkTheme, // Apply dark theme
           themeMode: ThemeMode.system, // Use system theme by default
           initialRoute: AppRoutes.splash, // Set initial route
-          // routes: {
-          //   AppRoutes.splash: (context) => const SplashScreen(),
-          //   AppRoutes.onboarding: (context) => const OnboardingPage(),
-          //   // Add other routes here
-          // },
-          home: const SplashScreen(),
-          onGenerateRoute: AppRoutes.generateRoute,
+          onGenerateRoute: AppRoutes.generateRoute, // Dynamically generate routes
         );
       },
-      );
+    );
   }
 }

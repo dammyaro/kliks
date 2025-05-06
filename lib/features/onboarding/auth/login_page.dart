@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter/gestures.dart'; // Import for TapGestureRecognizer
+import 'package:flutter/gestures.dart'; 
 import 'package:kliks/core/routes.dart';
-import 'package:kliks/shared/widgets/button.dart'; // Import the CustomButton widget
-import 'package:kliks/shared/widgets/icon_button.dart'; // Import the IconButtonWidget
+import 'package:kliks/shared/widgets/button.dart'; 
+import 'package:kliks/shared/widgets/icon_button.dart'; 
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,7 +14,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  bool _isPasswordVisible = false; // Track password visibility
+  bool _isPasswordVisible = false; 
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -27,8 +27,8 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
-      // Implement login logic
-      Navigator.pushReplacementNamed(context, AppRoutes.mainApp); // Navigate to home page
+      
+      Navigator.pushReplacementNamed(context, AppRoutes.mainApp); 
     }
   }
 
@@ -37,34 +37,34 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 20.w), // Add horizontal padding
+          padding: EdgeInsets.symmetric(horizontal: 20.w), 
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 40.h), // Responsive spacing from the top
+              SizedBox(height: 40.h), 
               Image.asset(
                 Theme.of(context).brightness == Brightness.light
                     ? 'assets/logo-inner.png'
                     : 'assets/logo-dark.png',
-                height: 80.h, // Adjust logo height dynamically
-                width: 60.w,  // Adjust logo width dynamically
+                height: 80.h, 
+                width: 60.w,  
               ),
-              SizedBox(height: 10.h), // Responsive spacing between logo and text
+              SizedBox(height: 10.h), 
               Text(
                 'Welcome Back',
                 style: TextStyle(
-                  fontSize: 24.sp, // Responsive font size
+                  fontSize: 24.sp, 
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Metropolis-ExtraBold',
                   letterSpacing: 0,
                 ),
               ),
-              SizedBox(height: 8.h), // Reduced spacing between "Welcome Back" and subtext
+              SizedBox(height: 8.h), 
               Text(
                 'Log in to your account to continue.',
-                style: Theme.of(context).textTheme.bodySmall, // Use bodySmall from theme config
+                style: Theme.of(context).textTheme.bodySmall, 
               ),
-              SizedBox(height: 18.h), // Add spacing before form fields
+              SizedBox(height: 18.h), 
               Form(
                 key: _formKey,
                 child: Column(
@@ -73,20 +73,20 @@ class _LoginPageState extends State<LoginPage> {
                       controller: _emailController,
                       decoration: InputDecoration(
                         labelText: 'Email',
-                        labelStyle: Theme.of(context).textTheme.labelSmall, // Responsive label text size
-                        contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w), // Adjust padding for height
+                        labelStyle: Theme.of(context).textTheme.labelSmall, 
+                        contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w), 
                         filled: true,
-                        fillColor: Colors.white.withOpacity(0.03), // White background with 2% opacity
+                        fillColor: Colors.white.withOpacity(0.03), 
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(50.r), // Rounded corners
+                          borderRadius: BorderRadius.circular(50.r), 
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
-                          borderSide: BorderSide(color: Color(0xFF3B3B3B).withOpacity(0.2)), // Border color with 20% opacity
+                          borderRadius: BorderRadius.circular(10.r), 
+                          borderSide: BorderSide(color: Color(0xFF3B3B3B).withOpacity(0.2)), 
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.r), // Rounded corners for enabled state
-                          borderSide: const BorderSide(color: Color(0xFFBBD953)), // Border color
+                          borderRadius: BorderRadius.circular(15.r), 
+                          borderSide: const BorderSide(color: Color(0xFFBBD953)), 
                         ),
                       ),
                       validator: (value) {
@@ -96,26 +96,26 @@ class _LoginPageState extends State<LoginPage> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 20.h), // Add spacing between fields
+                    SizedBox(height: 20.h), 
                     TextFormField(
                       controller: _passwordController,
                       decoration: InputDecoration(
                         labelText: 'Password',
-                        labelStyle: Theme.of(context).textTheme.labelSmall, // Responsive label text size
-                        contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w), // Adjust padding for height
+                        labelStyle: Theme.of(context).textTheme.labelSmall, 
+                        contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w), 
                         filled: true,
-                        fillColor: Colors.white.withOpacity(0.03), // White background with 2% opacity
+                        fillColor: Colors.white.withOpacity(0.03), 
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
-                          borderSide: const BorderSide(color: Color(0xFF3B3B3B)), // Border color
+                          borderRadius: BorderRadius.circular(10.r), 
+                          borderSide: const BorderSide(color: Color(0xFF3B3B3B)), 
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
-                          borderSide: BorderSide(color: Color(0xFF3B3B3B).withOpacity(0.2)), // Border color with 20% opacity
+                          borderRadius: BorderRadius.circular(10.r), 
+                          borderSide: BorderSide(color: Color(0xFF3B3B3B).withOpacity(0.2)), 
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
-                          borderSide: const BorderSide(color: Color(0xFFBBD953)), // Border color
+                          borderRadius: BorderRadius.circular(10.r), 
+                          borderSide: const BorderSide(color: Color(0xFFBBD953)), 
                         ),
                         suffixIcon: IconButton(
                           icon: Icon(
@@ -143,12 +143,12 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
               ),
-              SizedBox(height: 40.h), // Add spacing before the button
+              SizedBox(height: 40.h), 
               CustomButton(
-                text: 'Sign In', // Set the button text
-                onPressed: _login, // Call the login function
+                text: 'Sign In', 
+                onPressed: _login, 
               ),
-              SizedBox(height: 20.h), // Add spacing before the divider
+              SizedBox(height: 20.h), 
               Row(
                 children: [
                   Expanded(
@@ -161,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
                     padding: EdgeInsets.symmetric(horizontal: 10.w),
                     child: Text(
                       'Or Sign in with',
-                      style: Theme.of(context).textTheme.labelSmall, // Use bodySmall from theme config
+                      style: Theme.of(context).textTheme.labelSmall, 
                     ),
                   ),
                   Expanded(
@@ -172,27 +172,27 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 20.h), // Add spacing before the buttons
+              SizedBox(height: 20.h), 
               IconButtonWidget(
                 text: 'Continue with Google',
-                imagePath: 'assets/google_logo.png', // Path to Google logo
+                imagePath: 'assets/google_logo.png', 
                 onPressed: () {
-                  // Handle Google log-in
+                  
                   Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
                 },
               ),
-              SizedBox(height: 20.h), // Add spacing before the buttons
+              SizedBox(height: 20.h), 
               IconButtonWidget(
                 text: 'Continue with Apple',
                 imagePath: Theme.of(context).brightness == Brightness.dark
                     ? 'assets/apple_logo_white.png'
-                    : 'assets/apple_logo_black.png', // Path to Apple logo based on theme
+                    : 'assets/apple_logo_black.png', 
                 onPressed: () {
-                  // Handle Apple log-in
+                  
                   Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
                 },
               ),
-              SizedBox(height: 40.h), // Add spacing before the text
+              SizedBox(height: 40.h), 
               Center(
                 child: Text.rich(
                   TextSpan(
@@ -206,7 +206,7 @@ class _LoginPageState extends State<LoginPage> {
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            // Handle sign-up navigation
+                            
                             Navigator.pushNamed(context, AppRoutes.signup);
                           },
                       ),

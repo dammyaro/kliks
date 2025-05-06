@@ -10,27 +10,27 @@ class MarketplacePage extends StatelessWidget {
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center, // Align content horizontally to the center
+          crossAxisAlignment: CrossAxisAlignment.center, 
           children: [
-            SizedBox(height: 60.h), // Spacing from the top
+            SizedBox(height: 60.h), 
 
-            // "Marketplace" Text
+            
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   "Marketplace",
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontSize: 20.sp,
+                        fontSize: 18.sp,
                         fontFamily: 'Metropolis-ExtraBold',
                       ),
                   textAlign: TextAlign.center,
                 ),
               ],
             ),
-            SizedBox(height: 100.h), // Spacing below the title
+            SizedBox(height: 100.h), 
 
-            // First "COMING SOON!!" Text
+            
             Opacity(
               opacity: 0.4,
               child: Text(
@@ -43,9 +43,9 @@ class MarketplacePage extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
             ),
-            SizedBox(height: 10.h), // Spacing between texts
+            SizedBox(height: 10.h), 
 
-            // Second "COMING SOON!!" Text
+            
             Text(
               "COMING SOON!!",
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -55,21 +55,21 @@ class MarketplacePage extends StatelessWidget {
                   ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 10.h), // Spacing between texts
+            SizedBox(height: 10.h), 
 
-            // Third "COMING SOON!!" Text
+            
             Text(
               "COMING SOON!!",
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     fontSize: 30.sp,
                     fontFamily: 'Metropolis-Black',
-                    color: const Color.fromARGB(255, 235, 192, 206), // Bright shade of pink
+                    color: const Color.fromARGB(255, 235, 192, 206), 
                   ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 20.h), // Spacing below the texts
+            SizedBox(height: 20.h), 
 
-            // "Spend your reward points" Text
+            
             Text(
               "Spend your reward points",
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -78,7 +78,7 @@ class MarketplacePage extends StatelessWidget {
                   ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 20.h), // Spacing below the text
+            SizedBox(height: 20.h), 
           ],
         ),
       ),

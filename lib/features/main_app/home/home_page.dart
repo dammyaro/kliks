@@ -12,9 +12,9 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: 40.h), // Responsive spacing from the top
-          const MainAppBar(), // Custom app bar widget
-          SizedBox(height: 5.h), // Responsive spacing from the top
+          SizedBox(height: 40.h), 
+          const MainAppBar(), 
+          SizedBox(height: 5.h), 
           const EventFilter(),
           Expanded(
             child: DefaultTabController(
@@ -42,7 +42,7 @@ class HomePage extends StatelessWidget {
                             SizedBox(height: 20.h),
                             OnboardingPrompt(
                               onContinue: () {
-                                // Add your desired functionality here
+                                
                                 print('Onboarding continued');
                               },
                             ),

@@ -5,8 +5,8 @@ class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
   final Color? backgroundColor;
   final Color? textColor;
-  final TextStyle? textStyle; // New textStyle attribute
-  final BoxConstraints? constraints; // New constraints attribute
+  final TextStyle? textStyle; 
+  final BoxConstraints? constraints; 
 
   const CustomButton({
     super.key,
@@ -14,8 +14,8 @@ class CustomButton extends StatelessWidget {
     required this.onPressed,
     this.backgroundColor,
     this.textColor,
-    this.textStyle, // Initialize textStyle
-    this.constraints, // Initialize constraints
+    this.textStyle, 
+    this.constraints, 
   });
 
   @override
@@ -23,22 +23,22 @@ class CustomButton extends StatelessWidget {
     return TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(
-        backgroundColor: backgroundColor ?? Theme.of(context).primaryColor, // Default to theme's primary color
-        foregroundColor: textColor ?? Theme.of(context).scaffoldBackgroundColor, // Default to white text
+        backgroundColor: backgroundColor ?? Theme.of(context).primaryColor, 
+        foregroundColor: textColor ?? Theme.of(context).scaffoldBackgroundColor, 
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30), // Rounded corners
+          borderRadius: BorderRadius.circular(30), 
         ),
-        minimumSize: const Size(double.infinity, 50), // Full-width button
+        minimumSize: const Size(double.infinity, 50), 
       ),
       child: ConstrainedBox(
-        constraints: constraints ?? const BoxConstraints(), // Apply constraints if provided
+        constraints: constraints ?? const BoxConstraints(), 
         child: Text(
           text,
           style: textStyle ??
               Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 16, // Adjust font size as needed
+                    fontSize: 16, 
                     fontWeight: FontWeight.bold,
-                    color: textColor ?? Theme.of(context).scaffoldBackgroundColor, // Default to white text
+                    color: textColor ?? Theme.of(context).scaffoldBackgroundColor, 
                   ),
           textAlign: TextAlign.center,
         ),

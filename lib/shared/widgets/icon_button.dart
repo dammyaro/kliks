@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class IconButtonWidget extends StatelessWidget {
   final String text;
-  final String imagePath; // Path to the PNG image
+  final String imagePath; 
   final VoidCallback onPressed;
 
   const IconButtonWidget({
@@ -17,35 +17,35 @@ class IconButtonWidget extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        elevation: 0, // Remove button elevation
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor, // White background for the button
-        foregroundColor: Colors.black, // Black text color
-        side: const BorderSide(width: 1, color: Color(0xFF3B3B3B)), // Border with width 1 and black color
+        elevation: 0, 
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor, 
+        foregroundColor: Colors.black, 
+        side: const BorderSide(width: 1, color: Color(0xFF3B3B3B)), 
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30), // Rounded corners
+          borderRadius: BorderRadius.circular(30), 
         ),
-        minimumSize: const Size(double.infinity, 50), // Full-width button
+        minimumSize: const Size(double.infinity, 60), 
         
       ),
       child: Row(
-        mainAxisSize: MainAxisSize.min, // Ensure the Row takes up minimal space
+        mainAxisSize: MainAxisSize.min, 
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset(
             imagePath,
-            height: 24, // Set the height of the image
-            width: 24,  // Set the width of the image
+            height: 24, 
+            width: 24,  
           ),
-          const SizedBox(width: 10), // Add spacing between the image and text
+          const SizedBox(width: 10), 
           Flexible(
             child: Text(
               text,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                fontSize: 16, // Adjust font size as needed
-                // fontWeight: FontWeight.bold,
-                color: Theme.of(context).primaryColor, // Black text color
+                fontSize: 16, 
+                
+                color: Theme.of(context).primaryColor, 
               ),
-              overflow: TextOverflow.ellipsis, // Handle text overflow
+              overflow: TextOverflow.ellipsis, 
             ),
           ),
         ],

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter/gestures.dart'; // Import for TapGestureRecognizer
-import 'package:flutter/services.dart'; // Import for Clipboard
+import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
 import 'package:kliks/core/routes.dart';
-import 'package:kliks/shared/widgets/button.dart'; // Import the CustomButton widget
-import 'package:kliks/shared/widgets/icon_button.dart'; // Import the IconButtonWidget
+import 'package:kliks/shared/widgets/button.dart';
+import 'package:kliks/shared/widgets/icon_button.dart';
+import 'package:kliks/shared/widgets/text_form_widget.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -15,18 +16,21 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
-  bool _isPasswordVisible = false; // Add this variable to track password visibility
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
-  final _referralCodeController = TextEditingController(); // Controller for referral code
+  bool _isPasswordVisible = false;
+
+  // Initialize controllers
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _referralCodeController = TextEditingController();
 
   @override
   void dispose() {
+    // Dispose controllers to avoid memory leaks
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
-    _referralCodeController.dispose(); // Dispose referral code controller
+    _referralCodeController.dispose();
     super.dispose();
   }
 
@@ -42,203 +46,140 @@ class _SignupPageState extends State<SignupPage> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 20.w), // Add horizontal padding
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 40.h), // Responsive spacing from the top
-                Image.asset(
+              SizedBox(height: 40.h),
+              Image.asset(
                 Theme.of(context).brightness == Brightness.light
-                  ? 'assets/logo-inner.png'
-                  : 'assets/logo-dark.png',
-                height: 80.h, // Adjust logo height dynamically
-                width: 60.w,  // Adjust logo width dynamically
-                ),
-              SizedBox(height: 10.h), // Responsive spacing between logo and text
+                    ? 'assets/logo-inner.png'
+                    : 'assets/logo-dark.png',
+                height: 80.h,
+                width: 60.w,
+              ),
+              SizedBox(height: 10.h),
               Text(
                 'Welcome',
                 style: TextStyle(
-                  fontSize: 24.sp, // Responsive font size
+                  fontSize: 24.sp,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Metropolis-ExtraBold',
-                  letterSpacing: 0,
                 ),
               ),
-              SizedBox(height: 8.h), // Reduced spacing between "Welcome" and subtext
-              Text(
+              SizedBox(height: 8.h),
+                Text(
                 'Join our community. Fill in the details below\nto create your account.',
-                style: Theme.of(context).textTheme.bodySmall, // Use bodySmall from theme config
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14.sp),
               ),
-              SizedBox(height: 18.h), // Add spacing before form fields
+              SizedBox(height: 18.h),
               Form(
                 key: _formKey,
                 child: Column(
-                    children: [
-                    TextFormField(
+                  children: [
+                    // Email Field
+                    TextFormWidget(
                       controller: _emailController,
-                      decoration: InputDecoration(
                       labelText: 'Email',
-                      labelStyle: Theme.of(context).textTheme.labelSmall, // Responsive label text size
-                      contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w), // Adjust padding for height
-                      filled: true,
-                      fillColor: Colors.white.withOpacity(0.03), // White background with 2% opacity
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(50.r), // Rounded corners
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
-                        borderSide: BorderSide(color: Color(0xFF3B3B3B).withOpacity(0.2)), // Border color with 20% opacity
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15.r), // Rounded corners for enabled state
-                        borderSide: const BorderSide(color: Color(0xFFBBD953)), // Border color
-                      ),
-                      ),
+                      keyboardType: TextInputType.emailAddress,
                       validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
-                      }
-                      return null;
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your email';
+                        }
+                        return null;
                       },
                     ),
-                    SizedBox(height: 20.h), // Add spacing between fields
-                    TextFormField(
+                    SizedBox(height: 20.h),
+
+                    // Password Field
+                    TextFormWidget(
                       controller: _passwordController,
-                      decoration: InputDecoration(
                       labelText: 'Password',
-                      labelStyle: Theme.of(context).textTheme.labelSmall, // Responsive label text size
-                      contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w), // Adjust padding for height
-                      filled: true,
-                      fillColor: Colors.white.withOpacity(0.03), // White background with 2% opacity
-                      border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
-                      borderSide: const BorderSide(color: Color(0xFF3B3B3B)), // Border color
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
-                      borderSide: BorderSide(color: Color(0xFF3B3B3B).withOpacity(0.2)), // Border color with 20% opacity
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
-                      borderSide: const BorderSide(color: Color(0xFFBBD953)), // Border color
-                      ),
-                      suffixIcon: IconButton(
-                      icon: Icon(
-                      _isPasswordVisible ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-                      color: Theme.of(context).iconTheme.color?.withOpacity(0.3),
-                      ),
-                      onPressed: () {
-                      setState(() {
-                        _isPasswordVisible = !_isPasswordVisible;
-                      });
-                      },
-                      ),
-                      ),
                       obscureText: !_isPasswordVisible,
-                      validator: (value) {
-                      if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
-                      }
-                      if (value.length < 6) {
-                      return 'Password must be at least 6 characters';
-                      }
-                      return null;
-                      },
-                    ),
-                    SizedBox(height: 20.h), // Add spacing between fields
-                    TextFormField(
-                      controller: _confirmPasswordController,
-                      decoration: InputDecoration(
-                      labelText: 'Retype password',
-                      labelStyle: Theme.of(context).textTheme.labelSmall, // Responsive label text size
-                      contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w), // Adjust padding for height
-                      filled: true,
-                      fillColor: Colors.white.withOpacity(0.03), // White background with 2% opacity
-                      border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.r), // Rounded corners
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
-                      borderSide: BorderSide(color: Color(0xFF3B3B3B).withOpacity(0.2)), // Border color with 20% opacity
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
-                      borderSide: const BorderSide(color: Color(0xFFBBD953)), // Border color
-                      ),
-                      suffixIcon: IconButton(
-                      icon: Icon(
-                      _isPasswordVisible ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-                      color: Theme.of(context).iconTheme.color?.withOpacity(0.3),
-                      ),
-                      onPressed: () {
-                      setState(() {
-                      _isPasswordVisible = !_isPasswordVisible;
-                      });
-                      },
-                      ),
-                      ),
-                      obscureText: !_isPasswordVisible,
-                      validator: (value) {
-                      if (value != _passwordController.text) {
-                      return 'Passwords do not match';
-                      }
-                      return null;
-                      },
-                    ),
-                    SizedBox(height: 20.h), // Add spacing between fields
-                    TextFormField(
-                      controller: _referralCodeController,
-                      decoration: InputDecoration(
-                      labelText: 'Referral code',
-                      labelStyle: Theme.of(context).textTheme.labelSmall, // Responsive label text size
-                      contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w), // Adjust padding for height
-                      filled: true,
-                      fillColor: Colors.white.withOpacity(0.03), // White background with 2% opacity
-                      border: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Color(0xFF3B3B3B)), // Border color
-                        borderRadius: BorderRadius.circular(30.r), // Rounded corners
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
-                        borderSide: BorderSide(color: Color(0xFF3B3B3B).withOpacity(0.2)), // Border color with 20% opacity
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
-                        borderSide: const BorderSide(color: Color(0xFFBBD953)), // Border color
-                      ),
                       suffixIcon: IconButton(
                         icon: Icon(
-                        Icons.paste_outlined,
-                        color: Color(0xFFBBD953),
+                          _isPasswordVisible
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                          color: Theme.of(context).iconTheme.color?.withOpacity(0.3),
                         ),
                         onPressed: () {
-                        // Handle paste action
-                        Clipboard.getData(Clipboard.kTextPlain).then((value) {
-                          if (value != null) {
-                          _referralCodeController.text = value.text ?? '';
-                          }
-                        });
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
                         },
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        if (value.length < 6) {
+                          return 'Password must be at least 6 characters';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 20.h),
+
+                    // Confirm Password Field
+                    TextFormWidget(
+                      controller: _confirmPasswordController,
+                      labelText: 'Retype password',
+                      obscureText: !_isPasswordVisible,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordVisible
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                          color: Theme.of(context).iconTheme.color?.withOpacity(0.3),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
+                        },
+                      ),
+                      validator: (value) {
+                        if (value != _passwordController.text) {
+                          return 'Passwords do not match';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 20.h),
+
+                    // Referral Code Field
+                    TextFormWidget(
+                      controller: _referralCodeController,
+                      labelText: 'Referral code',
+                      suffixIcon: IconButton(
+                        icon: const Icon(
+                          Icons.paste_outlined,
+                          color: Color(0xFFBBD953),
+                        ),
+                        onPressed: () {
+                          Clipboard.getData(Clipboard.kTextPlain).then((value) {
+                            if (value != null) {
+                              _referralCodeController.text = value.text ?? '';
+                            }
+                          });
+                        },
                       ),
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 40.h), // Add spacing before the button
+              SizedBox(height: 40.h),
               CustomButton(
-                text: 'Continue', // Set the button text
-                // onPressed: _signup, // Call the signup function
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, AppRoutes.emailVerification);
-                },
+                text: 'Continue',
+                onPressed: _signup,
               ),
-              SizedBox(height: 20.h), // Add spacing before the divider
+              SizedBox(height: 20.h),
               Row(
                 children: [
                   Expanded(
                     child: Divider(
-                      color: Color(0xFF3B3B3B),
+                      color: const Color(0xFF3B3B3B),
                       thickness: 1,
                     ),
                   ),
@@ -246,52 +187,52 @@ class _SignupPageState extends State<SignupPage> {
                     padding: EdgeInsets.symmetric(horizontal: 10.w),
                     child: Text(
                       'Or sign up with',
-                      style: Theme.of(context).textTheme.labelSmall, // Use bodySmall from theme config
+                      style: Theme.of(context).textTheme.labelSmall,
                     ),
                   ),
                   Expanded(
                     child: Divider(
-                      color: Color(0xFF3B3B3B),
+                      color: const Color(0xFF3B3B3B),
                       thickness: 1,
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 20.h), // Add spacing before the buttons
+              SizedBox(height: 20.h),
               IconButtonWidget(
                 text: 'Sign in with Google',
-                imagePath: 'assets/google_logo.png', // Path to Google logo
+                imagePath: 'assets/google_logo.png',
                 onPressed: () {
-                  // Handle Google sign-in
-                   Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
+                  Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
                 },
               ),
-              SizedBox(height: 20.h), // Add spacing before the buttons
+              SizedBox(height: 20.h),
               IconButtonWidget(
                 text: 'Sign in with Apple',
                 imagePath: Theme.of(context).brightness == Brightness.dark
                     ? 'assets/apple_logo_white.png'
-                    : 'assets/apple_logo_black.png', // Path to Apple logo based on theme
+                    : 'assets/apple_logo_black.png',
                 onPressed: () {
-                  // Handle Apple sign-in
                   Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
                 },
               ),
-              SizedBox(height: 20.h), // Add spacing before the text
+              SizedBox(height: 20.h),
               Center(
                 child: Text.rich(
                   TextSpan(
                     children: [
-                      TextSpan(
+                        TextSpan(
                         text: 'Already have an account? ',
-                        style: Theme.of(context).textTheme.bodySmall,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14.sp),
                       ),
                       TextSpan(
                         text: 'Sign in',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14.sp,
+                          ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            // Handle sign-in navigation
                             Navigator.pushNamed(context, AppRoutes.login);
                           },
                       ),

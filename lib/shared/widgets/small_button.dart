@@ -19,19 +19,19 @@ class SmallButton extends StatelessWidget {
     return TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(
-      backgroundColor: backgroundColor ?? Theme.of(context).primaryColor, // Default to theme's primary color
-      foregroundColor: textColor ?? Theme.of(context).scaffoldBackgroundColor, // Default to white text
+      backgroundColor: backgroundColor ?? Theme.of(context).primaryColor, 
+      foregroundColor: textColor ?? Theme.of(context).scaffoldBackgroundColor, 
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10), // Rounded corners
+        borderRadius: BorderRadius.circular(10), 
       ),
-      minimumSize: const Size(double.infinity, 30), // Full-width button
+      minimumSize: const Size(double.infinity, 30), 
       ),
       child: Text(
       text,
       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-        fontSize: 12, // Adjust font size as needed
+        fontSize: 12, 
         fontWeight: FontWeight.bold,
-        color: textColor ?? Theme.of(context).scaffoldBackgroundColor, // Default to white text
+        color: textColor ?? Theme.of(context).scaffoldBackgroundColor, 
       ),
       ),
     );

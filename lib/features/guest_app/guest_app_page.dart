@@ -27,16 +27,16 @@ class _GuestAppPageState extends State<GuestAppPage> {
       body: _pages[_currentIndex],
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Handle FAB action here
+          
           print('FAB pressed');
         },
-        backgroundColor: const Color(0xffbbd953), // Custom background color
+        backgroundColor: const Color(0xffbbd953), 
         shape: CircleBorder(
-          side: BorderSide(color: Colors.black, width: 2), // Black outline
+          side: BorderSide(color: Colors.black, width: 2), 
         ),
-        child: const Icon(Icons.add, color: Colors.black), // Black plus icon
+        child: const Icon(Icons.add, color: Colors.black), 
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat, // Shift FAB up slightly
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat, 
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),

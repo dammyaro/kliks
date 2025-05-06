@@ -12,9 +12,9 @@ class WalletPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 80.h), // Responsive spacing from the top
+            SizedBox(height: 80.h), 
 
-            // "Available Points" Text
+            
             Text(
               "Available Points",
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -23,9 +23,9 @@ class WalletPage extends StatelessWidget {
                   ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 8.h), // Spacing between texts
+            SizedBox(height: 8.h), 
 
-            // "1,000" Text
+            
             Text(
               "1,000",
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -35,9 +35,9 @@ class WalletPage extends StatelessWidget {
                   ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 40.h), // Spacing below the points text
+            SizedBox(height: 40.h), 
 
-            // Grey Box with K-logo and Text
+            
             Container(
               padding: EdgeInsets.all(12.w),
               decoration: BoxDecoration(
@@ -46,15 +46,15 @@ class WalletPage extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  // K-logo
+                  
                   Image.asset(
                     'assets/k-logo.png',
                     width: 40.w,
                     height: 40.h,
                   ),
-                  SizedBox(width: 12.w), // Spacing between logo and text
+                  SizedBox(width: 12.w), 
 
-                  // Text beside the logo
+                  
                   Expanded(
                     child: Text(
                       "Attend events with rewards to earn\nmore points",
@@ -67,15 +67,15 @@ class WalletPage extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 40.h), // Spacing below the grey box
+            SizedBox(height: 40.h), 
 
-            // Recent Transactions Header
+            
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                
 
-                // "Recent Transactions" Text
+                
                 Text(
                   "Recent Transactions",
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -84,7 +84,7 @@ class WalletPage extends StatelessWidget {
                       ),
                 ),
 
-                 // Settings Icon
+                 
                 Image.asset(
                   Theme.of(context).brightness == Brightness.dark
                       ? 'assets/icons/setting-4.png'
@@ -94,9 +94,9 @@ class WalletPage extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 40.h), // Spacing below the header
+            SizedBox(height: 40.h), 
 
-            // Outlined Bookmark Icon
+            
             Opacity(
               opacity: 0.5,
               child: Icon(
@@ -107,9 +107,9 @@ class WalletPage extends StatelessWidget {
                 : Colors.black,
               ),
             ),
-            SizedBox(height: 10.h), // Spacing below the icon
+            SizedBox(height: 10.h), 
 
-            // "No Transactions to show" Text
+            
             Text(
               "No Transactions to show",
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -121,9 +121,9 @@ class WalletPage extends StatelessWidget {
                   ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 8.h), // Spacing below the text
+            SizedBox(height: 8.h), 
 
-            // Details Text
+            
             Opacity(
               opacity: 0.6,
               child: Text(

@@ -19,7 +19,7 @@ class _MainAppPageState extends State<MainAppPage> {
   final List<Widget> _pages = [
     const HomePage(),
     const WalletPage(),
-    const MapPage(), // Map page added here
+    const MapPage(), 
     const MarketplacePage(),
     const ActivitiesPage(),
   ];
@@ -30,37 +30,37 @@ class _MainAppPageState extends State<MainAppPage> {
       body: _pages[_currentIndex],
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Handle FAB action here
+          
           print('FAB pressed');
         },
-        backgroundColor: const Color(0xffbbd953), // Custom background color
+        backgroundColor: const Color(0xffbbd953), 
         shape: CircleBorder(
-          side: BorderSide(color: Colors.black, width: 2), // Black outline
+          side: BorderSide(color: Colors.black, width: 2), 
         ),
-        child: const Icon(Icons.add, color: Colors.black), // Black plus icon
+        child: const Icon(Icons.add, color: Colors.black), 
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat, // Shift FAB up slightly
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat, 
       bottomNavigationBar: Stack(
         children: [
           Container(
-            height: 90.h, // Set the height of the BottomNavigationBar
+            height: 90.h, 
             decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor, // Match scaffold background color
+              color: Theme.of(context).scaffoldBackgroundColor, 
               border: Border(
                 top: BorderSide(
-                  color: Colors.grey[600]!, // Grey border at the top
-                  width: 1.0, // Border width
+                  color: Colors.grey[600]!, 
+                  width: 1.0, 
                 ),
               ),
             ),
             child: BottomNavigationBar(
-              backgroundColor: Colors.transparent, // Make the BottomNavigationBar background transparent
+              backgroundColor: Colors.transparent, 
               currentIndex: _currentIndex,
               onTap: (index) {
                 if (index == 2) {
-                  // Handle map button click
+                  
                   print('Map button clicked');
-                  // Add your map functionality here
+                  
                 } else {
                   setState(() => _currentIndex = index);
                 }
@@ -68,7 +68,7 @@ class _MainAppPageState extends State<MainAppPage> {
               type: BottomNavigationBarType.fixed,
               selectedLabelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
                     fontSize: 12.sp,
-                    fontFamily: 'Metropolis-ExtraBold', // Use Metropolis-ExtraBold when selected
+                    fontFamily: 'Metropolis-ExtraBold', 
                   ),
               unselectedLabelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
                     fontSize: 12.sp,
@@ -76,7 +76,7 @@ class _MainAppPageState extends State<MainAppPage> {
               items: [
                 BottomNavigationBarItem(
                   icon: Padding(
-                    padding: EdgeInsets.only(bottom: 8.h), // Add space between icon and label
+                    padding: EdgeInsets.only(bottom: 8.h), 
                     child: Image.asset(
                       Theme.of(context).brightness == Brightness.dark
                           ? (_currentIndex == 0
@@ -93,7 +93,7 @@ class _MainAppPageState extends State<MainAppPage> {
                 ),
                 BottomNavigationBarItem(
                   icon: Padding(
-                    padding: EdgeInsets.only(bottom: 8.h), // Add space between icon and label
+                    padding: EdgeInsets.only(bottom: 8.h), 
                     child: Image.asset(
                       Theme.of(context).brightness == Brightness.dark
                           ? (_currentIndex == 1
@@ -111,12 +111,12 @@ class _MainAppPageState extends State<MainAppPage> {
                 BottomNavigationBarItem(
                   icon: GestureDetector(
                     onTap: () {
-                      // Handle map button click without changing the current index
+                      
                       print('Map button clicked');
-                      // Add your map functionality here
+                      
                     },
                     child: Padding(
-                      padding: EdgeInsets.only(bottom: 8.h), // Add space between icon and label
+                      padding: EdgeInsets.only(bottom: 8.h), 
                       child: Image.asset(
                         Theme.of(context).brightness == Brightness.dark
                             ? 'assets/icons/map-darkmode.png'
@@ -130,7 +130,7 @@ class _MainAppPageState extends State<MainAppPage> {
                 ),
                 BottomNavigationBarItem(
                   icon: Padding(
-                    padding: EdgeInsets.only(bottom: 8.h), // Add space between icon and label
+                    padding: EdgeInsets.only(bottom: 8.h), 
                     child: Image.asset(
                       Theme.of(context).brightness == Brightness.dark
                           ? (_currentIndex == 3
@@ -147,7 +147,7 @@ class _MainAppPageState extends State<MainAppPage> {
                 ),
                 BottomNavigationBarItem(
                   icon: Padding(
-                    padding: EdgeInsets.only(bottom: 8.h), // Add space between icon and label
+                    padding: EdgeInsets.only(bottom: 8.h), 
                     child: Image.asset(
                       Theme.of(context).brightness == Brightness.dark
                           ? (_currentIndex == 4
@@ -165,14 +165,14 @@ class _MainAppPageState extends State<MainAppPage> {
               ],
             ),
           ),
-          // Horizontal Indicator
+          
           Positioned(
             top: 0,
-            left: MediaQuery.of(context).size.width / 5 * _currentIndex, // Position based on selected tab
+            left: MediaQuery.of(context).size.width / 5 * _currentIndex, 
             child: Container(
-              width: MediaQuery.of(context).size.width / 5, // Divide equally among tabs
-              height: 3.h, // Height of the indicator
-              color: const Color(0xffbbd953), // Indicator color
+              width: MediaQuery.of(context).size.width / 5, 
+              height: 3.h, 
+              color: const Color(0xffbbd953), 
             ),
           ),
         ],

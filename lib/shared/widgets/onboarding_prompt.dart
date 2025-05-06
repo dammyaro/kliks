@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:kliks/shared/widgets/small_button.dart'; // Import the SmallButton widget
-import 'package:kliks/shared/widgets/two_step_bottom_sheet.dart'; // Import the TwoStepBottomSheet widget
+import 'package:kliks/shared/widgets/small_button.dart'; 
+import 'package:kliks/shared/widgets/two_step_bottom_sheet.dart'; 
 
 class OnboardingPrompt extends StatelessWidget {
   final VoidCallback onContinue;
@@ -11,47 +11,47 @@ class OnboardingPrompt extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: MediaQuery.of(context).size.width, // Full width of the screen
+      width: MediaQuery.of(context).size.width, 
       child: Container(
-        padding: EdgeInsets.all(20.w), // Adjust padding inside the box
-        margin: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h), // Add margin around the box
+        padding: EdgeInsets.all(20.w), 
+        margin: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h), 
         decoration: BoxDecoration(
-          color: const Color(0xffBBD953), // Use the app's primary color
-          borderRadius: BorderRadius.circular(12.r), // Rounded edges
+          color: const Color(0xffBBD953), 
+          borderRadius: BorderRadius.circular(12.r), 
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start, // Align text to the left
-          mainAxisSize: MainAxisSize.min, // Reduce height to fit content
+          crossAxisAlignment: CrossAxisAlignment.start, 
+          mainAxisSize: MainAxisSize.min, 
           children: [
             Text(
               "You're almost done!",
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     fontFamily: 'Metropolis-SemiBold',
                     letterSpacing: -1,
-                    fontSize: 20.sp, // Adjust font size
-                    color: Colors.black, // Black text color
+                    fontSize: 20.sp, 
+                    color: Colors.black, 
                     fontWeight: FontWeight.bold,
                   ),
             ),
-            SizedBox(height: 8.h), // Spacing between main text and subtext
+            SizedBox(height: 8.h), 
             Text(
               "Hi, let's get you a personalized experience on Kliks\nPlease continue by providing some details.",
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Colors.black.withOpacity(0.9),
                     letterSpacing: -1,
-                    fontSize: 13.sp, // Adjust font size
+                    fontSize: 13.sp, 
                   ),
             ),
-            SizedBox(height: 10.h), // Spacing before the button
+            SizedBox(height: 10.h), 
             Align(
-              alignment: Alignment.centerLeft, // Align the button to the left
+              alignment: Alignment.centerLeft, 
               child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.3, // Reduce button width to 30% of the screen
+                width: MediaQuery.of(context).size.width * 0.3, 
                 child: SmallButton(
                   text: 'Continue',
-                  onPressed: () => _showBottomSheet(context), // Show bottom sheet on click
-                  backgroundColor: Colors.black, // Black background color
-                  textColor: Colors.white, // White text color
+                  onPressed: () => _showBottomSheet(context), 
+                  backgroundColor: Colors.black, 
+                  textColor: Colors.white, 
                 ),
               ),
             ),
@@ -64,9 +64,9 @@ class OnboardingPrompt extends StatelessWidget {
   void _showBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true, // Allow full-screen height
+      isScrollControlled: true, 
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)), // Rounded top corners
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)), 
       ),
       builder: (context) {
         return const TwoStepBottomSheet();

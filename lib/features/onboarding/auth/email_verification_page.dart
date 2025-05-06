@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kliks/core/routes.dart';
-import 'package:kliks/shared/widgets/button.dart'; // Import the CustomButton widget
+import 'package:kliks/shared/widgets/button.dart'; 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter/gestures.dart'; // Import for TapGestureRecognizer
+import 'package:flutter/gestures.dart'; 
 
 class EmailVerificationPage extends StatelessWidget {
   const EmailVerificationPage({super.key});
@@ -14,23 +14,23 @@ class EmailVerificationPage extends StatelessWidget {
      return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 20.w), // Add horizontal padding
+          padding: EdgeInsets.symmetric(horizontal: 20.w), 
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-           SizedBox(height: 40.h), // Responsive spacing from the top
+           SizedBox(height: 40.h), 
                 Image.asset(
                 Theme.of(context).brightness == Brightness.light
                   ? 'assets/logo-inner.png'
                   : 'assets/logo-dark.png',
-                height: 80.h, // Adjust logo height dynamically
-                width: 60.w,  // Adjust logo width dynamically
+                height: 80.h, 
+                width: 60.w,  
                 ),
             const SizedBox(height: 20),
             Text(
               'Check your mail',
                style: TextStyle(
-                  fontSize: 24.sp, // Responsive font size
+                  fontSize: 24.sp, 
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Metropolis-ExtraBold',
                   letterSpacing: 0,
@@ -54,7 +54,7 @@ class EmailVerificationPage extends StatelessWidget {
                   ),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
-                  // Handle "Wrong Email?" click logic
+                  
                   },
                 ),
               ],
@@ -66,21 +66,21 @@ class EmailVerificationPage extends StatelessWidget {
                       controller: _verificationCodeController,
                       decoration: InputDecoration(
                       labelText: 'Verification code',
-                      labelStyle: Theme.of(context).textTheme.labelSmall, // Responsive label text size
-                      contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w), // Adjust padding for height
+                      labelStyle: Theme.of(context).textTheme.labelSmall, 
+                      contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w), 
                       filled: true,
-                      fillColor: Colors.white.withOpacity(0.03), // White background with 2% opacity
+                      fillColor: Colors.white.withOpacity(0.03), 
                       border: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Color(0xFF3B3B3B)), // Border color
-                        borderRadius: BorderRadius.circular(30.r), // Rounded corners
+                        borderSide: const BorderSide(color: Color(0xFF3B3B3B)), 
+                        borderRadius: BorderRadius.circular(30.r), 
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
-                        borderSide: BorderSide(color: Color(0xFF3B3B3B).withOpacity(0.2)), // Border color with 20% opacity
+                        borderRadius: BorderRadius.circular(10.r), 
+                        borderSide: BorderSide(color: Color(0xFF3B3B3B).withOpacity(0.2)), 
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.r), // Rounded corners for enabled state
-                        borderSide: const BorderSide(color: Color(0xFFBBD953)), // Border color
+                        borderRadius: BorderRadius.circular(10.r), 
+                        borderSide: const BorderSide(color: Color(0xFFBBD953)), 
                       ),
                      
                       ),
@@ -103,7 +103,7 @@ class EmailVerificationPage extends StatelessWidget {
                 ),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
-                  // Handle resend email logic
+                  
                   },
                 ),
               ],
@@ -115,7 +115,7 @@ class EmailVerificationPage extends StatelessWidget {
             CustomButton(
               text: 'Continue',
               onPressed: () {
-                // Handle continue logic
+                
                Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
               },
             ),
