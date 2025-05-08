@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MainAppBar extends StatelessWidget {
   final bool isGuest;
@@ -39,7 +42,7 @@ class MainAppBar extends StatelessWidget {
                     border: InputBorder.none, 
                     hintText: 'Ontario, Canada', 
                     hintStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.grey, 
+                      fontSize: 14.sp,
                         ),
                     icon: const Icon(
                       Icons.search_outlined,
@@ -47,18 +50,24 @@ class MainAppBar extends StatelessWidget {
                     ),
                   ),
                   style: Theme.of(context).textTheme.bodySmall, 
-                  textAlignVertical: TextAlignVertical.center, 
+                  textAlignVertical: TextAlignVertical.top, 
                 ),
               ),
             ),
 
             
             if (!isGuest)
-              Image.asset(
+            GestureDetector(
+              child: Image.asset(
                 'assets/icons/avatar.png',
                 height: 50, 
                 width: 50, 
               ),
+              onTap: () {
+                Navigator.pushNamed(context, '/profile'); 
+              },
+
+            ),
           ],
         ),
       ),

@@ -29,7 +29,8 @@ class _EventFilterState extends State<EventFilter> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10), 
               decoration: BoxDecoration(
-          color: isNearbySelected ? Colors.white : Colors.grey[700], 
+          color: isNearbySelected  ? Theme.of(context).primaryColor // Selected color (adapts to theme)
+          : Colors.grey[700], // Unselected
           borderRadius: BorderRadius.circular(10), 
               ),
               child: Text(
@@ -37,7 +38,8 @@ class _EventFilterState extends State<EventFilter> {
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.bold,
-            color: isNearbySelected ? Colors.black : Colors.grey[500], 
+            color: isNearbySelected ? Theme.of(context).scaffoldBackgroundColor// Text color when selected
+            : Theme.of(context).colorScheme.onSurface.withOpacity(0.7), // Unselected
           ),
               ),
             ),

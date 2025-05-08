@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class TextFormWidget extends StatelessWidget {
+  final String name; // Required for FormBuilderTextField
   final TextEditingController controller;
   final String labelText;
   final String? Function(String?)? validator;
@@ -11,6 +13,7 @@ class TextFormWidget extends StatelessWidget {
 
   const TextFormWidget({
     super.key,
+    required this.name,
     required this.controller,
     required this.labelText,
     this.validator,
@@ -21,13 +24,20 @@ class TextFormWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
+    return FormBuilderTextField(
+      name: name, // Unique name for the field
       controller: controller,
-      keyboardType: keyboardType,
       obscureText: obscureText,
+      keyboardType: keyboardType,
+       style: TextStyle(
+          fontSize: 14.sp,
+          fontFamily: 'Metropolis-SemiBold',
+          color: const Color(0xFFBBD953),
+        ),
       decoration: InputDecoration(
         labelText: labelText,
-        labelStyle: Theme.of(context).textTheme.labelSmall?.copyWith(fontSize: 14.sp),
+        labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14.sp),
+       
         contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w),
         filled: true,
         fillColor: Colors.white.withOpacity(0.03),

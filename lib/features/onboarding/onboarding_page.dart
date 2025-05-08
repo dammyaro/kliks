@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kliks/core/routes.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class OnboardingPage extends StatelessWidget {
   const OnboardingPage({super.key});
@@ -9,6 +10,21 @@ class OnboardingPage extends StatelessWidget {
     
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    final textStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
+      fontSize: 30.sp,
+      fontWeight: FontWeight.bold,
+      fontFamily: 'Metropolis-ExtraBold',
+      letterSpacing: -2,
+      height: 1.2,
+      color: Colors.black, 
+    );
+    final subTextStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
+      fontSize: 14.sp,
+      fontFamily: 'Metropolis-Regular',
+      letterSpacing: -1,
+      height: 1.2,
+      color: Colors.black, 
+    );
 
     return Scaffold(
       backgroundColor: const Color(0xFFBBD953), 
@@ -28,53 +44,34 @@ class OnboardingPage extends StatelessWidget {
                     width: screenWidth * 0.2,  
                   ),
                   SizedBox(height: screenHeight * 0.02), 
-                  const Text.rich(
+                  Text.rich(
+                    
                     TextSpan(
                       children: [
                         TextSpan(
                           text: 'Connect,\n',
-                          style: TextStyle(
-                            fontSize: 43,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Metropolis-ExtraBold',
-                            letterSpacing: -2,
-                            height: 1.2,
-                            color: Colors.black, 
-                          ),
+                          
+                          style: textStyle,
                         ),
                         TextSpan(
                           text: 'Network & Earn',
-                          style: TextStyle(
-                            fontSize: 43,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Metropolis-ExtraBold',
-                            letterSpacing: -2,
-                            height: 1.2,
-                            color: Colors.black,
-                          ),
+                          style: textStyle,
                         ),
                       ],
                     ),
                   ),
-                  const Text.rich(
+                   Text.rich(
                     TextSpan(
                       children: [
                         TextSpan(
                           text: 'Create, book spots, attend events, and earn\nrewards, all in one app. ',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontFamily: 'Metropolis-Regular',
-                            letterSpacing: -1,
-                            color: Colors.black, 
-                          ),
+                          style: subTextStyle
                         ),
                         TextSpan(
                           text: 'Join Kliks now!',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontFamily: 'Metropolis-Bold',
-                            letterSpacing: -1,
-                            color: Colors.black,
+                          style: subTextStyle?.copyWith(
+                            fontFamily: 'Metropolis-ExtraBold',
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
@@ -91,13 +88,15 @@ class OnboardingPage extends StatelessWidget {
                       ),
                       minimumSize: Size(screenWidth * 0.9, screenHeight * 0.07), 
                     ),
-                    child: const Text(
+                    child: Text(
                       'Get Started',
                       style: TextStyle(
                         color: Colors.white,
-                        fontFamily: 'Metropolis-Regular',
+                        fontFamily: 'Metropolis-SemiBold',
                         letterSpacing: -1,
+                        fontSize: 14.sp,
                       ), 
+                      
                     ),
                   ),
                   SizedBox(height: screenHeight * 0.02), 
@@ -110,12 +109,13 @@ class OnboardingPage extends StatelessWidget {
                       ),
                       minimumSize: Size(screenWidth * 0.9, screenHeight * 0.07), 
                     ),
-                    child: const Text(
+                    child: Text(
                       'Continue as Guest',
                       style: TextStyle(
                         color: Colors.black,
-                        fontFamily: 'Metropolis-Regular',
+                        fontFamily: 'Metropolis-SemiBold',
                         letterSpacing: -1,
+                        fontSize: 14.sp,
                       ), 
                     ),
                   ),

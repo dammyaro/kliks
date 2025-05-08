@@ -6,6 +6,7 @@ import 'package:kliks/features/onboarding/auth/signup_page.dart';
 import 'package:kliks/features/onboarding/onboarding_page.dart';
 import 'package:kliks/features/onboarding/splash_screen.dart';
 import 'package:kliks/features/guest_app/guest_app_page.dart';
+import 'package:kliks/features/main_app/profile_page.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -15,6 +16,7 @@ class AppRoutes {
   static const String emailVerification = '/email-verification';
   static const String mainApp = '/main-app';
   static const String guestApp = '/guestApp';
+  static const String profile = '/profile';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -32,6 +34,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const MainAppPage());
       case guestApp:
         return MaterialPageRoute(builder: (_) => const GuestAppPage());
+      case profile:
+        return MaterialPageRoute(builder: (_) => const ProfilePage());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

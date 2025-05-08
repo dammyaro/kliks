@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ThemeConfig {
@@ -65,4 +66,29 @@ class ThemeConfig {
       ),
     ),
   );
+
+  // Status Bar Configurations
+  static const SystemUiOverlayStyle systemOverlayStyleLight = SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.dark,
+    statusBarBrightness: Brightness.light,
+    systemNavigationBarColor: Colors.white,
+    systemNavigationBarIconBrightness: Brightness.dark,
+  );
+
+  static const SystemUiOverlayStyle systemOverlayStyleDark = SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.light,
+    statusBarBrightness: Brightness.dark,
+    systemNavigationBarColor: Colors.black,
+    systemNavigationBarIconBrightness: Brightness.light,
+  );
+
+  // Helper method for dynamic theming
+  static SystemUiOverlayStyle systemOverlayStyle(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? systemOverlayStyleDark
+        : systemOverlayStyleLight;
+  }
+
 }
