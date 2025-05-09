@@ -107,13 +107,13 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
                   Text(
                     "To use location services, allow Kliks to access your location",
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontSize: 18.sp,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Metropolis-ExtraBold',
                         ),
                     textAlign: TextAlign.center, 
                   ),
-                  SizedBox(height: 40.h), 
+                  SizedBox(height: 20.h), 
 
                   
                   CustomButton(
@@ -123,6 +123,11 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
                         _currentStep = 1; 
                       });
                     },
+                    textStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Metropolis-ExtraBold',
+                        ),
                     backgroundColor: const Color(0xffbbd953), 
                     textColor: Colors.black, 
                   ),
@@ -139,7 +144,7 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
                     "Select your interests",
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.bold,
-                          fontSize: 28.sp,
+                          fontSize: 20.sp,
                           fontFamily: 'Metropolis-ExtraBold',
                         ),
                     textAlign: TextAlign.start, 
@@ -150,7 +155,7 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
                   Text(
                     "This will let us know what kind of events \nto show you",
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontSize: 16.sp,
+                          fontSize: 12.sp,
                         ),
                     textAlign: TextAlign.start, 
                   ),
@@ -196,13 +201,15 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
                             child: Text(
                               interest,
                               style: TextStyle(
-                                fontSize: 14.sp, 
+                                fontSize: 10.sp, 
                                 fontWeight: FontWeight.bold,
+                                 letterSpacing: 0,
                                 color: _selectedInterests.contains(interest)
                                     ? Colors.black 
                                     : Colors.white, 
                               ),
                               textAlign: TextAlign.center,
+                             
                             ),
                           ),
                         ),
@@ -222,21 +229,28 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
                           Navigator.pop(context); 
                           },
                           backgroundColor: Colors.grey[600]!, 
+                          textStyle: TextStyle(
+                            fontSize: 12.sp, 
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Metropolis-Regular',
+                          ),
                           textColor: Colors.white, 
                         ),
                       ),
                       SizedBox(width: 10.w), 
-
-                      
                         SizedBox(
                         width: MediaQuery.of(context).size.width * 0.4, 
                         child: CustomButton(
                           text: "Next",
                           onPressed: () {
-                          
-                          Navigator.pop(context); 
+                            Navigator.pop(context); 
                           },
                           backgroundColor: const Color(0xffbbd953), 
+                          textStyle: TextStyle(
+                            fontSize: 12.sp, 
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Metropolis-Regular',
+                          ),
                           textColor: Colors.black, 
                         
                         ),

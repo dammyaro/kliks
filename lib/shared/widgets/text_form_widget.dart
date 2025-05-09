@@ -11,6 +11,7 @@ class TextFormWidget extends StatelessWidget {
   final Widget? suffixIcon;
   final TextInputType keyboardType;
   final bool multiline; // New attribute for multiline support
+  final double? contentHeight; // New attribute for adjustable height
 
   const TextFormWidget({
     super.key,
@@ -22,6 +23,7 @@ class TextFormWidget extends StatelessWidget {
     this.suffixIcon,
     this.keyboardType = TextInputType.text,
     this.multiline = false, // Default is false
+    this.contentHeight, // Optional height parameter
   });
 
   @override
@@ -36,13 +38,17 @@ class TextFormWidget extends StatelessWidget {
         fontSize: 14.sp,
         fontFamily: 'Metropolis-SemiBold',
         color: Colors.grey[500],
+        letterSpacing: 0,
       ),
       decoration: InputDecoration(
         labelText: labelText,
-        labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14.sp, color: Colors.grey[500]),
-        alignLabelWithHint: multiline, 
+        labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
+              fontSize: 14.sp,
+              color: Colors.grey[500],
+            ),
+        alignLabelWithHint: multiline,
         contentPadding: EdgeInsets.symmetric(
-          vertical: multiline ? 20.h : 14.h, 
+          vertical: contentHeight ?? (multiline ? 20.h : 14.h), // Use contentHeight if provided
           horizontal: 20.w,
         ),
         filled: true,

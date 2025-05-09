@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:kliks/shared/widgets/main_app_bar.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});

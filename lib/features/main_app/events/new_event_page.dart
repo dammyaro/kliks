@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kliks/shared/widgets/button.dart';
 import 'package:kliks/shared/widgets/text_form_widget.dart';
 import 'package:kliks/core/routes.dart';
+import 'package:image_picker/image_picker.dart';
 
 class NewEventPage extends StatelessWidget {
   const NewEventPage({super.key});
@@ -41,9 +42,16 @@ class NewEventPage extends StatelessWidget {
               SizedBox(height: 20.h),
 
               // Cover image button
-              ElevatedButton.icon(
-                onPressed: () {
-                  // Add your logic here
+                ElevatedButton.icon(
+                onPressed: () async {
+                  final ImagePicker picker = ImagePicker();
+                  final XFile? image = await picker.pickImage(
+                  source: ImageSource.gallery,
+                  );
+                  if (image != null) {
+                  // Handle the selected image
+                  print("Selected image path: ${image.path}");
+                  }
                 },
                 icon: Icon(Icons.add, color: Colors.black),
                 label: Text(
@@ -52,18 +60,18 @@ class NewEventPage extends StatelessWidget {
                 ),
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(
-                    horizontal: 16.w,
-                    vertical: 12.h,
+                  horizontal: 16.w,
+                  vertical: 12.h,
                   ),
                   textStyle: TextStyle(fontSize: 14.sp, color: Colors.black),
                   backgroundColor: const Color(0xffbbd953).withOpacity(1),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      10.0,
-                    ), // Reduced border radius
+                  borderRadius: BorderRadius.circular(
+                    10.0,
+                  ), // Reduced border radius
                   ),
                 ),
-              ),
+                ),
               SizedBox(height: 20.h),
 
               // Event name text field
