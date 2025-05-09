@@ -12,7 +12,7 @@ class ActivitiesPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center, 
           children: [
-            SizedBox(height: 60.h), 
+            SizedBox(height: 20.h), 
 
             
             Row(
@@ -35,7 +35,7 @@ class ActivitiesPage extends StatelessWidget {
               "No activity",
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     fontSize: 20.sp,
-                    color: Colors.grey[200],
+                    color: Colors.grey[300],
                     fontFamily: 'Metropolis-SemiBold',
                   ),
               textAlign: TextAlign.center,

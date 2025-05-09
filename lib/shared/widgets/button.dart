@@ -5,8 +5,9 @@ class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
   final Color? backgroundColor;
   final Color? textColor;
-  final TextStyle? textStyle; 
-  final BoxConstraints? constraints; 
+  final TextStyle? textStyle;
+  final BoxConstraints? constraints;
+  final bool? hasBorder; // New attribute for border
 
   const CustomButton({
     super.key,
@@ -14,8 +15,9 @@ class CustomButton extends StatelessWidget {
     required this.onPressed,
     this.backgroundColor,
     this.textColor,
-    this.textStyle, 
-    this.constraints, 
+    this.textStyle,
+    this.constraints,
+    this.hasBorder, // Optional attribute
   });
 
   @override
@@ -23,22 +25,25 @@ class CustomButton extends StatelessWidget {
     return TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(
-        backgroundColor: backgroundColor ?? Theme.of(context).primaryColor, 
-        foregroundColor: textColor ?? Theme.of(context).scaffoldBackgroundColor, 
+        backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
+        foregroundColor: textColor ?? Theme.of(context).scaffoldBackgroundColor,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30), 
+          borderRadius: BorderRadius.circular(30),
+          side: hasBorder == true // Add border if hasBorder is true
+              ? const BorderSide(color: Colors.grey, width: 1)
+              : BorderSide.none,
         ),
-        minimumSize: const Size(double.infinity, 50), 
+        minimumSize: const Size(double.infinity, 50),
       ),
       child: ConstrainedBox(
-        constraints: constraints ?? const BoxConstraints(), 
+        constraints: constraints ?? const BoxConstraints(),
         child: Text(
           text,
           style: textStyle ??
               Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 16, 
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: textColor ?? Theme.of(context).scaffoldBackgroundColor, 
+                    color: textColor ?? Theme.of(context).scaffoldBackgroundColor,
                   ),
           textAlign: TextAlign.center,
         ),

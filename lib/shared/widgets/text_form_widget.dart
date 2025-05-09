@@ -10,6 +10,7 @@ class TextFormWidget extends StatelessWidget {
   final bool obscureText;
   final Widget? suffixIcon;
   final TextInputType keyboardType;
+  final bool multiline; // New attribute for multiline support
 
   const TextFormWidget({
     super.key,
@@ -20,25 +21,30 @@ class TextFormWidget extends StatelessWidget {
     this.obscureText = false,
     this.suffixIcon,
     this.keyboardType = TextInputType.text,
+    this.multiline = false, // Default is false
   });
 
   @override
   Widget build(BuildContext context) {
     return FormBuilderTextField(
-      name: name, // Unique name for the field
+      name: name,
       controller: controller,
       obscureText: obscureText,
-      keyboardType: keyboardType,
-       style: TextStyle(
-          fontSize: 14.sp,
-          fontFamily: 'Metropolis-SemiBold',
-          color: const Color(0xFFBBD953),
-        ),
+      keyboardType: multiline ? TextInputType.multiline : keyboardType,
+      maxLines: multiline ? 5 : 1,
+      style: TextStyle(
+        fontSize: 14.sp,
+        fontFamily: 'Metropolis-SemiBold',
+        color: Colors.grey[500],
+      ),
       decoration: InputDecoration(
         labelText: labelText,
-        labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14.sp),
-       
-        contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w),
+        labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14.sp, color: Colors.grey[500]),
+        alignLabelWithHint: multiline, 
+        contentPadding: EdgeInsets.symmetric(
+          vertical: multiline ? 20.h : 14.h, 
+          horizontal: 20.w,
+        ),
         filled: true,
         fillColor: Colors.white.withOpacity(0.03),
         border: OutlineInputBorder(

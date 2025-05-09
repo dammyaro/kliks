@@ -12,7 +12,7 @@ class MarketplacePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center, 
           children: [
-            SizedBox(height: 60.h), 
+            SizedBox(height: 20.h), 
 
             
             Row(

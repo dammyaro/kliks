@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kliks/features/main_app/activities/activities_page.dart';
 import 'package:kliks/features/main_app/home/home_page.dart';
 import 'package:kliks/features/main_app/marketplace/marketplace_page.dart';
 import 'package:kliks/features/main_app/wallet/wallet_page.dart';
 import 'package:kliks/features/main_app/map/map_page.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kliks/shared/widgets/create_event_bottomsheet.dart';
 
 class MainAppPage extends StatefulWidget {
   const MainAppPage({super.key});
@@ -13,87 +14,103 @@ class MainAppPage extends StatefulWidget {
   State<MainAppPage> createState() => _MainAppPageState();
 }
 
+
+
 class _MainAppPageState extends State<MainAppPage> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
     const HomePage(),
     const WalletPage(),
-    const MapPage(), 
+    const MapPage(),
     const MarketplacePage(),
     const ActivitiesPage(),
   ];
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_currentIndex],
+      body: SafeArea(
+        child: _pages[_currentIndex],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          
-          print('FAB pressed');
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (context) => const CreateEventBottomSheet(),
+          );
         },
-        backgroundColor: const Color(0xffbbd953), 
+        backgroundColor: const Color(0xffbbd953),
         shape: CircleBorder(
-          side: BorderSide(color: Colors.black, width: 2), 
+          side: BorderSide(color: Theme.of(context).scaffoldBackgroundColor, width: 0),
         ),
-        child: const Icon(Icons.add, color: Colors.black), 
+        child: const Icon(Icons.add, color: Colors.black),
+        elevation: 0,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat, 
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: Stack(
         children: [
           Container(
-            height: 90.h, 
+            height: MediaQuery.of(context).size.height * 0.1, // Adaptive height
             decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor, 
+              color: Theme.of(context).scaffoldBackgroundColor,
               border: Border(
                 top: BorderSide(
-                  color: Colors.grey[600]!, 
-                  width: 1.0, 
+                  color: Colors.grey[500]!,
+                  width: 1.0,
+                
                 ),
               ),
             ),
             child: BottomNavigationBar(
-              backgroundColor: Colors.transparent, 
+              // backgroundColor: Colors.transparent,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              elevation: 0,
               currentIndex: _currentIndex,
               onTap: (index) {
                 if (index == 2) {
-                  
                   print('Map button clicked');
-                  
                 } else {
                   setState(() => _currentIndex = index);
                 }
               },
               type: BottomNavigationBarType.fixed,
               selectedLabelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 12.sp,
-                    fontFamily: 'Metropolis-ExtraBold', 
+                    fontSize: 10.sp,
+                    fontFamily: 'Metropolis-ExtraBold',
+                    color: Theme.of(context).primaryColor,
                   ),
               unselectedLabelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 12.sp,
+                    fontSize: 10.sp,
+                    fontFamily: 'Metropolis-SemiBold',
                   ),
               items: [
                 BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: EdgeInsets.only(bottom: 8.h), 
+                    icon: Padding(
+                    padding: EdgeInsets.only(bottom: 8.h),
                     child: Image.asset(
                       Theme.of(context).brightness == Brightness.dark
-                          ? (_currentIndex == 0
-                              ? 'assets/icons/home-darkmode-active.png'
-                              : 'assets/icons/home-darkmode-inactive.png')
-                          : (_currentIndex == 0
-                              ? 'assets/icons/home-lightmode-active.png'
-                              : 'assets/icons/home-lightmode-inactive.png'),
+                        ? (_currentIndex == 0
+                          ? 'assets/icons/home-darkmode-active.png'
+                          : 'assets/icons/home-darkmode-inactive.png')
+                        : (_currentIndex == 0
+                          ? 'assets/icons/home-lightmode-active.png'
+                          : 'assets/icons/home-lightmode-inactive.png'),
                       width: 24,
                       height: 24,
+                      filterQuality: FilterQuality.high,
+                      colorBlendMode: BlendMode.dst,
+                    
                     ),
                   ),
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
                   icon: Padding(
-                    padding: EdgeInsets.only(bottom: 8.h), 
+                    padding: EdgeInsets.only(bottom: 8.h),
                     child: Image.asset(
                       Theme.of(context).brightness == Brightness.dark
                           ? (_currentIndex == 1
@@ -110,27 +127,26 @@ class _MainAppPageState extends State<MainAppPage> {
                 ),
                 BottomNavigationBarItem(
                   icon: GestureDetector(
-                    onTap: () {
-                      
-                      print('Map button clicked');
-                      
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.only(bottom: 8.h), 
-                      child: Image.asset(
-                        Theme.of(context).brightness == Brightness.dark
-                            ? 'assets/icons/map-darkmode.png'
-                            : 'assets/icons/map-lightmode.png',
-                        width: 50,
-                        height: 50,
-                      ),
+                  onTap: () {
+                    print('Map button clicked');
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 8.h),
+                    child: Image.asset(
+                    Theme.of(context).brightness == Brightness.dark
+                      ? 'assets/icons/map-darkmode.png'
+                      : 'assets/icons/map-lightmode.png',
+                    width: 50,
+                    height: 50,
+                    filterQuality: FilterQuality.high,
                     ),
+                  ),
                   ),
                   label: '',
                 ),
                 BottomNavigationBarItem(
                   icon: Padding(
-                    padding: EdgeInsets.only(bottom: 8.h), 
+                    padding: EdgeInsets.only(bottom: 8.h),
                     child: Image.asset(
                       Theme.of(context).brightness == Brightness.dark
                           ? (_currentIndex == 3
@@ -147,7 +163,7 @@ class _MainAppPageState extends State<MainAppPage> {
                 ),
                 BottomNavigationBarItem(
                   icon: Padding(
-                    padding: EdgeInsets.only(bottom: 8.h), 
+                    padding: EdgeInsets.only(bottom: 8.h),
                     child: Image.asset(
                       Theme.of(context).brightness == Brightness.dark
                           ? (_currentIndex == 4
@@ -165,14 +181,13 @@ class _MainAppPageState extends State<MainAppPage> {
               ],
             ),
           ),
-          
           Positioned(
             top: 0,
-            left: MediaQuery.of(context).size.width / 5 * _currentIndex, 
+            left: MediaQuery.of(context).size.width / 5 * _currentIndex,
             child: Container(
-              width: MediaQuery.of(context).size.width / 5, 
-              height: 3.h, 
-              color: const Color(0xffbbd953), 
+              width: MediaQuery.of(context).size.width / 5,
+              height: 4.h,
+              color: Theme.of(context).primaryColor,
             ),
           ),
         ],

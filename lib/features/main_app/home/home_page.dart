@@ -13,7 +13,7 @@ class HomePage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 40.h), 
+            SizedBox(height: 20.h), 
             const MainAppBar(), 
             SizedBox(height: 5.h), 
             const EventFilter(),
@@ -50,7 +50,7 @@ class HomePage extends StatelessWidget {
                               Expanded(
                                 child: Center(
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Icon(
                                         Icons.location_off_outlined,

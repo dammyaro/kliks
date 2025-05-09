@@ -30,7 +30,9 @@ class _EventFilterState extends State<EventFilter> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10), 
               decoration: BoxDecoration(
           color: isNearbySelected  ? Theme.of(context).primaryColor // Selected color (adapts to theme)
-          : Colors.grey[700], // Unselected
+            : Theme.of(context).brightness == Brightness.light 
+              ? Colors.grey[400] 
+              : Colors.grey[700], // Unselected
           borderRadius: BorderRadius.circular(10), 
               ),
               child: Text(
@@ -38,6 +40,7 @@ class _EventFilterState extends State<EventFilter> {
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.bold,
+            letterSpacing: 0,
             color: isNearbySelected ? Theme.of(context).scaffoldBackgroundColor// Text color when selected
             : Theme.of(context).colorScheme.onSurface.withOpacity(0.7), // Unselected
           ),
@@ -58,7 +61,10 @@ class _EventFilterState extends State<EventFilter> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10), 
               decoration: BoxDecoration(
-          color: isFollowingSelected ? Colors.white : Colors.grey[700], 
+          color: isFollowingSelected ? Theme.of(context).primaryColor // Selected color (adapts to theme)
+          : Theme.of(context).brightness == Brightness.light 
+              ? Colors.grey[400] 
+              : Colors.grey[700], // Unselected
           borderRadius: BorderRadius.circular(10), 
               ),
               child: Text(
@@ -66,7 +72,9 @@ class _EventFilterState extends State<EventFilter> {
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.bold,
-            color: isFollowingSelected ? Colors.black : Colors.grey[500], 
+            letterSpacing: 0,
+            color: isFollowingSelected ? Theme.of(context).scaffoldBackgroundColor// Text color when selected
+            : Theme.of(context).colorScheme.onSurface.withOpacity(0.7), // Unselected
           ),
               ),
             ),

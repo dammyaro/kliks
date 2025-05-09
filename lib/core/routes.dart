@@ -6,7 +6,16 @@ import 'package:kliks/features/onboarding/auth/signup_page.dart';
 import 'package:kliks/features/onboarding/onboarding_page.dart';
 import 'package:kliks/features/onboarding/splash_screen.dart';
 import 'package:kliks/features/guest_app/guest_app_page.dart';
-import 'package:kliks/features/main_app/profile_page.dart';
+import 'package:kliks/features/main_app/profile/profile_page.dart';
+import 'package:kliks/features/main_app/events/new_event_page.dart';
+import 'package:kliks/features/main_app/events/guests/guests_page.dart';
+import 'package:kliks/features/main_app/events/invite_guests/invite_guests_page.dart';
+import 'package:kliks/features/main_app/events/other_media/other_media_page.dart';
+import 'package:kliks/features/main_app/events/location/location_page.dart';
+import 'package:kliks/features/main_app/events/date_time/date_time_page.dart';
+import 'package:kliks/features/main_app/events/entrance_requirement/entrance_requirement_page.dart';
+import 'package:kliks/features/main_app/events/category/category_page.dart';
+
 
 class AppRoutes {
   static const String splash = '/';
@@ -17,6 +26,15 @@ class AppRoutes {
   static const String mainApp = '/main-app';
   static const String guestApp = '/guestApp';
   static const String profile = '/profile';
+  static const String newEvent = '/new-event';
+  static const String guests = '/guests';
+  static const String inviteGuests = '/invite-guests';
+  static const String otherMedia = '/other-media';
+  static const String location = '/location';
+  static const String dateTime = '/date-time';
+  static const String entranceRequirement = '/entrance-requirement';
+  static const String category = '/category';
+
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -36,6 +54,22 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const GuestAppPage());
       case profile:
         return MaterialPageRoute(builder: (_) => const ProfilePage());
+      case newEvent:
+        return MaterialPageRoute(builder: (_) => const NewEventPage());
+      case guests:
+        return MaterialPageRoute(builder: (_) => const GuestsPage());
+      case inviteGuests:
+        return MaterialPageRoute(builder: (_) => const InviteGuestsPage());
+      case otherMedia:
+        return MaterialPageRoute(builder: (_) => const OtherMediaPage());
+      case location:
+        return MaterialPageRoute(builder: (_) => const LocationPage());
+      case dateTime:
+        return MaterialPageRoute(builder: (_) => const DateTimePage());
+      case entranceRequirement:
+        return MaterialPageRoute(builder: (_) => const EntranceRequirementPage());
+      case category:
+        return MaterialPageRoute(builder: (_) => const CategoryPage());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

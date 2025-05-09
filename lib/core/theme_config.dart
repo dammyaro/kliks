@@ -7,6 +7,7 @@ class ThemeConfig {
     brightness: Brightness.light,
     primaryColor: Colors.black,
     scaffoldBackgroundColor: Colors.white,
+  
     textTheme: TextTheme(
       bodyLarge: TextStyle(
         color: Colors.black,

@@ -42,7 +42,7 @@ class MainAppBar extends StatelessWidget {
                     border: InputBorder.none, 
                     hintText: 'Ontario, Canada', 
                     hintStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontSize: 14.sp,
+                      fontSize: 12.sp,
                         ),
                     icon: const Icon(
                       Icons.search_outlined,

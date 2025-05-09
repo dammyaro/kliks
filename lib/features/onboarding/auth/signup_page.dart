@@ -190,7 +190,7 @@ class _SignupPageState extends State<SignupPage> {
                             padding: EdgeInsets.symmetric(horizontal: 10.w),
                             child: Text(
                               'Or sign up with',
-                              style: Theme.of(context).textTheme.labelSmall,
+                             style: Theme.of(context).textTheme.labelSmall?.copyWith(fontSize: 14.sp),
                             ),
                           ),
                           Expanded(

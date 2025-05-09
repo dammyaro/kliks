@@ -38,7 +38,7 @@ class ProfilePage extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 40.h),
+            SizedBox(height: 25.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
               child: Row(
@@ -47,7 +47,7 @@ class ProfilePage extends StatelessWidget {
                   CircleAvatar(
                     radius: 40.r,
                     backgroundImage:
-                        const AssetImage('assets/icons/avatar.png'),
+                        const AssetImage('assets/icons/avatar-large.png'),
                   ),
                   SizedBox(width: 16.w),
                   Expanded(
@@ -312,11 +312,19 @@ Widget _buildInterestsSection(BuildContext context) {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            Icons.add_circle_outline,
-                            size: 35.sp,
-                            color: Colors.green,
-                          ),
+                            Container(
+                            width: 35.sp,
+                            height: 35.sp,
+                            decoration: BoxDecoration(
+                              color: const Color(0xffbbd953),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.add,
+                              size: 20.sp,
+                              color: Colors.white,
+                            ),
+                            ),
                           SizedBox(height: 16.h),
                           Text(
                             'No events',
@@ -331,7 +339,7 @@ Widget _buildInterestsSection(BuildContext context) {
                           ),
                           SizedBox(height: 2.h),
                           Text(
-                            'Add new events, invite your friends, added events will appear here',
+                            'Add new events, invite your friends,\nadded events will appear here',
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall

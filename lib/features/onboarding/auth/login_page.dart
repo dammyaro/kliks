@@ -133,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
                     padding: EdgeInsets.symmetric(horizontal: 10.w),
                     child: Text(
                       'Or Sign in with',
-                      style: Theme.of(context).textTheme.labelSmall, 
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(fontSize: 14.sp),
                     ),
                   ),
                   Expanded(
