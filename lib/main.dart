@@ -7,7 +7,7 @@ import 'package:kliks/shared/widgets/theme_wrapper.dart';
 
 void main() => runApp(
   DevicePreview(
-    enabled: true,
+    enabled: false,
     builder: (context) => const MyApp(), 
   ),
 );
@@ -36,12 +36,12 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Kliks',
           theme: ThemeConfig.lightTheme.copyWith(
-            appBarTheme: ThemeConfig.lightTheme.appBarTheme?.copyWith(
+            appBarTheme: ThemeConfig.lightTheme.appBarTheme.copyWith(
               systemOverlayStyle: ThemeConfig.systemOverlayStyleLight,
             ),
           ), 
           darkTheme: ThemeConfig.darkTheme.copyWith(
-            appBarTheme: ThemeConfig.darkTheme.appBarTheme?.copyWith(
+            appBarTheme: ThemeConfig.darkTheme.appBarTheme.copyWith(
               systemOverlayStyle: ThemeConfig.systemOverlayStyleDark,
             ),
           ),

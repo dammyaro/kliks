@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:kliks/shared/widgets/button.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});

@@ -50,7 +50,7 @@ class NewEventPage extends StatelessWidget {
                   );
                   if (image != null) {
                   // Handle the selected image
-                  print("Selected image path: ${image.path}");
+                  debugPrint("Selected image path: ${image.path}");
                   }
                 },
                 icon: Icon(Icons.add, color: Colors.black),
@@ -64,7 +64,7 @@ class NewEventPage extends StatelessWidget {
                   vertical: 12.h,
                   ),
                   textStyle: TextStyle(fontSize: 14.sp, color: Colors.black),
-                  backgroundColor: const Color(0xffbbd953).withOpacity(1),
+                  backgroundColor: const Color(0xffbbd953).withAlpha(255),
                   shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(
                     10.0,
@@ -130,7 +130,7 @@ class NewEventPage extends StatelessWidget {
                 title: "Location",
                 subtitle: "Where is it happening",
                 onTap: () {
-                 Navigator.pushReplacementNamed(context, AppRoutes.location);
+                //  Navigator.pushReplacementNamed(context, AppRoutes.location);
                 },
               ),
 
@@ -187,7 +187,7 @@ class NewEventPage extends StatelessWidget {
                 title: "Invite guests (optional)",
                 subtitle: "Add guests to this event",
                 onTap: () {
-                 Navigator.pushReplacementNamed(context, AppRoutes.inviteGuests);
+                //  Navigator.pushReplacementNamed(context, AppRoutes.inviteGuests);
                 },
               ),
                Opacity(

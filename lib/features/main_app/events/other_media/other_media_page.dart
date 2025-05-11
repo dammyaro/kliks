@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:kliks/shared/widgets/small_button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -26,7 +25,7 @@ class _OtherMediaPageState extends State<OtherMediaPage> {
 
   @override
   Widget build(BuildContext context) {
-    final double boxSize = (MediaQuery.of(context).size.width - 60.w) / 2;
+    // final double boxSize = (MediaQuery.of(context).size.width - 60.w) / 2;
 
     return Scaffold(
       body: SafeArea(

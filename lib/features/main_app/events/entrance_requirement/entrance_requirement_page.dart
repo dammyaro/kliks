@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:kliks/shared/widgets/small_button.dart';
 import 'package:kliks/shared/widgets/text_form_widget.dart';
 
 class EntranceRequirementPage extends StatefulWidget {
