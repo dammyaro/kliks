@@ -107,7 +107,7 @@ class OnboardingPage extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30), 
                       ),
-                      minimumSize: Size(screenWidth * 0.9, screenHeight * 0.07), 
+                      minimumSize: Size(screenWidth * 0.9, screenHeight * 0.06), 
                     ),
                     child: Text(
                       'Continue as Guest',
