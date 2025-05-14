@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kliks/shared/widgets/main_app_bar.dart';
 import 'package:kliks/shared/widgets/event_filter.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:kliks/shared/widgets/onboarding_prompt.dart';
 
 class HomePage extends StatelessWidget {
@@ -27,7 +28,7 @@ class HomePage extends StatelessWidget {
                       labelColor: Theme.of(context).textTheme.bodyLarge?.color,
                       unselectedLabelColor: Theme.of(context).textTheme.bodySmall?.color,
                       labelStyle: const TextStyle(
-                        fontFamily: 'Metropolis-SemiBold',
+                        fontFamily: 'Metropolis-Medium',
                       ),
                       tabs: const [
                         Tab(text: 'All events'),
@@ -52,11 +53,12 @@ class HomePage extends StatelessWidget {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      Icon(
-                                        Icons.location_off_outlined,
+                                        SizedBox(height: 20.h),
+                                        Icon(
+                                        CupertinoIcons.location_slash,
                                         size: 35.sp,
                                         color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
-                                      ),
+                                        ),
                                       SizedBox(height: 16.h),
                                       Text(
                                         'No Events to show here',

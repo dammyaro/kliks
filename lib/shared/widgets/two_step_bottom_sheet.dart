@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:kliks/shared/widgets/button.dart'; 
+import 'package:kliks/shared/widgets/button.dart';
+import 'package:flutter/cupertino.dart'; 
 
 class TwoStepBottomSheet extends StatefulWidget {
   const TwoStepBottomSheet({super.key});
@@ -85,22 +86,23 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
                 ),
               ],
             ),
-            SizedBox(height: 80.h), 
+            // SizedBox(height: 80.h), 
 
             
             if (_currentStep == 0)
+              // SizedBox(height: 80.h), 
               Column(
                 mainAxisAlignment: MainAxisAlignment.center, 
                 crossAxisAlignment: CrossAxisAlignment.center, 
                 children: [
-                  
-                  Icon(
-                    Icons.phone_iphone_outlined,
+                    SizedBox(height: 80.h), 
+                    Icon(
+                    CupertinoIcons.device_phone_portrait,
                     size: 80.w,
                     color: Theme.of(context).brightness == Brightness.light
-                        ? Colors.black
-                        : Colors.white, 
-                  ),
+                      ? Colors.black.withOpacity(0.5)
+                      : Colors.white.withOpacity(0.5), 
+                    ),
                   SizedBox(height: 40.h), 
 
                   
@@ -108,8 +110,8 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
                     "To use location services, allow Kliks to access your location",
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontSize: 14.sp,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Metropolis-ExtraBold',
+                          
+                          fontFamily: 'Metropolis-SemiBold',
                         ),
                     textAlign: TextAlign.center, 
                   ),
@@ -134,88 +136,89 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
                 ],
               )
 
-            else if (_currentStep == 1)
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start, 
-                crossAxisAlignment: CrossAxisAlignment.start, 
-                children: [
-                  
-                  Text(
-                    "Select your interests",
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.sp,
-                          fontFamily: 'Metropolis-ExtraBold',
-                        ),
-                    textAlign: TextAlign.start, 
-                  ),
-                  SizedBox(height: 10.h), 
+              else if (_currentStep == 1)
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start, 
+                  crossAxisAlignment: CrossAxisAlignment.start, 
+                  children: [
+                    SizedBox(height: 20.h),
+                    Text(
+                      "Select your interests",
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24.sp,
+                            fontFamily: 'Metropolis-ExtraBold',
+                            letterSpacing: -1, 
+                          ),
+                      textAlign: TextAlign.start, 
+                    ),
+                    SizedBox(height: 5.h), 
 
-                  
-                  Text(
-                    "This will let us know what kind of events \nto show you",
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontSize: 12.sp,
-                        ),
-                    textAlign: TextAlign.start, 
-                  ),
-                  SizedBox(height: 40.h), 
+                    
+                    Text(
+                      "This will let us know what kind of events \nto show you",
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            fontSize: 15.sp,
+                          ),
+                      textAlign: TextAlign.start, 
+                    ),
+                    SizedBox(height: 40.h), 
 
-                  
-                  Wrap(
-                    spacing: 10.w, 
-                    runSpacing: 20.h, 
-                    alignment: WrapAlignment.start, 
-                    children: [
-                      for (var interest in [
-                        "Social & Networking",
-                        "Food & Drinks",
-                        "Family & Parenting",
-                        "Education & Learning",
-                        "Environment and Nature",
-                        "Health & Wellness",
-                        "Technology & Science",
-                        "Sport & Fitness",
-                        "Travel & Adventure",
-                        "Fashion & Beauty",
-                        "Arts & Culture"
-                      ])
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              if (_selectedInterests.contains(interest)) {
-                                _selectedInterests.remove(interest); 
-                              } else {
-                                _selectedInterests.add(interest); 
-                              }
-                            });
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
-                            decoration: BoxDecoration(
-                              color: _selectedInterests.contains(interest)
-                                  ? Colors.white 
-                                  : Colors.grey[800], 
-                              borderRadius: BorderRadius.circular(20.r), 
-                            ),
-                            child: Text(
-                              interest,
-                              style: TextStyle(
-                                fontSize: 10.sp, 
-                                fontWeight: FontWeight.bold,
-                                 letterSpacing: 0,
+                    
+                    Wrap(
+                      spacing: 10.w, 
+                      runSpacing: 10.h, 
+                      alignment: WrapAlignment.start, 
+                      children: [
+                        for (var interest in [
+                          "Social & Networking",
+                          "Food & Drinks",
+                          "Family & Parenting",
+                          "Education & Learning",
+                          "Environment and Nature",
+                          "Health & Wellness",
+                          "Technology & Science",
+                          "Sport & Fitness",
+                          "Travel & Adventure",
+                          "Fashion & Beauty",
+                          "Arts & Culture"
+                        ])
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                if (_selectedInterests.contains(interest)) {
+                                  _selectedInterests.remove(interest); 
+                                } else {
+                                  _selectedInterests.add(interest); 
+                                }
+                              });
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+                              decoration: BoxDecoration(
                                 color: _selectedInterests.contains(interest)
-                                    ? Colors.black 
-                                    : Colors.white, 
+                                    ? Colors.grey[800] 
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(20.r), 
                               ),
-                              textAlign: TextAlign.center,
-                             
+                              child: Text(
+                                interest,
+                                style: TextStyle(
+                                  fontSize: 12.sp, 
+                                  // fontWeight: FontWeight.bold,
+                                  letterSpacing: 0,
+                                  color: _selectedInterests.contains(interest)
+                                      ? Colors.white 
+                                      : Colors.black, 
+                                ),
+                                textAlign: TextAlign.center,
+                              
+                              ),
                             ),
                           ),
-                        ),
-                    ],
-                  ),
-                  SizedBox(height: 40.h), 
+                      ],
+                    ),
+                    SizedBox(height: 40.h), 
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween, 

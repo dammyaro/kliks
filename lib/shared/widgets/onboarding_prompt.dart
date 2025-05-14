@@ -30,7 +30,7 @@ class OnboardingPrompt extends StatelessWidget {
                     letterSpacing: -1,
                     fontSize: 20.sp, 
                     color: Colors.black, 
-                    fontWeight: FontWeight.bold,
+                    
                   ),
             ),
             SizedBox(height: 8.h), 
@@ -38,7 +38,7 @@ class OnboardingPrompt extends StatelessWidget {
               "Hi, let's get you a personalized experience on Kliks\nPlease continue by providing some details.",
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Colors.black.withOpacity(0.9),
-                    letterSpacing: -1,
+                    letterSpacing: 0,
                     fontSize: 13.sp, 
                   ),
             ),

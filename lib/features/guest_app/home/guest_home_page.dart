@@ -11,7 +11,7 @@ class GuestHomePage extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: 40.h), 
+          SizedBox(height: 20.h), 
           const MainAppBar(isGuest: true), 
           SizedBox(height: 5.h), 
           const EventFilter(),

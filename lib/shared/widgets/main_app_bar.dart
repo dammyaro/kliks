@@ -44,12 +44,18 @@ class MainAppBar extends StatelessWidget {
 
                     hintStyle: Theme.of(
                       context,
-                    ).textTheme.bodySmall?.copyWith(fontSize: 12.sp),
+                    ).textTheme.bodySmall?.copyWith(
+                      fontSize: 12.sp,
+                      letterSpacing: 0,
+                      fontFamily: 'Metropolis-Medium',
+                      color: Colors.grey[500],
+                    ),
                     icon: const Icon(Icons.search_outlined, color: Colors.grey),
                   ),
                   style: TextStyle(
                     fontSize: 14.sp,
-                    fontFamily: 'Metropolis-SemiBold',
+                    fontFamily: 'Metropolis-Medium',
+                    letterSpacing: 0,
                     color: Colors.grey[500],
                   ),
                   textAlignVertical: TextAlignVertical.top,

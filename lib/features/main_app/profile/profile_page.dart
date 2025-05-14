@@ -121,7 +121,7 @@ class ProfilePage extends StatelessWidget {
             ),
             SizedBox(height: 24.h),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              padding: EdgeInsets.symmetric(horizontal: 5.w),
               child: Column(
                 children: [
                   Row(
@@ -169,21 +169,26 @@ class ProfilePage extends StatelessWidget {
   Widget _buildStatItem(BuildContext context, String label, String value) {
     return Column(
       children: [
-        Text(
-          value,
-          textAlign: TextAlign.left,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                fontSize: 18.sp,
-                fontFamily: 'Metropolis-SemiBold',
-              ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: EdgeInsets.only(left: 0.w),
+            child: Text(
+              value,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              fontSize: 20.sp,
+              fontFamily: 'Metropolis-SemiBold',
+            ),
+            ),
+          ),
         ),
         SizedBox(height: 4.h),
         Text(
           label,
-          textAlign: TextAlign.left,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                fontSize: 12.sp,
+                fontSize: 16.sp,
                 fontFamily: 'Metropolis-Regular',
+                letterSpacing: -1,
                 color: Theme.of(context)
                     .textTheme
                     .bodySmall

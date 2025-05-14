@@ -22,15 +22,15 @@ class SmallButton extends StatelessWidget {
       backgroundColor: backgroundColor ?? Theme.of(context).primaryColor, 
       foregroundColor: textColor ?? Theme.of(context).scaffoldBackgroundColor, 
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10), 
+        borderRadius: BorderRadius.circular(15), 
       ),
-      minimumSize: const Size(double.infinity, 30), 
+      minimumSize: const Size(double.infinity, 35), 
       ),
       child: Text(
       text,
       style: Theme.of(context).textTheme.bodySmall?.copyWith(
         fontSize: 12, 
-        fontWeight: FontWeight.bold,
+        fontFamily: 'Metropolis-Medium',
         color: textColor ?? Theme.of(context).scaffoldBackgroundColor, 
       ),
       ),

@@ -47,14 +47,14 @@ class _MainAppPageState extends State<MainAppPage> {
         shape: CircleBorder(
           side: BorderSide(color: Theme.of(context).scaffoldBackgroundColor, width: 0),
         ),
-        child: const Icon(Icons.add, color: Colors.black),
         elevation: 0,
+        child: const Icon(Icons.add, color: Colors.black),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: Stack(
         children: [
           Container(
-            height: MediaQuery.of(context).size.height * 0.1, // Adaptive height
+            height: MediaQuery.of(context).size.height * 0.15, // Adaptive height
             decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
               border: Border(
@@ -79,12 +79,12 @@ class _MainAppPageState extends State<MainAppPage> {
               },
               type: BottomNavigationBarType.fixed,
               selectedLabelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 10.sp,
+                    fontSize: 12.sp,
                     fontFamily: 'Metropolis-ExtraBold',
                     color: Theme.of(context).primaryColor,
                   ),
               unselectedLabelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 10.sp,
+                    fontSize: 12.sp,
                     fontFamily: 'Metropolis-SemiBold',
                   ),
               items: [
@@ -99,8 +99,8 @@ class _MainAppPageState extends State<MainAppPage> {
                         : (_currentIndex == 0
                           ? 'assets/icons/home-lightmode-active.png'
                           : 'assets/icons/home-lightmode-inactive.png'),
-                      width: 24,
-                      height: 24,
+                      width: 24.w,
+                      height: 24.h,
                       filterQuality: FilterQuality.high,
                       colorBlendMode: BlendMode.dst,
                     
@@ -119,8 +119,8 @@ class _MainAppPageState extends State<MainAppPage> {
                           : (_currentIndex == 1
                               ? 'assets/icons/wallet-lightmode-active.png'
                               : 'assets/icons/wallet-lightmode-inactive.png'),
-                      width: 24,
-                      height: 24,
+                      width: 24.w,
+                      height: 24.h,
                     ),
                   ),
                   label: 'Wallet',
@@ -131,13 +131,13 @@ class _MainAppPageState extends State<MainAppPage> {
                     print('Map button clicked');
                   },
                   child: Padding(
-                    padding: EdgeInsets.only(bottom: 8.h),
+                    padding: EdgeInsets.only(bottom: 0.h),
                     child: Image.asset(
                     Theme.of(context).brightness == Brightness.dark
                       ? 'assets/icons/map-darkmode.png'
                       : 'assets/icons/map-lightmode.png',
-                    width: 50,
-                    height: 50,
+                    width: 50.w,
+                    height: 50.h,
                     filterQuality: FilterQuality.high,
                     ),
                   ),
@@ -155,8 +155,8 @@ class _MainAppPageState extends State<MainAppPage> {
                           : (_currentIndex == 3
                               ? 'assets/icons/marketplace-lightmode-active.png'
                               : 'assets/icons/marketplace-lightmode-inactive.png'),
-                      width: 24,
-                      height: 24,
+                      width: 24.w,
+                      height: 24.h,
                     ),
                   ),
                   label: 'Marketplace',

@@ -13,13 +13,13 @@ class ThemeConfig {
         color: Colors.black,
         fontFamily: 'Metropolis-ExtraBold',
         fontSize: 18.sp, 
-        letterSpacing: -2,
+        letterSpacing: 0,
       ),
       bodyMedium: TextStyle(
         color: Colors.black,
         fontFamily: 'Metropolis-SemiBold',
         fontSize: 16.sp, 
-        letterSpacing: -2,
+        letterSpacing: 0,
       ),
       bodySmall: TextStyle(
         color: Colors.black.withOpacity(0.8),
