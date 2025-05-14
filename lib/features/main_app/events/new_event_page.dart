@@ -100,7 +100,7 @@ class NewEventPage extends StatelessWidget {
                 title: "Guests",
                 subtitle: "Who can attend this event",
                 onTap: () {
-                  Navigator.pushReplacementNamed(context, AppRoutes.guests);
+                  Navigator.pushNamed(context, AppRoutes.guests);
                   // print("Guests clicked");
                 },
               ),
@@ -115,7 +115,7 @@ class NewEventPage extends StatelessWidget {
                 title: "Category",
                 subtitle: "Choose event category",
                 onTap: () {
-                  Navigator.pushReplacementNamed(context, AppRoutes.category);
+                  Navigator.pushNamed(context, AppRoutes.category);
                 },
               ),
 
@@ -145,7 +145,7 @@ class NewEventPage extends StatelessWidget {
                 title: "Date and Time",
                 subtitle: "When is it happening",
                 onTap: () {
-                  Navigator.pushReplacementNamed(context, AppRoutes.dateTime);
+                  Navigator.pushNamed(context, AppRoutes.dateTime);
                 },
               ),
                Opacity(
@@ -159,7 +159,7 @@ class NewEventPage extends StatelessWidget {
                 title: "Entrance requirement (optional)",
                 subtitle: "Activate entrance points",
                 onTap: () {
-                  Navigator.pushReplacementNamed(context, AppRoutes.entranceRequirement);
+                  Navigator.pushNamed(context, AppRoutes.entranceRequirement);
                 },
               ),
                Opacity(
@@ -173,7 +173,7 @@ class NewEventPage extends StatelessWidget {
                 title: "Other media",
                 subtitle: "Add other images related to this event",
                 onTap: () {
-                  Navigator.pushReplacementNamed(context, AppRoutes.otherMedia);
+                  Navigator.pushNamed(context, AppRoutes.otherMedia);
                 },
               ),
                Opacity(
