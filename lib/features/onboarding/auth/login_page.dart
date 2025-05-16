@@ -6,6 +6,8 @@ import 'package:kliks/shared/widgets/button.dart';
 import 'package:kliks/shared/widgets/icon_button.dart'; 
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:kliks/shared/widgets/text_form_widget.dart';
+import 'package:provider/provider.dart';
+import 'package:kliks/core/providers/auth_provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -19,6 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   bool _isPasswordVisible = false; 
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -29,8 +32,31 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
-      
-      Navigator.pushReplacementNamed(context, AppRoutes.mainApp); 
+      setState(() => _isLoading = true);
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      try {
+        final success = await authProvider.login(
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+        );
+        if (success) {
+          if (authProvider.isVerified) {
+            Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
+          } else {
+            Navigator.pushReplacementNamed(context, AppRoutes.emailVerification);
+          }
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Login failed. Please check your credentials.')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      } finally {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -116,10 +142,12 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               SizedBox(height: 40.h), 
-              CustomButton(
-                text: 'Sign In', 
-                onPressed: _login, 
-              ),
+              _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : CustomButton(
+                    text: 'Sign In', 
+                    onPressed: _login, 
+                  ),
               SizedBox(height: 20.h), 
               Row(
                 children: [

@@ -7,6 +7,8 @@ import 'package:kliks/core/routes.dart';
 import 'package:kliks/shared/widgets/button.dart';
 import 'package:kliks/shared/widgets/icon_button.dart';
 import 'package:kliks/shared/widgets/text_form_widget.dart';
+import 'package:provider/provider.dart';
+import 'package:kliks/core/providers/auth_provider.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -24,6 +26,8 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _confirmPasswordController = TextEditingController();
   final TextEditingController _referralCodeController = TextEditingController();
 
+  bool _isLoading = false;
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -35,9 +39,35 @@ class _SignupPageState extends State<SignupPage> {
 
   Future<void> _signup() async {
     if (_formKey.currentState!.saveAndValidate()) {
-      Navigator.pushReplacementNamed(context, AppRoutes.emailVerification);
+      setState(() => _isLoading = true);
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      try {
+        final success = await authProvider.register(
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+          referralCode: _referralCodeController.text.trim(),
+          gender: "",
+          dob: null,
+        );
+        if (success) {
+          Navigator.pushReplacementNamed(context, AppRoutes.emailVerification);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Registration failed. Please try again.')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      } finally {
+        setState(() => _isLoading = false);
+      }
     }
   }
+
+  // TO DO: Add a method to handle the referral code paste action
+  // TO DO: Add validations for Password to make sure the password has at least 8 characters, one uppercase letter and one special character
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +76,11 @@ class _SignupPageState extends State<SignupPage> {
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
-              physics: const BouncingScrollPhysics(), // Enable smooth scrolling
+              physics: const BouncingScrollPhysics(),
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight, // Ensure it takes full height
+                  minHeight: constraints.maxHeight,
                 ),
                 child: IntrinsicHeight(
                   child: Column(
@@ -173,10 +203,12 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                       ),
                       SizedBox(height: 40.h),
-                      CustomButton(
-                        text: 'Continue',
-                        onPressed: _signup,
-                      ),
+                      _isLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : CustomButton(
+                              text: 'Continue',
+                              onPressed: _signup,
+                            ),
                       SizedBox(height: 20.h),
                       Row(
                         children: [

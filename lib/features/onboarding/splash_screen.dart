@@ -22,7 +22,11 @@ class _SplashScreenState extends State<SplashScreen> {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     await authProvider.checkAuthStatus();
     if (authProvider.isAuthenticated) {
-      Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
+      if (authProvider.isVerified) {
+        Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
+      } else {
+        Navigator.pushReplacementNamed(context, AppRoutes.emailVerification);
+      }
     } else {
       Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
     }
