@@ -189,7 +189,7 @@ class ProfilePage extends StatelessWidget {
                 fontSize: 16.sp,
                 fontFamily: 'Metropolis-Regular',
                 letterSpacing: -1,
-                color: Theme.of(context)
+                color: Theme.of(context) 
                     .textTheme
                     .bodySmall
                     ?.color
