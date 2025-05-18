@@ -15,6 +15,12 @@ import 'package:kliks/features/main_app/events/location/location_page.dart';
 import 'package:kliks/features/main_app/events/date_time/date_time_page.dart';
 import 'package:kliks/features/main_app/events/entrance_requirement/entrance_requirement_page.dart';
 import 'package:kliks/features/main_app/events/category/category_page.dart';
+import 'package:kliks/features/main_app/profile/edit_profile_page.dart';
+import 'package:kliks/features/main_app/profile/edit_bio_page.dart';
+import 'package:kliks/features/main_app/profile/edit_gender_page.dart';
+import 'package:kliks/features/main_app/profile/edit_name_page.dart';
+import 'package:kliks/features/main_app/profile/edit_username_page.dart';
+
 
 
 class AppRoutes {
@@ -26,6 +32,11 @@ class AppRoutes {
   static const String mainApp = '/main-app';
   static const String guestApp = '/guestApp';
   static const String profile = '/profile';
+  static const String editProfile = '/edit-profile';
+  static const String editBio = '/edit-bio';
+  static const String editGender = '/edit-gender';
+  static const String editName = '/edit-name';
+  static const String editUsername = '/edit-username';
   static const String newEvent = '/new-event';
   static const String guests = '/guests';
   static const String inviteGuests = '/invite-guests';
@@ -54,6 +65,16 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const GuestAppPage());
       case profile:
         return MaterialPageRoute(builder: (_) => const ProfilePage());
+      case editProfile:
+        return MaterialPageRoute(builder: (_) => const EditProfilePage());
+      case editBio:
+        return MaterialPageRoute(builder: (_) => const EditBioPage());
+      case editGender:
+        return MaterialPageRoute(builder: (_) => const EditGenderPage());
+      case editName:
+        return MaterialPageRoute(builder: (_) => const EditNamePage());
+      case editUsername:
+        return MaterialPageRoute(builder: (_) => const EditUsernamePage());
       case newEvent:
         return MaterialPageRoute(builder: (_) => const NewEventPage());
       case guests:

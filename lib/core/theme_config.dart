@@ -45,13 +45,13 @@ class ThemeConfig {
         color: Colors.white,
         fontFamily: 'Metropolis-ExtraBold',
         fontSize: 16.sp, 
-        letterSpacing: -2,
+        letterSpacing: 0,
       ),
       bodyMedium: TextStyle(
         color: Colors.white,
         fontFamily: 'Metropolis-SemiBold',
         fontSize: 16.sp, 
-        letterSpacing: -2,
+        letterSpacing: 0,
       ),
       bodySmall: TextStyle(
         color: Colors.white.withOpacity(0.8),

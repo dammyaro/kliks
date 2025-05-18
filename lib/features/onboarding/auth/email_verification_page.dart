@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/gestures.dart';
 import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/auth_provider.dart';
-import 'package:kliks/core/services/api_service.dart';
 
 class EmailVerificationPage extends StatefulWidget {
   const EmailVerificationPage({super.key});
@@ -182,12 +181,11 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
                 ),
               ),
               const SizedBox(height: 30),
-              _isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : CustomButton(
-                      text: 'Continue',
-                      onPressed: _verifyEmail,
-                    ),
+              CustomButton(
+                text: 'Continue',
+                onPressed: _verifyEmail,
+                isLoading: _isLoading,
+              ),
             ],
           ),
         ),

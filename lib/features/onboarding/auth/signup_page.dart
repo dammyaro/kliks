@@ -148,8 +148,14 @@ class _SignupPageState extends State<SignupPage> {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter your password';
                                 }
-                                if (value.length < 6) {
-                                  return 'Password must be at least 6 characters';
+                                if (value.length < 8) {
+                                  return 'Password must be at least 8 characters';
+                                }
+                                if (!RegExp(r'[A-Z]').hasMatch(value)) {
+                                  return 'Password must contain at least one uppercase letter';
+                                }
+                                if (!RegExp(r'[!@#\$&*~_.,%^()-]').hasMatch(value)) {
+                                  return 'Password must contain at least one special character';
                                 }
                                 return null;
                               },
@@ -203,12 +209,11 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                       ),
                       SizedBox(height: 40.h),
-                      _isLoading
-                          ? const Center(child: CircularProgressIndicator())
-                          : CustomButton(
-                              text: 'Continue',
-                              onPressed: _signup,
-                            ),
+                      CustomButton(
+                        text: 'Continue',
+                        onPressed: _signup,
+                        isLoading: _isLoading,
+                      ),
                       SizedBox(height: 20.h),
                       Row(
                         children: [

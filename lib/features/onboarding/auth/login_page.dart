@@ -142,12 +142,11 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               SizedBox(height: 40.h), 
-              _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : CustomButton(
-                    text: 'Sign In', 
-                    onPressed: _login, 
-                  ),
+              CustomButton(
+                text: 'Sign In',
+                onPressed: _login,
+                isLoading: _isLoading,
+              ),
               SizedBox(height: 20.h), 
               Row(
                 children: [

@@ -5,10 +5,13 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:io';
 
 class AuthProvider with ChangeNotifier {
-  final ApiService _apiService = locator<ApiService>();
+  final ApiService _apiService;
   bool _isAuthenticated = false;
   bool _isVerified = false;
   String? currentEmail;
+
+  AuthProvider({ApiService? apiService})
+      : _apiService = apiService ?? locator<ApiService>();
 
   bool get isAuthenticated => _isAuthenticated;
   bool get isVerified => _isVerified;

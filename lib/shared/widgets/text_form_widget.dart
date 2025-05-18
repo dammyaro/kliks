@@ -12,6 +12,7 @@ class TextFormWidget extends StatelessWidget {
   final TextInputType keyboardType;
   final bool multiline; // New attribute for multiline support
   final double? contentHeight; // New attribute for adjustable height
+  final void Function(String?)? onChanged; // Optional onChanged attribute
 
   const TextFormWidget({
     super.key,
@@ -24,6 +25,7 @@ class TextFormWidget extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.multiline = false, // Default is false
     this.contentHeight, // Optional height parameter
+    this.onChanged, // Optional onChanged parameter
   });
 
   @override
@@ -68,6 +70,7 @@ class TextFormWidget extends StatelessWidget {
         suffixIcon: suffixIcon,
       ),
       validator: validator,
+      onChanged: onChanged, // Pass onChanged to FormBuilderTextField
     );
   }
 }

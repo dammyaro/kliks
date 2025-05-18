@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final Color? backgroundColor;
   final Color? textColor;
   final TextStyle? textStyle;
   final BoxConstraints? constraints;
-  final bool? hasBorder; // New attribute for border
+  final bool? hasBorder;
+  final bool isLoading;
+  final Widget? loadingIndicator;
 
   const CustomButton({
     super.key,
@@ -17,19 +19,21 @@ class CustomButton extends StatelessWidget {
     this.textColor,
     this.textStyle,
     this.constraints,
-    this.hasBorder, // Optional attribute
+    this.hasBorder,
+    this.isLoading = false,
+    this.loadingIndicator,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: onPressed,
+      onPressed: isLoading ? null : onPressed,
       style: TextButton.styleFrom(
         backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
         foregroundColor: textColor ?? Theme.of(context).scaffoldBackgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30),
-          side: hasBorder == true // Add border if hasBorder is true
+          side: hasBorder == true
               ? const BorderSide(color: Colors.grey, width: 1)
               : BorderSide.none,
         ),
@@ -37,16 +41,28 @@ class CustomButton extends StatelessWidget {
       ),
       child: ConstrainedBox(
         constraints: constraints ?? const BoxConstraints(),
-        child: Text(
-          text,
-          style: textStyle ??
-              Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: textColor ?? Theme.of(context).scaffoldBackgroundColor,
-                  ),
-          textAlign: TextAlign.center,
-        ),
+        child: isLoading
+            ? Center(
+                child: loadingIndicator ??
+                    SizedBox(
+                      height: 24,
+                      width: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).scaffoldBackgroundColor),
+                      ),
+                    ),
+              )
+            : Text(
+                text,
+                style: textStyle ??
+                    Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: textColor ?? Theme.of(context).scaffoldBackgroundColor,
+                        ),
+                textAlign: TextAlign.center,
+              ),
       ),
     );
   }
