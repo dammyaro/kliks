@@ -218,8 +218,9 @@ class ProfilePage extends StatelessWidget {
                                   context,
                                   icon: Icons.settings_outlined,
                                   text: 'Settings & Privacy',
-                                  onTap: () {
-                                    Navigator.pop(context);
+                                    onTap: () {
+                                    // Navigator.pop(context);
+                                    Navigator.pushNamed(context, '/settings');
                                   },
                                 ),
                                 SizedBox(height: 8.h),

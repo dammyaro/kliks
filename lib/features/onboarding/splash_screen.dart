@@ -25,7 +25,9 @@ class _SplashScreenState extends State<SplashScreen> {
       if (authProvider.isVerified) {
         Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
       } else {
-        Navigator.pushReplacementNamed(context, AppRoutes.emailVerification);
+        // Navigator.pushReplacementNamed(context, AppRoutes.emailVerification);
+        // Skip email verification for now
+        Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
       }
     } else {
       Navigator.pushReplacementNamed(context, AppRoutes.onboarding);

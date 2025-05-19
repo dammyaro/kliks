@@ -15,11 +15,14 @@ import 'package:kliks/features/main_app/events/location/location_page.dart';
 import 'package:kliks/features/main_app/events/date_time/date_time_page.dart';
 import 'package:kliks/features/main_app/events/entrance_requirement/entrance_requirement_page.dart';
 import 'package:kliks/features/main_app/events/category/category_page.dart';
-import 'package:kliks/features/main_app/profile/edit_profile_page.dart';
-import 'package:kliks/features/main_app/profile/edit_bio_page.dart';
-import 'package:kliks/features/main_app/profile/edit_gender_page.dart';
-import 'package:kliks/features/main_app/profile/edit_name_page.dart';
-import 'package:kliks/features/main_app/profile/edit_username_page.dart';
+import 'package:kliks/features/main_app/profile/edit/edit_profile_page.dart';
+import 'package:kliks/features/main_app/profile/edit/edit_bio_page.dart';
+import 'package:kliks/features/main_app/profile/edit/edit_gender_page.dart';
+import 'package:kliks/features/main_app/profile/edit/edit_name_page.dart';
+import 'package:kliks/features/main_app/profile/edit/edit_username_page.dart';
+import 'package:kliks/features/main_app/profile/settings/settings_page.dart';
+import 'package:kliks/features/main_app/profile/settings/account_privacy.dart';
+import 'package:kliks/features/main_app/profile/settings/notifications.dart';
 
 
 
@@ -45,6 +48,9 @@ class AppRoutes {
   static const String dateTime = '/date-time';
   static const String entranceRequirement = '/entrance-requirement';
   static const String category = '/category';
+  static const String profileSettings = '/settings';
+  static const String accountPrivacy = '/account-privacy';
+  static const String notifications = '/notifications';
 
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -67,6 +73,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const ProfilePage());
       case editProfile:
         return MaterialPageRoute(builder: (_) => const EditProfilePage());
+      case profileSettings:
+        return MaterialPageRoute(builder: (_) => const SettingsPage());
       case editBio:
         return MaterialPageRoute(builder: (_) => const EditBioPage());
       case editGender:
@@ -91,6 +99,10 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const EntranceRequirementPage());
       case category:
         return MaterialPageRoute(builder: (_) => const CategoryPage());
+      case accountPrivacy:
+        return MaterialPageRoute(builder: (_) => const AccountPrivacyPage());
+      case notifications:
+        return MaterialPageRoute(builder: (_) => const NotificationsPage());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(
