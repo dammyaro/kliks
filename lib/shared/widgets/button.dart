@@ -10,6 +10,7 @@ class CustomButton extends StatelessWidget {
   final bool? hasBorder;
   final bool isLoading;
   final Widget? loadingIndicator;
+  final double? height;
 
   const CustomButton({
     super.key,
@@ -22,6 +23,7 @@ class CustomButton extends StatelessWidget {
     this.hasBorder,
     this.isLoading = false,
     this.loadingIndicator,
+    this.height,
   });
 
   @override
@@ -37,7 +39,7 @@ class CustomButton extends StatelessWidget {
               ? const BorderSide(color: Colors.grey, width: 1)
               : BorderSide.none,
         ),
-        minimumSize: const Size(double.infinity, 50),
+        minimumSize: Size(double.infinity, height ?? 50),
       ),
       child: ConstrainedBox(
         constraints: constraints ?? const BoxConstraints(),

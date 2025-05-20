@@ -23,6 +23,16 @@ import 'package:kliks/features/main_app/profile/edit/edit_username_page.dart';
 import 'package:kliks/features/main_app/profile/settings/settings_page.dart';
 import 'package:kliks/features/main_app/profile/settings/account_privacy.dart';
 import 'package:kliks/features/main_app/profile/settings/notifications.dart';
+import 'package:kliks/features/main_app/profile/settings/blocked_accounts.dart';
+import 'package:kliks/features/main_app/profile/settings/contact_support.dart';
+import 'package:kliks/features/main_app/profile/settings/about_kliks.dart';
+import 'package:kliks/features/main_app/profile/settings/user_information/user_information.dart';
+import 'package:kliks/features/main_app/profile/settings/user_information/update_email.dart';
+import 'package:kliks/features/main_app/profile/settings/user_information/update_dob.dart';
+import 'package:kliks/features/main_app/profile/settings/update_location.dart';
+import 'package:kliks/features/main_app/profile/settings/user_information/update_password.dart';
+
+
 
 
 
@@ -51,6 +61,14 @@ class AppRoutes {
   static const String profileSettings = '/settings';
   static const String accountPrivacy = '/account-privacy';
   static const String notifications = '/notifications';
+  static const String blockedAccounts = '/blocked-accounts';
+  static const String contactSupport = '/contact-support';
+  static const String aboutKliks = '/about-kliks';
+  static const String userInformation = '/user-information';
+  static const String updateEmail = '/update-email';
+  static const String updateDob = '/update-dob';
+  static const String updateLocation = '/update-location';
+  static const String updatePassword = '/update-password';
 
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -103,6 +121,22 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const AccountPrivacyPage());
       case notifications:
         return MaterialPageRoute(builder: (_) => const NotificationsPage());
+      case blockedAccounts:
+        return MaterialPageRoute(builder: (_) => const BlockedAccountsPage());
+      case contactSupport:
+        return MaterialPageRoute(builder: (_) => const ContactSupportPage());
+      case aboutKliks:
+        return MaterialPageRoute(builder: (_) => const AboutKliksPage());
+      case userInformation:
+        return MaterialPageRoute(builder: (_) => const UserInformationPage());
+      case updateEmail:
+        return MaterialPageRoute(builder: (_) => const UpdateEmailPage());
+      case updateDob:
+        return MaterialPageRoute(builder: (_) => const UpdateDobPage());
+      case updateLocation:
+        return MaterialPageRoute(builder: (_) => const UpdateLocationPage());
+      case updatePassword:
+        return MaterialPageRoute(builder: (_) => const UpdatePasswordPage());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

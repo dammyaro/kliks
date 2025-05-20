@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:kliks/shared/widgets/button.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -127,8 +128,10 @@ class SettingsPage extends StatelessWidget {
               SizedBox(height: 10.h),
               _settingsTile(
                 icon: Icons.person_outline,
-                label: 'User Management',
-                onTap: () {},
+                label: 'User Information',
+                onTap: () {
+                  Navigator.pushNamed(context, '/user-information');
+                },
                 context: context,
               ),
                 Divider(height: 1, color: theme.dividerColor.withOpacity(0.2)),
@@ -180,7 +183,9 @@ class SettingsPage extends StatelessWidget {
                 label: 'My Location',
                 subLabel: 'Ontario, Canada',
                 subLabelColor: theme.hintColor,
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(context, '/update-location');
+                },
                 context: context,
               ),
               Divider(height: 1, color: theme.dividerColor.withOpacity(0.2)),
@@ -199,9 +204,9 @@ class SettingsPage extends StatelessWidget {
                       final inviteCode = "KLIKS1234"; // Replace with your logic if needed
                       return Padding(
                         padding: EdgeInsets.only(
-                          left: 24.w,
-                          right: 24.w,
-                          top: 24.h,
+                          left: 30.w,
+                          right: 30.w,
+                          top: 30.h,
                           bottom: MediaQuery.of(context).viewInsets.bottom + 24.h,
                         ),
                         child: Column(
@@ -242,22 +247,22 @@ class SettingsPage extends StatelessWidget {
                                       Text(
                                       'Share invite & Earn',
                                       style: theme.textTheme.bodyMedium?.copyWith(
-                                        fontSize: 14.sp,
-                                        fontFamily: 'Metropolis-SemiBold',
+                                        fontSize: 12.sp,
+                                        fontFamily: 'Metropolis-Regular',
                                       ),
                                       ),
                                       SizedBox(height: 12.h),
                                       Row(
                                       children: [
-                                        Icon(Icons.facebook, color: Colors.blue, size: 30.sp),
-                                        SizedBox(width: 8.w),
-                                        Icon(Icons.alternate_email, color: Colors.black, size: 30.sp), // X (Twitter) substitute
-                                        SizedBox(width: 8.w),
-                                        Icon(Icons.camera_alt_outlined, color: Colors.purple, size: 30.sp), // Instagram substitute
-                                        SizedBox(width: 8.w),
-                                        Icon(Icons.chat_bubble_outline, color: Colors.green, size: 30.sp),
-                                        SizedBox(width: 8.w),
-                                        Icon(Icons.send, color: Colors.blueAccent, size: 30.sp), // Telegram substitute
+                                        Icon(FontAwesomeIcons.facebook, color: Colors.blue, size: 40.sp),
+                                        SizedBox(width: 15.w),
+                                        Icon(FontAwesomeIcons.xTwitter, color: Colors.black, size: 40.sp), // X (Twitter) substitute
+                                        SizedBox(width: 15.w),
+                                        Icon(FontAwesomeIcons.instagram, color: Colors.purple, size: 40.sp), // Instagram substitute
+                                        SizedBox(width: 15.w),
+                                        Icon(FontAwesomeIcons.whatsapp, color: Colors.green, size: 40.sp),
+                                        SizedBox(width: 15.w),
+                                        Icon(FontAwesomeIcons.telegram, color: Colors.blueAccent, size: 40.sp), // Telegram substitute
                                       ],
                                       ),
                                     ],
@@ -315,6 +320,13 @@ class SettingsPage extends StatelessWidget {
                             CustomButton(
                               text: 'Okay',
                               onPressed: () => Navigator.pop(context),
+                              backgroundColor: const Color(0xffbbd953),
+                              height: 45.h,
+                              textStyle: theme.textTheme.bodyMedium?.copyWith(
+                                fontSize: 12.sp,
+                                fontFamily: 'Metropolis-SemiBold',
+                                color: Colors.black,
+                              ),
                             ),
                           ],
                         ),
@@ -328,21 +340,27 @@ class SettingsPage extends StatelessWidget {
               _settingsTile(
                 icon: Icons.block_outlined,
                 label: 'Blocked Accounts',
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(context, '/blocked-accounts');
+                },
                 context: context,
               ),
               Divider(height: 1, color: theme.dividerColor.withOpacity(0.2)),
               _settingsTile(
                 icon: Icons.dialpad_outlined,
                 label: 'Contact support',
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(context, '/contact-support');
+                },
                 context: context,
               ),
               Divider(height: 1, color: theme.dividerColor.withOpacity(0.2)),
               _settingsTile(
                 icon: Icons.apple_outlined,
                 label: 'About Kliks',
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(context, '/about-kliks');
+                },
                 context: context,
               ),
               Divider(height: 1, color: theme.dividerColor.withOpacity(0.2)),

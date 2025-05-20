@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:random_avatar/random_avatar.dart';
 
 class MainAppBar extends StatelessWidget {
   final bool isGuest;
@@ -65,10 +66,14 @@ class MainAppBar extends StatelessWidget {
 
             if (!isGuest)
               GestureDetector(
-                child: Image.asset(
-                  'assets/icons/avatar.png',
+                child: CircleAvatar(
+                  radius: 25,
+                  backgroundColor: Colors.transparent,
+                  child: RandomAvatar(
+                  DateTime.now().toString(),
                   height: 50,
                   width: 50,
+                  ),
                 ),
                 onTap: () {
                   Navigator.pushNamed(context, '/profile');
