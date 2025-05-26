@@ -103,21 +103,21 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
               RichText(
                 text: TextSpan(
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 12.sp,
+                        fontSize: 13.sp,
                       ),
                   children: [
                     TextSpan(
                       text: 'We have sent a code to verify \n$_userEmail ',
                     ),
                     TextSpan(
-                      text: 'Wrong Email?',
+                      text: ' Wrong Email?',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontSize: 12.sp,
+                            fontSize: 13.sp,
                             color: const Color(0xffbbd953),
                           ),
-                      recognizer: TapGestureRecognizer()
+                        recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          // Handle wrong email
+                          Navigator.pushReplacementNamed(context, AppRoutes.signup);
                         },
                     ),
                   ],
@@ -152,31 +152,39 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         fontSize: 12.sp,
                       ),
-                  children: [
-                    const TextSpan(
-                      text: 'Didn\'t get an email? ',
-                    ),
+                    children: [
                     WidgetSpan(
-                      child: GestureDetector(
-                        onTap: _isResending ? null : _resendOtp,
-                        child: _isResending
-                            ? Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8.w),
-                                child: SizedBox(
-                                  width: 14,
-                                  height: 14,
-                                  child: CircularProgressIndicator(strokeWidth: 2),
-                                ),
-                              )
-                            : Text(
-                                'Resend',
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      fontSize: 12.sp,
-                                      color: const Color(0xffbbd953),
-                                    ),
-                              ),
+                      alignment: PlaceholderAlignment.middle,
+                      child: Text(
+                      'Didn\'t get an email? ',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontSize: 14.sp,
+                        ),
                       ),
                     ),
+                    WidgetSpan(
+                      alignment: PlaceholderAlignment.middle,
+                      child: GestureDetector(
+                      onTap: _isResending ? null : _resendOtp,
+                      child: _isResending
+                        ? Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8.w),
+                          child: SizedBox(
+                            width: 14,
+                            height: 14,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                          )
+                        : Text(
+                          'Resend',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              fontSize: 14.sp,
+                              color: const Color(0xffbbd953),
+                            ),
+                          ),
+                      ),
+                    ),
+                    
                   ],
                 ),
               ),

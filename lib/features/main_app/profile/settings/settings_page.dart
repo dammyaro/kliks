@@ -3,6 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:kliks/shared/widgets/button.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:kliks/shared/widgets/handle_bar.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:kliks/shared/widgets/custom_navbar.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -89,27 +92,28 @@ class SettingsPage extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 16.h),
                 child: Row(
                   children: [
-                    IconButton(
-                      icon: Icon(Icons.arrow_back, size: 24.sp, color: theme.iconTheme.color),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                    SizedBox(width: 8.w),
-                    Expanded(
-                      // child: Center(
-                        child: Text(
-                          'Settings & Privacy',
-                          style: theme.textTheme.bodyLarge?.copyWith(
-                                fontSize: 16.sp,
-                                fontFamily: 'Metropolis-SemiBold',
-                              ),
-                        ),
-                      ),
+                    // IconButton(
+                    //   icon: Icon(Icons.arrow_back, size: 24.sp, color: theme.iconTheme.color),
+                    //   onPressed: () => Navigator.pop(context),
                     // ),
-                    SizedBox(width: 48.w), // To balance the row
+                    // SizedBox(width: 8.w),
+                    // Expanded(
+                    //   // child: Center(
+                    //     child: Text(
+                    //       'Settings & Privacy',
+                    //       style: theme.textTheme.bodyLarge?.copyWith(
+                    //             fontSize: 16.sp,
+                    //             fontFamily: 'Metropolis-SemiBold',
+                    //           ),
+                    //     ),
+                    //   ),
+                    // ),
+                    CustomNavBar(title: "Settings & Privacy"),
+                    // SizedBox(width: 48.w), // To balance the row
                   ],
                 ),
               ),
-              SizedBox(height: 20.h),
+              SizedBox(height: 0.h),
               // Profile Management Section
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -140,7 +144,313 @@ class SettingsPage extends StatelessWidget {
                 label: 'Verify your account',
                 subLabel: 'Pending approval',
                 subLabelColor: Colors.green,
-                onTap: () {},
+                onTap: () {
+                    showModalBottomSheet(
+                    context: context,
+                    // backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+                    ),
+                    isScrollControlled: true,
+                    builder: (context) {
+                      final theme = Theme.of(context);
+                      return Container(
+                      height: MediaQuery.of(context).size.height * 0.9,
+                      width: double.infinity,
+                      padding: EdgeInsets.only(
+                        left: 15.w,
+                        right: 30.w,
+                        top: 0,
+                        bottom: MediaQuery.of(context).viewInsets.bottom + 24.h,
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                        SizedBox(height: 24.h),
+                        const HandleBar(),
+                        SizedBox(height: 15.h),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                          'Identity Verification',
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            fontSize: 20.sp,
+                            fontFamily: 'Metropolis-ExtraBold',
+                          ),
+                          ),
+                        ),
+                        SizedBox(height: 8.h),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                          'Provide the following information',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            fontSize: 14.sp,
+                            color: theme.hintColor,
+                          ),
+                          textAlign: TextAlign.left,
+                          ),
+                        ),
+                        SizedBox(height: 24.h),
+                        Column(
+                          children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.pop(context); // Close the first sheet if you want only one open at a time
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+                                ),
+                                builder: (context) {
+                                  final theme = Theme.of(context);
+                                  String? selectedIdType;
+                                  String? selectedFilePath;
+                                  final List<String> idTypes = [
+                                    'Passport',
+                                    'Drivers License',
+                                    'National ID',
+                                    'School ID',
+                                  ];
+                                  return StatefulBuilder(
+                                    builder: (context, setModalState) {
+                                      return Container(
+                                        height: MediaQuery.of(context).size.height * 0.9,
+                                        width: double.infinity,
+                                        padding: EdgeInsets.only(
+                                          left: 15.w,
+                                          right: 10.w,
+                                          top: 0,
+                                          bottom: MediaQuery.of(context).viewInsets.bottom + 24.h,
+                                        ),
+                                        child: Column(
+                                          // mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            SizedBox(height: 24.h),
+                                            const HandleBar(),
+                                            SizedBox(height: 10.h),
+                                            Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                'Upload ID',
+                                                style: theme.textTheme.bodyLarge?.copyWith(
+                                                  fontSize: 18.sp,
+                                                  fontFamily: 'Metropolis-SemiBold',
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(height: 4.h),
+                                            Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                'Select an identification type and upload\nan image',
+                                                style: theme.textTheme.bodySmall?.copyWith(
+                                                  fontSize: 13.sp,
+                                                  color: theme.hintColor,
+                                                ),
+                                                // textAlign: TextAlign.left,
+                                              ),
+                                            ),
+                                            SizedBox(height: 10.h),
+                                            // Text(
+                                            //   'Select an identification type and upload\nan image',
+                                            //   style: theme.textTheme.bodySmall?.copyWith(
+                                            //     fontSize: 13.sp,
+                                            //     color: theme.hintColor,
+                                            //   ),
+                                            //   // textAlign: TextAlign.left,
+                                            // ),
+                                            SizedBox(height: 24.h),
+                                            // ID Type Selection Bar
+                                            InkWell(
+                                              onTap: () async {
+                                                final result = await showModalBottomSheet<String>(
+                                                  context: context,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+                                                  ),
+                                                  builder: (context) {
+                                                    return Column(
+                                                      mainAxisSize: MainAxisSize.min,
+                                                      children: idTypes.map((type) {
+                                                        return ListTile(
+                                                          title: Text(type),
+                                                          onTap: () => Navigator.pop(context, type),
+                                                        );
+                                                      }).toList(),
+                                                    );
+                                                  },
+                                                );
+                                                if (result != null) {
+                                                  setModalState(() {
+                                                    selectedIdType = result;
+                                                  });
+                                                }
+                                              },
+                                              borderRadius: BorderRadius.circular(12.r),
+                                              child: Container(
+                                                width: double.infinity,
+                                                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 18.h),
+                                                decoration: BoxDecoration(
+                                                  color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                                                  borderRadius: BorderRadius.circular(12.r),
+                                                  border: Border.all(color: theme.dividerColor.withOpacity(0.5)),
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Text(
+                                                        selectedIdType ?? 'Select Identification type',
+                                                        style: theme.textTheme.bodyMedium?.copyWith(
+                                                          fontSize: 15.sp,
+                                                          fontFamily: 'Metropolis-SemiBold',
+                                                          color: selectedIdType == null ? theme.hintColor : theme.textTheme.bodyMedium?.color,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Icon(Icons.arrow_drop_down_outlined, color: theme.iconTheme.color?.withOpacity(0.7)),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(height: 18.h),
+                                            // File Upload Bar
+                                            InkWell(
+                                              onTap: () async {
+                                                FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.image);
+                                                if (result != null && result.files.single.path != null) {
+                                                  setModalState(() {
+                                                    selectedFilePath = result.files.single.path;
+                                                  });
+                                                }
+                                              },
+                                              borderRadius: BorderRadius.circular(12.r),
+                                              child: Container(
+                                                width: double.infinity,
+                                                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 18.h),
+                                                decoration: BoxDecoration(
+                                                  color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                                                  borderRadius: BorderRadius.circular(12.r),
+                                                  border: Border.all(color: theme.dividerColor.withOpacity(0.5)),
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    Icon(Icons.upload_file_outlined, color: theme.iconTheme.color?.withOpacity(0.5), size: 22.sp),
+                                                    SizedBox(width: 16.w),
+                                                    Expanded(
+                                                      child: Text(
+                                                        selectedFilePath ?? 'Upload file',
+                                                        style: theme.textTheme.bodyMedium?.copyWith(
+                                                          fontSize: 15.sp,
+                                                          fontFamily: 'Metropolis-SemiBold',
+                                                          color: selectedFilePath == null ? theme.hintColor : theme.textTheme.bodyMedium?.color,
+                                                        ),
+                                                        overflow: TextOverflow.ellipsis,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            const Spacer(),
+                                            CustomButton(
+                                              text: 'Next',
+                                              onPressed: (selectedIdType != null && selectedFilePath != null)
+                                                  ? () {
+                                                      // Handle next logic
+                                                    }
+                                                  : null,
+                                              backgroundColor: (selectedIdType != null && selectedFilePath != null)
+                                                  ? const Color(0xffbbd953)
+                                                  : theme.disabledColor.withOpacity(0.2),
+                                              textStyle: theme.textTheme.bodyMedium?.copyWith(
+                                                fontSize: 14.sp,
+                                                fontFamily: 'Metropolis-SemiBold',
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            SizedBox(height: 24.h),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              );
+                            },
+                            borderRadius: BorderRadius.circular(12.r),
+                            child: Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 22.h),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                            child: Row(
+                              children: [
+                              Icon(Icons.badge_outlined, color: theme.iconTheme.color, size: 22.sp),
+                              SizedBox(width: 16.w),
+                              Text(
+                                'Identity verification',
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                fontSize: 12.sp,
+                                fontFamily: 'Metropolis-SemiBold',
+                                ),
+                              ),
+                              ],
+                            ),
+                            ),
+                          ),
+                          SizedBox(height: 14.h),
+                          InkWell(
+                            borderRadius: BorderRadius.circular(12.r),
+                            child: Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 22.h),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                            child: Row(
+                              children: [
+                              Icon(Icons.camera_alt_outlined, color: theme.iconTheme.color, size: 22.sp),
+                              SizedBox(width: 16.w),
+                              Text(
+                                'Selfie verification',
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                fontSize: 12.sp,
+                                fontFamily: 'Metropolis-SemiBold',
+                                ),
+                              ),
+                              ],
+                            ),
+                            ),
+                            onTap: () {
+                              Navigator.pushNamed(context, '/selfie-verification');
+                            },
+                          ),
+                          ],
+                        ),
+                        SizedBox(height: 24.h),
+                        CustomButton(
+                          text: 'Continue',
+                          onPressed: () {
+                            // Handle continue logic
+                          },
+                          backgroundColor: const Color(0xffbbd953),
+                          textStyle: theme.textTheme.bodyMedium?.copyWith(
+                            fontSize: 12.sp,
+                            fontFamily: 'Metropolis-SemiBold',
+                            color: Colors.black,
+                          ),
+                        ),
+                        ],
+                      ),
+                      );
+                    },
+                    );
+                },
                 context: context,
               ),
               Divider(height: 1, color: theme.dividerColor.withOpacity(0.2)),

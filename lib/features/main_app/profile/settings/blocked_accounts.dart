@@ -34,12 +34,12 @@ class _BlockedAccountsPageState extends State<BlockedAccountsPage> {
 
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomNavBar(title: 'Blocked Accounts'),
-            SizedBox(height: 10.h),
+            SizedBox(height: 5.h),
             TextFormWidget(
               name: 'search',
               controller: _searchController,
@@ -96,6 +96,7 @@ class _BlockedAccountsPageState extends State<BlockedAccountsPage> {
                           width: 90.w,
                           child: CustomButton(
                             text: 'Unblock',
+                            borderRadius: 10,
                             onPressed: () {
                               // Handle unblock logic
                             },
@@ -113,7 +114,7 @@ class _BlockedAccountsPageState extends State<BlockedAccountsPage> {
                     ),
                   ),
                 )
-                .toList(),
+                ,
           ],
         ),
       ),

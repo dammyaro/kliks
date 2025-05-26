@@ -31,6 +31,9 @@ import 'package:kliks/features/main_app/profile/settings/user_information/update
 import 'package:kliks/features/main_app/profile/settings/user_information/update_dob.dart';
 import 'package:kliks/features/main_app/profile/settings/update_location.dart';
 import 'package:kliks/features/main_app/profile/settings/user_information/update_password.dart';
+import 'package:kliks/features/main_app/profile/requests/follow_requests.dart';
+import 'package:kliks/features/main_app/profile/people.dart';
+import 'package:kliks/features/main_app/profile/settings/verification/selfie_verification.dart';
 
 
 
@@ -69,6 +72,9 @@ class AppRoutes {
   static const String updateDob = '/update-dob';
   static const String updateLocation = '/update-location';
   static const String updatePassword = '/update-password';
+  static const String followRequests = '/follow-requests';
+  static const String people = '/people';
+  static const String selfieVerification = '/selfie-verification';
 
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -137,6 +143,12 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const UpdateLocationPage());
       case updatePassword:
         return MaterialPageRoute(builder: (_) => const UpdatePasswordPage());
+      case followRequests:
+        return MaterialPageRoute(builder: (_) => const FollowRequestsPage());
+      case people:
+        return MaterialPageRoute(builder: (_) => const PeoplePage());
+      case selfieVerification:
+        return MaterialPageRoute(builder: (_) => const SelfieVerificationPage());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

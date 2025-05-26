@@ -1,44 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'dart:ui';
 import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/auth_provider.dart'; // Update this import path to the actual location of AuthProvider
+import 'package:share_plus/share_plus.dart';
+import 'package:kliks/shared/widgets/handle_bar.dart';
+import 'package:kliks/shared/widgets/custom_navbar.dart';
+import 'package:random_avatar/random_avatar.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final profile = Provider.of<AuthProvider>(context).profile;
+    final fullName = profile?['fullname'] ?? 'Kliks User';
+    final username = profile?['username'] ?? '@kliksuser';
+    final bio = profile?['about'] ?? '';
+    final kycStatusSumsub = profile?['kycStatusSumub'];
+    final userId = profile?['id'] ?? '';
+    final interests = profile?['categories'];
+    // final location = profile?['location'] ?? 'Ontario, Canada';
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 60.h),
+            SizedBox(height: 10.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
               child: Row(
                 children: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.arrow_back,
-                      size: 24.sp,
-                      color: Theme.of(context).iconTheme.color,
-                    ),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  Expanded(
-                    child: Center(
-                      child: Text(
-                        'My Profile',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontSize: 18.sp,
-                          fontFamily: 'Metropolis-SemiBold',
-                          letterSpacing: 0,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 48.w), // Balance the row
+                  CustomNavBar(title: 'My Profile'),
                 ],
               ),
             ),
@@ -50,13 +42,47 @@ class ProfilePage extends StatelessWidget {
                 children: [
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(context, '/edit-profile');
+                      Navigator.pushNamed(context, '/edit-profile');
                       },
-                      child: Image.asset(
-                        'assets/icons/avatar-large.png',
-                        width: 100.r,
-                        height: 100.r,
-                        // fit: BoxFit.cover,
+                      child: SizedBox(
+                      width: 100.r,
+                      height: 100.r,
+                        child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          ClipRRect(
+                          borderRadius: BorderRadius.circular(50.r),
+                          child: RandomAvatar(
+                              userId,
+                              height: 100.r,
+                              width: 100.r,
+                            ),
+                          ),
+                          Positioned(
+                          bottom: -4.r,
+                          right: -4.r,
+                          child: Container(
+                            decoration: BoxDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                              color: Colors.black.withOpacity(0.08),
+                              blurRadius: 4,
+                              offset: Offset(0, 2),
+                              ),
+                            ],
+                            ),
+                            padding: EdgeInsets.all(6.r),
+                            child: Icon(
+                            Icons.edit_outlined,
+                            size: 20.sp,
+                            color: Colors.green,
+                            ),
+                          ),
+                          ),
+                        ],
+                        ),
                       ),
                     ),
                   SizedBox(width: 16.w),
@@ -65,28 +91,58 @@ class ProfilePage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
-                          children: [
+                            children: [
                             Text(
-                              'Olakunle',
+                              fullName.length > 12
+                                ? '${fullName.substring(0, 10)}...'
+                                : fullName,
                               style: Theme.of(
-                                context,
+                              context,
                               ).textTheme.bodyLarge?.copyWith(
-                                fontSize: 18.sp,
-                                fontFamily: 'Metropolis-SemiBold',
-                                letterSpacing: 0,
+                              fontSize: 18.sp,
+                              fontFamily: 'Metropolis-SemiBold',
+                              letterSpacing: 0,
                               ),
                             ),
                             SizedBox(width: 4.w),
-                            Icon(
+                            if (kycStatusSumsub == null)
+                              TextButton(
+                              onPressed: () {
+                                // Navigate to verification page or handle verification
+                                Navigator.pushNamed(context, '/settings');
+                              },
+                              style: TextButton.styleFrom(
+                                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                                minimumSize: Size(0, 0),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                side: BorderSide(
+                                color: Colors.green,
+                                width: 1.2,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.r),
+                                ),
+                              ),
+                              child: Text(
+                                'Verify',
+                                style: TextStyle(
+                                fontSize: 12.sp,
+                                fontFamily: 'Metropolis-SemiBold',
+                                color: Colors.green,
+                                ),
+                              ),
+                              )
+                            else
+                              Icon(
                               Icons.verified,
                               size: 16.sp,
                               color: Colors.green,
-                            ),
+                              ),
                           ],
                         ),
                         SizedBox(height: 4.h),
                         Text(
-                          '@kunlearoo',
+                          '@$username',
                           style: Theme.of(
                             context,
                           ).textTheme.bodySmall?.copyWith(
@@ -125,8 +181,8 @@ class ProfilePage extends StatelessWidget {
                         context: context,
                         isScrollControlled:
                             true, // <-- Make the bottom sheet full width
-                        backgroundColor:
-                            Theme.of(context).scaffoldBackgroundColor,
+                        // backgroundColor:
+                        //     Theme.of(context).scaffoldBackgroundColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.vertical(
                             top: Radius.circular(20.r),
@@ -138,22 +194,26 @@ class ProfilePage extends StatelessWidget {
                               left:
                                   0, // Remove horizontal padding for full width
                               right: 0,
-                              top: 30.h,
-                              bottom: MediaQuery.of(context).viewInsets.bottom,
+                              top: 20.h,
+                              // bottom: MediaQuery.of(context).viewInsets.bottom,
+                              bottom: 20.h
                             ),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                BackdropFilter(
-                                  filter: ImageFilter.blur(
-                                      sigmaX: 10.0, sigmaY: 10.0),
-                                  child: Container(
-                                    color: Colors.black.withOpacity(0.1),
-                                  ),
-                                ),
+                                // BackdropFilter(
+                                //   filter: ImageFilter.blur(
+                                //       sigmaX: 10.0, sigmaY: 10.0),
+                                //   child: Container(
+                                //     color: Colors.black.withOpacity(0.1),
+                                //   ),
+                                // ),
+                                const HandleBar(),
+                                // SizedBox(height: 16.h),
                                 InkWell(
-                                  onTap: () {
-                                    Navigator.pop(context);
+                                    onTap: () {
+                                    // Navigator.pop(context);
+                                    Navigator.pushNamed(context, '/follow-requests');
                                   },
                                   borderRadius: BorderRadius.circular(12.r),
                                   child: Padding(
@@ -190,7 +250,7 @@ class ProfilePage extends StatelessWidget {
                                                 TextSpan(
                                                   text: 'Follow requests ',
                                                   style: TextStyle(
-                                                    fontSize: 12.sp,
+                                                    fontSize: 14.sp,
                                                   ),
                                                 ),
                                                 TextSpan(
@@ -316,7 +376,8 @@ class ProfilePage extends StatelessWidget {
                                                 final navigator = Navigator.of(context);
                                                 final provider = Provider.of<AuthProvider>(context, listen: false);
                                                 await provider.logout();
-                                                navigator.popUntil((route) => route.isFirst);
+                                                // navigator.popUntil((route) => route.isFirst);
+                                                navigator.pushReplacementNamed('/');
                                                 },
                                                 style: TextButton.styleFrom(
                                                 backgroundColor: Colors.transparent,
@@ -352,8 +413,10 @@ class ProfilePage extends StatelessWidget {
                                   context,
                                   icon: Icons.share_outlined,
                                   text: 'Share profile',
-                                  onTap: () {
+                                  onTap: () async {
                                     Navigator.pop(context);
+                                    // Replace with your actual profile link or info
+                                    await Share.share('Check out my Kliks profile: https://kliks.app/u/kunlearoo');
                                   },
                                 ),
                               ],
@@ -373,19 +436,24 @@ class ProfilePage extends StatelessWidget {
               child: Column(
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _buildStatItem(context, 'Attendance', '0%'),
-                      _buildStatItem(context, 'Total events', '0'),
-                    ],
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildStatItem(context, 'Attendance', '0%'),
+                    _buildStatItem(context, 'Total events', '0'),
+                  ],
                   ),
                   Divider(height: 32.h, thickness: 1),
-                  Row(
+                  GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/people');
+                  },
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildStatItem(context, 'Followers', '0'),
-                      _buildStatItem(context, 'Following', '0'),
+                    _buildStatItem(context, 'Followers', '0'),
+                    _buildStatItem(context, 'Following', '0'),
                     ],
+                  ),
                   ),
                 ],
               ),
@@ -394,7 +462,7 @@ class ProfilePage extends StatelessWidget {
             _buildSection(
               context,
               'Bio',
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.',
+               bio,
             ),
             Divider(height: 32.h, thickness: 1),
             _buildInterestsSection(context),
@@ -417,7 +485,7 @@ class ProfilePage extends StatelessWidget {
             child: Text(
               value,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                fontSize: 20.sp,
+                fontSize: 18.sp,
                 fontFamily: 'Metropolis-SemiBold',
               ),
             ),
@@ -427,7 +495,7 @@ class ProfilePage extends StatelessWidget {
         Text(
           label,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            fontSize: 16.sp,
+            fontSize: 14.sp,
             fontFamily: 'Metropolis-Regular',
             letterSpacing: -1,
             color: Theme.of(
@@ -454,11 +522,15 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
           SizedBox(height: 8.h),
-          Text(
-            content,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              fontSize: 12.sp,
-              fontFamily: 'Metropolis-Regular',
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              content,
+              textAlign: TextAlign.left,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                fontSize: 12.sp,
+                fontFamily: 'Metropolis-Regular',
+              ),
             ),
           ),
         ],
@@ -472,6 +544,169 @@ class ProfilePage extends StatelessWidget {
       'Food & Drinks',
       'Games & Hobbies',
     ];
+
+    final allInterests = [
+      'Social & Networking',
+      'Food & Drinks',
+      'Games & Hobbies',
+      'Tech & Startups',
+      'Music & Concerts',
+      'Sports & Fitness',
+      'Arts & Culture',
+      'Business & Finance',
+      'Travel & Adventure',
+      'Health & Wellness',
+      'Education & Learning',
+      'Fashion & Beauty',
+      'Photography',
+      'Movies & Entertainment',
+      'Volunteering',
+      'Other',
+    ];
+
+    void showInterestSheet() {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+        ),
+        builder: (context) {
+          // Use StatefulBuilder to manage selection state inside the bottom sheet
+          List<String> tempSelected = List<String>.from(interests);
+          return StatefulBuilder(
+            builder: (context, setModalState) {
+              return Container(
+                height: MediaQuery.of(context).size.height * 0.9,
+                width: double.infinity,
+                padding: EdgeInsets.only(
+                  left: 24.w,
+                  right: 24.w,
+                  top: 0,
+                  bottom: MediaQuery.of(context).viewInsets.bottom + 24.h,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const HandleBar(),
+                    SizedBox(height: 16.h),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                        'Select your interests',
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontSize: 20.sp,
+                          fontFamily: 'Metropolis-SemiBold',
+                        ),
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                        'This will let us know what kind of events\nto show you',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontSize: 13.sp,
+                          fontFamily: 'Metropolis-Regular',
+                          color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                        ),
+                        ),
+                      ],
+                      ),
+                    ),
+                    SizedBox(height: 18.h),
+                    Expanded(
+                      child: GridView.builder(
+                        shrinkWrap: true,
+                        itemCount: allInterests.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 14.h,
+                          crossAxisSpacing: 14.w,
+                          childAspectRatio: 3.5,
+                        ),
+                        itemBuilder: (context, index) {
+                          final interest = allInterests[index];
+                          final isSelected = tempSelected.contains(interest);
+                          return GestureDetector(
+                            onTap: () {
+                              setModalState(() {
+                                if (isSelected) {
+                                  tempSelected.remove(interest);
+                                } else {
+                                  tempSelected.add(interest);
+                                }
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? const Color(0xffbbd953)
+                                    : Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(10.r),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? const Color(0xffbbd953)
+                                      : Theme.of(context).dividerColor.withOpacity(0.2),
+                                ),
+                              ),
+                              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      interest,
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        fontSize: 13.sp,
+                                        fontFamily: 'Metropolis-SemiBold',
+                                        color: isSelected ? Colors.black : Theme.of(context).textTheme.bodyMedium?.color,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  if (isSelected)
+                                    Icon(Icons.check_circle, color: Colors.black, size: 18.sp),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 24.h),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xffbbd953),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                        ),
+                        onPressed: () {
+                          // Update the selected interests in the parent widget if needed
+                          Navigator.pop(context);
+                          // You may want to use a callback or state management to persist the selection
+                        },
+                        child: Text(
+                          'Save',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontSize: 15.sp,
+                            fontFamily: 'Metropolis-SemiBold',
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      );
+    }
 
     return Padding(
       padding: EdgeInsets.only(top: 20.h, bottom: 20.h),
@@ -499,9 +734,8 @@ class ProfilePage extends StatelessWidget {
             child: Wrap(
               spacing: 8.w,
               runSpacing: 8.h,
-              children:
-                  interests
-                      .map(
+              children: [
+                ...interests.map(
                   (interest) => Chip(
                     label: Text(
                       interest,
@@ -511,11 +745,20 @@ class ProfilePage extends StatelessWidget {
                         letterSpacing: 0,
                       ),
                     ),
-                    backgroundColor:
-                        Theme.of(context).scaffoldBackgroundColor,
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   ),
-                      )
-                      .toList(),
+                ),
+                GestureDetector(
+                  onTap: showInterestSheet,
+                  child: Chip(
+                    label: Icon(Icons.add_outlined, size: 18.sp, color: Theme.of(context).iconTheme.color),
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.r),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -634,7 +877,7 @@ class ProfilePage extends StatelessWidget {
               child: Text(
                 text,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontSize: 12.sp,
+                  fontSize: 14.sp,
                   color:
                       textColor ?? Theme.of(context).textTheme.bodyLarge?.color,
                   fontFamily: 'Metropolis-SemiBold',

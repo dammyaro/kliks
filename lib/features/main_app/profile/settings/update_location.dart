@@ -13,7 +13,7 @@ class UpdateLocationPage extends StatefulWidget {
 
 class _UpdateLocationPageState extends State<UpdateLocationPage> {
   final TextEditingController _searchController = TextEditingController();
-  String _location = 'Ontario, Canada';
+  final String _location = 'Ontario, Canada';
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,7 @@ class _UpdateLocationPageState extends State<UpdateLocationPage> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
               decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceVariant.withOpacity(0.5),
+                color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.5),
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Row(

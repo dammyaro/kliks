@@ -3,18 +3,36 @@ import 'package:kliks/core/services/api_service.dart';
 import 'package:kliks/core/di/service_locator.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:io';
+import 'package:geolocator/geolocator.dart';
 
 class AuthProvider with ChangeNotifier {
   final ApiService _apiService;
   bool _isAuthenticated = false;
-  bool _isVerified = false;
+  // bool _isVerified = false;
   String? currentEmail;
+  Map<String, dynamic>? _profile;
 
   AuthProvider({ApiService? apiService})
       : _apiService = apiService ?? locator<ApiService>();
 
   bool get isAuthenticated => _isAuthenticated;
-  bool get isVerified => _isVerified;
+  // bool get isVerified => _isVerified;
+  Map<String, dynamic>? get profile => _profile;
+
+  bool _isProfileSetupComplete = false;
+  bool get isProfileSetupComplete => _isProfileSetupComplete;
+
+  Future<String?> get token async => await _apiService.getToken();
+  // Future<String?> get userId async => await _apiService.getUserId();
+  
+  Future<String?> getUserId() async {
+    try {
+        return await _apiService.getUserId();
+    } catch (e) {
+        print('getUserId error: $e');
+      return null;
+    }
+  }
 
   // Get device info as a string
   Future<String> getDeviceInfoString() async {
@@ -46,15 +64,15 @@ class AuthProvider with ChangeNotifier {
   Future<void> checkAuthStatus() async {
     final token = await _apiService.getToken();
     _isAuthenticated = token != null;
-    _isVerified = await _apiService.getIsVerified();
+    // _isVerified = await _apiService.getIsVerified();
     notifyListeners();
   }
 
   Future<void> logout() async {
     await _apiService.clearToken();
-    await _apiService.clearIsVerified();
+    // await _apiService.clearIsVerified();
     _isAuthenticated = false;
-    _isVerified = false;
+    // _isVerified = false;
     notifyListeners();
   }
 
@@ -79,12 +97,8 @@ class AuthProvider with ChangeNotifier {
 
       print('Signup response: ${response.data}');
       final user = response.data['user'];
-      if (user != null && user['id'] != null) {
-        await _apiService.saveToken(user['id']);
-        final isVerified = user['isVerified'] == true;
-        await _apiService.saveIsVerified(isVerified);
-        _isAuthenticated = true;
-        _isVerified = isVerified;
+      // No token processing here, only check if user exists
+      if (user != null) {
         setCurrentEmail(email);
         await updateDeviceInfo(); // Update device info after successful register
         notifyListeners();
@@ -109,14 +123,18 @@ class AuthProvider with ChangeNotifier {
           'password': password,
         },
       );
+      print('Login response: ${response.data}');
       final user = response.data['user'];
-      if (user != null && user['id'] != null) {
-        await _apiService.saveToken(user['id']);
-        final isVerified = user['isVerified'] == true;
-        await _apiService.saveIsVerified(isVerified);
+      final accessToken = response.data['token']?['access_token'];
+      if (user != null && accessToken != null) {
+        await _apiService.saveToken(accessToken);
+        final isVerified = user['isVerified'] == true || response.data['isVerified'] == true;
+        // await _apiService.saveIsVerified(isVerified);
+        await _apiService.saveUserId(user['id'].toString());
         _isAuthenticated = true;
-        _isVerified = isVerified;
+        // _isVerified = isVerified;
         setCurrentEmail(email);
+        loadProfile(); // Load profile after successful login
         await updateDeviceInfo(); // Update device info after successful login
         notifyListeners();
         return true;
@@ -134,9 +152,10 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> logoutUser() async {
     await _apiService.clearToken();
-    await _apiService.clearIsVerified();
+    // await _apiService.clearIsVerified();
+    await _apiService.clearUserId();
     _isAuthenticated = false;
-    _isVerified = false;
+    // _isVerified = false;
     currentEmail = null;
     notifyListeners();
   }
@@ -146,6 +165,7 @@ class AuthProvider with ChangeNotifier {
     required String otp,
   }) async {
     try {
+      print('Verifying email: $email, OTP: $otp');
       final response = await _apiService.post(
         '/auth/verifyEmail',
         data: {
@@ -153,9 +173,16 @@ class AuthProvider with ChangeNotifier {
           'otp': otp,
         },
       );
-      if (response.data['success'] == true || response.data['verified'] == true) {
-        await _apiService.saveIsVerified(true);
-        _isVerified = true;
+      print('Verification response: $response');
+      final accessToken = response.data['token']?['access_token'];
+      final userId = response.data['user']['id'];
+      print('Access token: $accessToken');
+      if ((response.data['status'] == "success") && accessToken != null) {
+        await _apiService.saveToken(accessToken);
+        await _apiService.saveUserId(userId);
+        loadProfile(); // Load profile after successful verification
+        // await _apiService.saveIsVerified(true);
+        // _isVerified = true;
         notifyListeners();
         return true;
       }
@@ -179,7 +206,122 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> updateProfile({
+    required String field,
+    required dynamic value,
+  }) async {
+    try {
+      final response = await _apiService.postAuth(
+        '/auth/updateProfile',
+        data: {
+          field: value,
+        },
+      );
+      print('Update profile response: ${response.data}');
+      await loadProfile(); // Reload profile after update
+      await checkProfileSetupComplete();
+      notifyListeners();
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print('Update profile error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> updateCategories({
+    required List<String> categories,
+  }) async {
+    try {
+      // Fetch current categories from profile if available
+      List<String> existingCategories = [];
+      if (_profile != null && _profile!['categories'] is List) {
+        existingCategories = List<String>.from(_profile!['categories']);
+      } else {
+        // Optionally, fetch profile if not loaded
+        if (_profile == null) {
+          await loadProfile();
+        }
+        if (_profile != null && _profile!['categories'] is List) {
+          existingCategories = List<String>.from(_profile!['categories']);
+        }
+      }
+
+      print('Existing categories: $existingCategories');
+      print('Updating categories to: $categories');
+
+      final response = await _apiService.postAuth(
+        '/auth/updateCategories',
+        data: {
+          'categories': categories,
+        },
+      );
+      print('Update category response: ${response.data}');
+      await loadProfile();
+      await checkProfileSetupComplete();
+      notifyListeners();
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print('Update category error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> fetchIsVerified() async {
+    try {
+      final response = await _apiService.get('/auth/getLoggedInUser');
+      // Assumes the backend returns { ..., isVerified: true/false, ... }
+      final isVerified = response.data['isVerified'] == true;
+      return isVerified;
+    } catch (e) {
+      print('fetchIsVerified error: $e');
+      return false;
+    }
+  }
+
+  Future<Map<String, dynamic>?> retrieveProfile() async {
+    try {
+      final response = await _apiService.get('/auth/getLoggedInUser');
+      return response.data as Map<String, dynamic>?;
+    } catch (e) {
+      print('retrieveProfile error: $e');
+      return null;
+    }
+  }
+
+  Future<void> loadProfile() async {
+    _profile = await retrieveProfile();
+    print('Loaded profile: $_profile');
+    await checkProfileSetupComplete();
+    notifyListeners();
+  }
+
   void setCurrentEmail(String email) {
     currentEmail = email;
+  }
+
+  /// Checks if location is allowed and profile categories are set (not null or empty).
+  Future<void> checkProfileSetupComplete() async {
+    bool locationAllowed = false;
+    try {
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.always || permission == LocationPermission.whileInUse) {
+        locationAllowed = true;
+      }
+    } catch (e) {
+      print('Location permission check error: $e');
+      locationAllowed = false;
+    }
+
+    final categories = _profile?['categories'];
+    final hasCategories = categories is List && categories.isNotEmpty;
+
+    _isProfileSetupComplete = locationAllowed && hasCategories;
+    notifyListeners();
   }
 }

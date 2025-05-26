@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'package:kliks/core/providers/auth_provider.dart';
 
-class EditGenderPage extends StatelessWidget {
+class EditGenderPage extends StatefulWidget {
   const EditGenderPage({super.key});
 
-  static final ValueNotifier<String> _selectedGender = ValueNotifier<String>('');
+  @override
+  State<EditGenderPage> createState() => _EditGenderPageState();
+}
+
+class _EditGenderPageState extends State<EditGenderPage> {
+  String _selectedGender = '';
+  bool _isLoading = false;
 
   Widget _buildDoneButton({required BuildContext context, required VoidCallback onPressed}) {
     return ElevatedButton(
-      onPressed: onPressed,
+      onPressed: _isLoading ? null : onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xffbbd953),
         shape: RoundedRectangleBorder(
@@ -16,21 +24,50 @@ class EditGenderPage extends StatelessWidget {
         ),
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
       ),
-      child: Text(
-        'Update',
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.black,
-              fontSize: 10.sp,
-              fontFamily: 'Metropolis-SemiBold',
-              letterSpacing: 0,
+      child: _isLoading
+          ? SizedBox(
+              width: 18.sp,
+              height: 18.sp,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+              ),
+            )
+          : Text(
+              'Update',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.black,
+                    fontSize: 10.sp,
+                    fontFamily: 'Metropolis-SemiBold',
+                    letterSpacing: 0,
+                  ),
             ),
-      ),
     );
+  }
+
+  Future<void> _handleUpdate(BuildContext context) async {
+    if (_selectedGender.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a gender')),
+      );
+      return;
+    }
+    setState(() => _isLoading = true);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final success = await authProvider.updateProfile(field: 'gender', value: _selectedGender);
+    setState(() => _isLoading = false);
+    if (success) {
+      Navigator.pop(context);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to update gender')),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _nameController = TextEditingController();
+    final genders = ['Male', 'Female', 'Non binary'];
 
     return Scaffold(
       body: SafeArea(
@@ -60,10 +97,7 @@ class EditGenderPage extends StatelessWidget {
                   ),
                   _buildDoneButton(
                     context: context,
-                    onPressed: () {
-                      // Handle done action
-                      Navigator.pop(context);
-                    },
+                    onPressed: () => _handleUpdate(context),
                   ),
                 ],
               ),
@@ -87,7 +121,6 @@ class EditGenderPage extends StatelessWidget {
               SizedBox(height: 8.h),
               GestureDetector(
                 onTap: () async {
-                  final genders = ['Male', 'Female', 'Non binary'];
                   final selectedGender = await showModalBottomSheet<String>(
                     context: context,
                     shape: RoundedRectangleBorder(
@@ -103,9 +136,9 @@ class EditGenderPage extends StatelessWidget {
                             Text(
                               'Choose your gender',
                               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                fontSize: 16.sp,
-                                fontFamily: 'Metropolis-SemiBold',
-                                ),
+                                    fontSize: 16.sp,
+                                    fontFamily: 'Metropolis-SemiBold',
+                                  ),
                             ),
                             SizedBox(height: 20.h),
                             ...genders.map((gender) {
@@ -113,41 +146,38 @@ class EditGenderPage extends StatelessWidget {
                                 title: Text(gender),
                                 onTap: () => Navigator.pop(context, gender),
                               );
-                            }).toList(),
+                            }),
                           ],
                         ),
                       );
                     },
                   );
                   if (selectedGender != null) {
-                    _selectedGender.value = selectedGender;
+                    setState(() {
+                      _selectedGender = selectedGender;
+                    });
                   }
                 },
-                child: ValueListenableBuilder<String>(
-                  valueListenable: _selectedGender,
-                  builder: (context, value, _) {
-                    return Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(8.r),
-                        color: Colors.transparent, // Transparent background
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey.shade300),
+                    borderRadius: BorderRadius.circular(8.r),
+                    color: Colors.transparent,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        _selectedGender.isEmpty ? 'Select Gender' : _selectedGender,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontSize: 15.sp,
+                              // color: _selectedGender.isEmpty ? Colors.grey : Colors.black,
+                            ),
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            value.isEmpty ? 'Select Gender' : value,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  fontSize: 15.sp,
-                                  color: value.isEmpty ? Colors.grey : Colors.black,
-                                ),
-                          ),
-                          Icon(Icons.keyboard_arrow_down_rounded, color: Colors.grey),
-                        ],
-                      ),
-                    );
-                  },
+                      Icon(Icons.keyboard_arrow_down_rounded, color: Colors.grey),
+                    ],
+                  ),
                 ),
               ),
               SizedBox(height: 10.h),

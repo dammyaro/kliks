@@ -40,7 +40,7 @@ class _ContactSupportPageState extends State<ContactSupportPage> {
     },
   ];
 
-  List<bool> _faqOpen = List.generate(5, (_) => false);
+  final List<bool> _faqOpen = List.generate(5, (_) => false);
 
   @override
   Widget build(BuildContext context) {

@@ -11,6 +11,7 @@ class CustomButton extends StatelessWidget {
   final bool isLoading;
   final Widget? loadingIndicator;
   final double? height;
+  final double? borderRadius;
 
   const CustomButton({
     super.key,
@@ -24,6 +25,7 @@ class CustomButton extends StatelessWidget {
     this.isLoading = false,
     this.loadingIndicator,
     this.height,
+    this.borderRadius,
   });
 
   @override
@@ -34,7 +36,7 @@ class CustomButton extends StatelessWidget {
         backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
         foregroundColor: textColor ?? Theme.of(context).scaffoldBackgroundColor,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(borderRadius ?? 30),
           side: hasBorder == true
               ? const BorderSide(color: Colors.grey, width: 1)
               : BorderSide.none,

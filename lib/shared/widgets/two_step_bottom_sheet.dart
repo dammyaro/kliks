@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kliks/shared/widgets/button.dart';
 import 'package:flutter/cupertino.dart'; 
+import 'package:kliks/shared/widgets/handle_bar.dart';
+import 'package:provider/provider.dart';
+import 'package:kliks/core/providers/auth_provider.dart';
+import 'package:geolocator/geolocator.dart';
 
 class TwoStepBottomSheet extends StatefulWidget {
   const TwoStepBottomSheet({super.key});
@@ -13,6 +17,51 @@ class TwoStepBottomSheet extends StatefulWidget {
 class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
   int _currentStep = 0; 
   final List<String> _selectedInterests = [];
+  bool _isLoading = false;
+  bool _locationAllowed = false;
+
+  Future<void> _handleAllowLocation() async {
+    setState(() {
+      _isLoading = true;
+    });
+    LocationPermission permission;
+    try {
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+      if (permission == LocationPermission.deniedForever) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Location permissions are permanently denied. Please enable them in settings.')),
+        );
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Location permission denied')),
+        );
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
+      setState(() {
+        _locationAllowed = true;
+        _currentStep = 1;
+        _isLoading = false;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error requesting location: $e')),
+      );
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,64 +71,59 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
         padding: EdgeInsets.all(20.h), 
         child: Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.9), // Reduced opacity
             borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start, 
             crossAxisAlignment: CrossAxisAlignment.center, 
             children: [
+              const HandleBar(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start, 
                 children: [
-                  
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.3, 
                     height: 3.h,
                     child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                      _currentStep = 0; 
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: (_currentStep == 0 || _currentStep == 1)
-                        ? const Color(0xffbbd953) 
-                        : Colors.grey[300], 
-                      shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.r), 
+                      onPressed: () {
+                        setState(() {
+                          _currentStep = 0; 
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: (_currentStep == 0 || _currentStep == 1)
+                          ? const Color(0xffbbd953) 
+                          : Colors.grey[300], 
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.r), 
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 3.h), 
                       ),
-                      padding: EdgeInsets.symmetric(vertical: 3.h), 
-                    ),
-                    child: const SizedBox.shrink(), 
+                      child: const SizedBox.shrink(), 
                     ),
                   ),
                   SizedBox(width: 30.h), 
-
-                  
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.3, 
                     height: 3.h,
                     child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                      _currentStep = 1; 
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: _currentStep == 1
-                        ? const Color(0xffbbd953) 
-                        : Colors.grey[300], 
-                      shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.r), 
+                      onPressed: () {
+                        setState(() {
+                          _currentStep = 1; 
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _currentStep == 1
+                          ? const Color(0xffbbd953) 
+                          : Colors.grey[300], 
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.r), 
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 3.h),
                       ),
-                      padding: EdgeInsets.symmetric(vertical: 3.h),
-                    ),
-                    child: const SizedBox.shrink(), 
+                      child: const SizedBox.shrink(), 
                     ),
                   ),
-
-                  
                   Spacer(), 
                   Text(
                     '${_currentStep + 1}/2',
@@ -90,45 +134,32 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
                   ),
                 ],
               ),
-              // SizedBox(height: 80.h), 
-
-              
               if (_currentStep == 0)
-                // SizedBox(height: 80.h), 
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center, 
                   crossAxisAlignment: CrossAxisAlignment.center, 
                   children: [
-                      SizedBox(height: 80.h), 
-                      Icon(
+                    SizedBox(height: 80.h), 
+                    Icon(
                       CupertinoIcons.device_phone_portrait,
                       size: 80.w,
                       color: Theme.of(context).brightness == Brightness.light
                         ? Colors.black.withOpacity(0.5)
                         : Colors.white.withOpacity(0.5), 
-                      ),
+                    ),
                     SizedBox(height: 40.h), 
-
-                    
                     Text(
                       "To use location services, allow Kliks to access your location",
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             fontSize: 16.sp,
-                            
                             fontFamily: 'Metropolis-ExtraBold',
                           ),
                       textAlign: TextAlign.center, 
                     ),
                     SizedBox(height: 20.h), 
-
-                    
                     CustomButton(
-                      text: "Allow Location Access",
-                      onPressed: () {
-                        setState(() {
-                          _currentStep = 1; 
-                        });
-                      },
+                      text: _isLoading ? "Allowing..." : "Allow Location Access",
+                      onPressed: _isLoading ? null : _handleAllowLocation,
                       textStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.bold,
@@ -140,101 +171,90 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
                     ),
                   ],
                 )
-
-                else if (_currentStep == 1)
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start, 
-                    crossAxisAlignment: CrossAxisAlignment.start, 
-                    children: [
-                      SizedBox(height: 20.h),
-                      Text(
-                        "Select your interests",
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 24.sp,
-                              fontFamily: 'Metropolis-ExtraBold',
-                              letterSpacing: -1, 
-                            ),
-                        textAlign: TextAlign.start, 
-                      ),
-                      SizedBox(height: 5.h), 
-
-                      
-                      Text(
-                        "This will let us know what kind of events \nto show you",
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              fontSize: 15.sp,
-                            ),
-                        textAlign: TextAlign.start, 
-                      ),
-                      SizedBox(height: 40.h), 
-
-                      
-                      Wrap(
-                        spacing: 10.w, 
-                        runSpacing: 10.h, 
-                        alignment: WrapAlignment.start, 
-                        children: [
-                          for (var interest in [
-                            "Social & Networking",
-                            "Food & Drinks",
-                            "Family & Parenting",
-                            "Education & Learning",
-                            "Environment and Nature",
-                            "Health & Wellness",
-                            "Technology & Science",
-                            "Sport & Fitness",
-                            "Travel & Adventure",
-                            "Fashion & Beauty",
-                            "Arts & Culture"
-                          ])
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  if (_selectedInterests.contains(interest)) {
-                                    _selectedInterests.remove(interest); 
-                                  } else {
-                                    _selectedInterests.add(interest); 
-                                  }
-                                });
-                              },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
-                                decoration: BoxDecoration(
+              else if (_currentStep == 1)
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start, 
+                  crossAxisAlignment: CrossAxisAlignment.start, 
+                  children: [
+                    SizedBox(height: 20.h),
+                    Text(
+                      "Select your interests",
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24.sp,
+                            fontFamily: 'Metropolis-ExtraBold',
+                            letterSpacing: -1, 
+                          ),
+                      textAlign: TextAlign.start, 
+                    ),
+                    SizedBox(height: 5.h), 
+                    Text(
+                      "This will let us know what kind of events \nto show you",
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            fontSize: 15.sp,
+                          ),
+                      textAlign: TextAlign.start, 
+                    ),
+                    SizedBox(height: 40.h), 
+                    Wrap(
+                      spacing: 10.w, 
+                      runSpacing: 10.h, 
+                      alignment: WrapAlignment.start, 
+                      children: [
+                        for (var interest in [
+                          "Social & Networking",
+                          "Education & Learning",
+                          "Environment & Nature",
+                          "Health & Wellness",
+                          "Technology & Science",
+                          "Sports & Fitness",
+                          "Travel & Adventure",
+                          "Fashion & Beauty",
+                          "Arts & Culture"
+                        ])
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                if (_selectedInterests.contains(interest)) {
+                                  _selectedInterests.remove(interest); 
+                                } else {
+                                  _selectedInterests.add(interest); 
+                                }
+                              });
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+                              decoration: BoxDecoration(
+                                color: _selectedInterests.contains(interest)
+                                    ? Colors.grey[800] 
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(20.r), 
+                              ),
+                              child: Text(
+                                interest,
+                                style: TextStyle(
+                                  fontSize: 12.sp, 
+                                  letterSpacing: 0,
                                   color: _selectedInterests.contains(interest)
-                                      ? Colors.grey[800] 
-                                      : Colors.white,
-                                  borderRadius: BorderRadius.circular(20.r), 
+                                      ? Colors.white 
+                                      : Colors.black, 
                                 ),
-                                child: Text(
-                                  interest,
-                                  style: TextStyle(
-                                    fontSize: 12.sp, 
-                                    // fontWeight: FontWeight.bold,
-                                    letterSpacing: 0,
-                                    color: _selectedInterests.contains(interest)
-                                        ? Colors.white 
-                                        : Colors.black, 
-                                  ),
-                                  textAlign: TextAlign.center,
-                                
-                                ),
+                                textAlign: TextAlign.center,
                               ),
                             ),
-                        ],
-                      ),
-                      SizedBox(height: 40.h), 
-
+                          ),
+                      ],
+                    ),
+                    SizedBox(height: 40.h), 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween, 
                       children: [
-                        
-                          SizedBox(
+                        SizedBox(
                           width: MediaQuery.of(context).size.width * 0.4, 
                           child: CustomButton(
                             text: "Do this later",
                             onPressed: () {
-                            Navigator.pop(context); 
+                              Navigator.pop(context); 
                             },
                             backgroundColor: Colors.grey[600]!, 
                             textStyle: TextStyle(
@@ -246,13 +266,32 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
                           ),
                         ),
                         SizedBox(width: 10.w), 
-                          SizedBox(
+                        SizedBox(
                           width: MediaQuery.of(context).size.width * 0.4, 
                           child: CustomButton(
-                            text: "Next",
-                            onPressed: () {
-                              Navigator.pop(context); 
-                            },
+                            text: "Update",
+                            isLoading: _isLoading,
+                            onPressed: _isLoading
+                                ? null
+                                : () async {
+                                    setState(() {
+                                      _isLoading = true;
+                                    });
+                                    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                                    final success = await authProvider.updateCategories(
+                                      categories: _selectedInterests,
+                                    );
+                                    setState(() {
+                                      _isLoading = false;
+                                    });
+                                    if (success) {
+                                      Navigator.pop(context);
+                                    } else {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Failed to update interests')),
+                                      );
+                                    }
+                                  },
                             backgroundColor: const Color(0xffbbd953), 
                             textStyle: TextStyle(
                               fontSize: 12.sp, 
@@ -260,7 +299,6 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
                               fontFamily: 'Metropolis-Regular',
                             ),
                             textColor: Colors.black, 
-                          
                           ),
                         ),
                       ],

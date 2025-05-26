@@ -17,10 +17,12 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormBuilderState>();
   bool _isPasswordVisible = false; 
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   bool _isLoading = false;
 
   @override
@@ -31,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _login() async {
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState!.saveAndValidate()) {
       setState(() => _isLoading = true);
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       try {
@@ -40,7 +42,8 @@ class _LoginPageState extends State<LoginPage> {
           password: _passwordController.text,
         );
         if (success) {
-          if (authProvider.isVerified) {
+            final isVerified = await authProvider.fetchIsVerified();
+            if (isVerified) {
             Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
           } else {
             Navigator.pushReplacementNamed(context, AppRoutes.emailVerification);

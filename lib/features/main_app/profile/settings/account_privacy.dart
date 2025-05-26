@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kliks/shared/widgets/custom_navbar.dart';
 
 class AccountPrivacyPage extends StatefulWidget {
   const AccountPrivacyPage({super.key});
@@ -61,7 +62,7 @@ class _AccountPrivacyPageState extends State<AccountPrivacyPage> {
             Switch(
               value: value,
               onChanged: onChanged,
-              activeColor: theme.colorScheme.primary,
+              activeColor: Color(0xffffbf00),
             ),
           ],
         ),
@@ -75,28 +76,17 @@ class _AccountPrivacyPageState extends State<AccountPrivacyPage> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 24.h),
+          padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 10.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Top bar
               Row(
                 children: [
-                  IconButton(
-                    icon: Icon(Icons.arrow_back, size: 24.sp, color: theme.iconTheme.color),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  SizedBox(width: 8.w),
-                  Text(
-                    'Account Privacy',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      fontSize: 16.sp,
-                      fontFamily: 'Metropolis-SemiBold',
-                    ),
-                  ),
+                  CustomNavBar(title: 'Account Privacy'),
                 ],
               ),
-              SizedBox(height: 30.h),
+              // SizedBox(height: 30.h),
               _privacyTile(
                 label: 'Private account',
                 subText:

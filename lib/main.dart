@@ -8,6 +8,8 @@ import 'package:kliks/core/di/service_locator.dart';
 import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/auth_provider.dart';
 
+final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   setupLocator();
@@ -21,6 +23,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+  
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +37,7 @@ class MyApp extends StatelessWidget {
         minTextAdapt: true,
         builder: (context, child) {
           return MaterialApp(
+            navigatorObservers: [routeObserver],
             useInheritedMediaQuery: true,
             locale: DevicePreview.locale(context), 
             builder: (context, child) {

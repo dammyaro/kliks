@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kliks/shared/widgets/custom_navbar.dart';
 
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({super.key});
@@ -65,7 +66,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
             Switch(
               value: value,
               onChanged: onChanged,
-              activeColor: theme.colorScheme.primary,
+              activeColor: Color(0xffffbf00),
             ),
           ],
         ),
@@ -76,7 +77,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   Widget _sectionTitle(BuildContext context, String title) {
     final theme = Theme.of(context);
     return Padding(
-      padding: EdgeInsets.only(top: 28.h, bottom: 8.h),
+      padding: EdgeInsets.only(top: 10.h, bottom: 8.h),
       child: Text(
         title,
         style: theme.textTheme.bodySmall?.copyWith(
@@ -94,25 +95,14 @@ class _NotificationsPageState extends State<NotificationsPage> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
+          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Top bar
               Row(
                 children: [
-                  IconButton(
-                    icon: Icon(Icons.arrow_back, size: 24.sp, color: theme.iconTheme.color),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  SizedBox(width: 8.w),
-                  Text(
-                    'Notification settings',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      fontSize: 18.sp,
-                      fontFamily: 'Metropolis-SemiBold',
-                    ),
-                  ),
+                  CustomNavBar(title: 'Notification Settings'),
                 ],
               ),
               // Events Section

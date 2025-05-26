@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:random_avatar/random_avatar.dart';
+import 'package:provider/provider.dart';
+import 'package:kliks/core/providers/auth_provider.dart';
 
 class MainAppBar extends StatelessWidget {
   final bool isGuest;
+  
 
   const MainAppBar({super.key, this.isGuest = false});
 
   @override
   Widget build(BuildContext context) {
+    // final profile = Provider.of<AuthProvider>(context).profile;
+    // final fullName = profile?['fullname'] ?? 'Kliks User';
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10),
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -69,10 +75,19 @@ class MainAppBar extends StatelessWidget {
                 child: CircleAvatar(
                   radius: 25,
                   backgroundColor: Colors.transparent,
-                  child: RandomAvatar(
-                  DateTime.now().toString(),
+                  child: FutureBuilder<String?>(
+                            future: Provider.of<AuthProvider>(context, listen: false).getUserId(),
+                            builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            }
+                            final userId = snapshot.data ?? '';
+                  return RandomAvatar(
+                  userId,
                   height: 50,
                   width: 50,
+                  );
+                            },
                   ),
                 ),
                 onTap: () {
