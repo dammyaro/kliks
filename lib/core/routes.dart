@@ -15,6 +15,30 @@ import 'package:kliks/features/main_app/events/location/location_page.dart';
 import 'package:kliks/features/main_app/events/date_time/date_time_page.dart';
 import 'package:kliks/features/main_app/events/entrance_requirement/entrance_requirement_page.dart';
 import 'package:kliks/features/main_app/events/category/category_page.dart';
+import 'package:kliks/features/main_app/profile/edit/edit_profile_page.dart';
+import 'package:kliks/features/main_app/profile/edit/edit_bio_page.dart';
+import 'package:kliks/features/main_app/profile/edit/edit_gender_page.dart';
+import 'package:kliks/features/main_app/profile/edit/edit_name_page.dart';
+import 'package:kliks/features/main_app/profile/edit/edit_username_page.dart';
+import 'package:kliks/features/main_app/profile/settings/settings_page.dart';
+import 'package:kliks/features/main_app/profile/settings/account_privacy.dart';
+import 'package:kliks/features/main_app/profile/settings/notifications.dart';
+import 'package:kliks/features/main_app/profile/settings/blocked_accounts.dart';
+import 'package:kliks/features/main_app/profile/settings/contact_support.dart';
+import 'package:kliks/features/main_app/profile/settings/about_kliks.dart';
+import 'package:kliks/features/main_app/profile/settings/user_information/user_information.dart';
+import 'package:kliks/features/main_app/profile/settings/user_information/update_email.dart';
+import 'package:kliks/features/main_app/profile/settings/user_information/update_dob.dart';
+import 'package:kliks/features/main_app/profile/settings/update_location.dart';
+import 'package:kliks/features/main_app/profile/settings/user_information/update_password.dart';
+import 'package:kliks/features/main_app/profile/requests/follow_requests.dart';
+import 'package:kliks/features/main_app/profile/people.dart';
+import 'package:kliks/features/main_app/profile/settings/verification/selfie_verification.dart';
+import 'package:kliks/features/main_app/search/search_page.dart';
+import 'package:kliks/features/main_app/profile/user_profile_page.dart';
+
+
+
 
 
 class AppRoutes {
@@ -26,6 +50,11 @@ class AppRoutes {
   static const String mainApp = '/main-app';
   static const String guestApp = '/guestApp';
   static const String profile = '/profile';
+  static const String editProfile = '/edit-profile';
+  static const String editBio = '/edit-bio';
+  static const String editGender = '/edit-gender';
+  static const String editName = '/edit-name';
+  static const String editUsername = '/edit-username';
   static const String newEvent = '/new-event';
   static const String guests = '/guests';
   static const String inviteGuests = '/invite-guests';
@@ -34,6 +63,22 @@ class AppRoutes {
   static const String dateTime = '/date-time';
   static const String entranceRequirement = '/entrance-requirement';
   static const String category = '/category';
+  static const String profileSettings = '/settings';
+  static const String accountPrivacy = '/account-privacy';
+  static const String notifications = '/notifications';
+  static const String blockedAccounts = '/blocked-accounts';
+  static const String contactSupport = '/contact-support';
+  static const String aboutKliks = '/about-kliks';
+  static const String userInformation = '/user-information';
+  static const String updateEmail = '/update-email';
+  static const String updateDob = '/update-dob';
+  static const String updateLocation = '/update-location';
+  static const String updatePassword = '/update-password';
+  static const String followRequests = '/follow-requests';
+  static const String people = '/people';
+  static const String selfieVerification = '/selfie-verification';
+  static const String search = '/search';
+  static const String userProfile = '/user-profile';
 
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -54,6 +99,18 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const GuestAppPage());
       case profile:
         return MaterialPageRoute(builder: (_) => const ProfilePage());
+      case editProfile:
+        return MaterialPageRoute(builder: (_) => const EditProfilePage());
+      case profileSettings:
+        return MaterialPageRoute(builder: (_) => const SettingsPage());
+      case editBio:
+        return MaterialPageRoute(builder: (_) => const EditBioPage());
+      case editGender:
+        return MaterialPageRoute(builder: (_) => const EditGenderPage());
+      case editName:
+        return MaterialPageRoute(builder: (_) => const EditNamePage());
+      case editUsername:
+        return MaterialPageRoute(builder: (_) => const EditUsernamePage());
       case newEvent:
         return MaterialPageRoute(builder: (_) => const NewEventPage());
       case guests:
@@ -70,6 +127,36 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const EntranceRequirementPage());
       case category:
         return MaterialPageRoute(builder: (_) => const CategoryPage());
+      case accountPrivacy:
+        return MaterialPageRoute(builder: (_) => const AccountPrivacyPage());
+      case notifications:
+        return MaterialPageRoute(builder: (_) => const NotificationsPage());
+      case blockedAccounts:
+        return MaterialPageRoute(builder: (_) => const BlockedAccountsPage());
+      case contactSupport:
+        return MaterialPageRoute(builder: (_) => const ContactSupportPage());
+      case aboutKliks:
+        return MaterialPageRoute(builder: (_) => const AboutKliksPage());
+      case userInformation:
+        return MaterialPageRoute(builder: (_) => const UserInformationPage());
+      case updateEmail:
+        return MaterialPageRoute(builder: (_) => const UpdateEmailPage());
+      case updateDob:
+        return MaterialPageRoute(builder: (_) => const UpdateDobPage());
+      case updateLocation:
+        return MaterialPageRoute(builder: (_) => const UpdateLocationPage());
+      case updatePassword:
+        return MaterialPageRoute(builder: (_) => const UpdatePasswordPage());
+      case followRequests:
+        return MaterialPageRoute(builder: (_) => const FollowRequestsPage());
+      case people:
+        return MaterialPageRoute(builder: (_) => const PeoplePage());
+      case selfieVerification:
+        return MaterialPageRoute(builder: (_) => const SelfieVerificationPage());
+      case search:
+        return MaterialPageRoute(builder: (_) => const SearchPage());
+      case userProfile:
+        return MaterialPageRoute(builder: (_) => UserProfilePage(userData: settings.arguments as Map<String, dynamic>));
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

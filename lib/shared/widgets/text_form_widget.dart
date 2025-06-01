@@ -9,9 +9,11 @@ class TextFormWidget extends StatelessWidget {
   final String? Function(String?)? validator;
   final bool obscureText;
   final Widget? suffixIcon;
+  final Widget? prefixIcon; // <-- Added this line
   final TextInputType keyboardType;
   final bool multiline; // New attribute for multiline support
   final double? contentHeight; // New attribute for adjustable height
+  final void Function(String?)? onChanged; // Optional onChanged attribute
 
   const TextFormWidget({
     super.key,
@@ -21,9 +23,11 @@ class TextFormWidget extends StatelessWidget {
     this.validator,
     this.obscureText = false,
     this.suffixIcon,
+    this.prefixIcon, // <-- Added this line
     this.keyboardType = TextInputType.text,
     this.multiline = false, // Default is false
     this.contentHeight, // Optional height parameter
+    this.onChanged, // Optional onChanged parameter
   });
 
   @override
@@ -66,8 +70,10 @@ class TextFormWidget extends StatelessWidget {
           borderSide: const BorderSide(color: Color(0xFFBBD953)),
         ),
         suffixIcon: suffixIcon,
+        prefixIcon: prefixIcon, // <-- Added this line
       ),
       validator: validator,
+      onChanged: onChanged, // Pass onChanged to FormBuilderTextField
     );
   }
 }

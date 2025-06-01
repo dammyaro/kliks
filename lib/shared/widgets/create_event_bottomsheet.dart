@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kliks/shared/widgets/button.dart';
-import 'dart:ui'; // Import for BackdropFilter
+// Import for BackdropFilter
+import 'package:kliks/shared/widgets/handle_bar.dart';
 
 class CreateEventBottomSheet extends StatelessWidget {
   const CreateEventBottomSheet({super.key});
@@ -11,35 +12,39 @@ class CreateEventBottomSheet extends StatelessWidget {
     return Stack(
       children: [
         // Blurred background with increased intensity
-        BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0), // Increased blur intensity
-          child: Container(
-            color: Colors.black.withOpacity(0.1), // Optional dimming effect
-          ),
-        ),
+        // BackdropFilter(
+        //   filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0), // Increased blur intensity
+        //   child: Container(
+        //     color: Colors.black.withOpacity(0.1), // Optional dimming effect
+        //   ),
+        // ),
         // Bottom sheet content
         Align(
           alignment: Alignment.bottomCenter,
           child: Container(
-            height: MediaQuery.of(context).size.height * 0.66, // 65% of screen height
+            
+            height: MediaQuery.of(context).size.height * 0.77, // 75% of screen height
             padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
             decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.9), // Reduced opacity
               borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Colors.grey[200]
+                  : Colors.grey[900],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Add swipe-down indicator
-                Container(
-                  width: 30.w,
-                  height: 3.h,
-                  margin: EdgeInsets.only(bottom: 16.h),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[400]?.withOpacity(0.7),
-                    borderRadius: BorderRadius.circular(2.5.r),
-                  ),
-                ),
+                // Container(
+                //   width: 30.w,
+                //   height: 3.h,
+                //   margin: EdgeInsets.only(bottom: 16.h),
+                //   decoration: BoxDecoration(
+                //     color: Colors.grey[400]?.withOpacity(0.7),
+                //     borderRadius: BorderRadius.circular(2.5.r),
+                //   ),
+                // ),
+                const HandleBar(),
                 SizedBox(height: 30.h),
 
                 // Circular bar with plus icon

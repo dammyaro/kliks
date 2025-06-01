@@ -84,24 +84,24 @@ class _EventFilterState extends State<EventFilter> {
           const SizedBox(width: 15), 
 
           
-          GestureDetector(
-            onTap: () {
+          // GestureDetector(
+          //   onTap: () {
               
-              print('Filter icon clicked');
-            },
-            child: Container(
-              padding: const EdgeInsets.all(10), 
-              decoration: BoxDecoration(
-          color: Colors.grey[700], 
-          borderRadius: BorderRadius.circular(10), 
-              ),
-                child: Image.asset(
-              'assets/icons/setting-4.png',
-              width: 14,
-              height: 14,
-              ),
-            ),
-          ),
+          //     print('Filter icon clicked');
+          //   },
+          //   child: Container(
+          //     padding: const EdgeInsets.all(10), 
+          //     decoration: BoxDecoration(
+          // color: Colors.grey[700], 
+          // borderRadius: BorderRadius.circular(10), 
+          //     ),
+          //       child: Image.asset(
+          //     'assets/icons/setting-4.png',
+          //     width: 14,
+          //     height: 14,
+          //     ),
+          //   ),
+          // ),
         ],
         
       ),

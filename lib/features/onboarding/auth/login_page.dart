@@ -6,6 +6,8 @@ import 'package:kliks/shared/widgets/button.dart';
 import 'package:kliks/shared/widgets/icon_button.dart'; 
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:kliks/shared/widgets/text_form_widget.dart';
+import 'package:provider/provider.dart';
+import 'package:kliks/core/providers/auth_provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,10 +17,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormBuilderState>();
   bool _isPasswordVisible = false; 
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -28,9 +33,33 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _login() async {
-    if (_formKey.currentState!.validate()) {
-      
-      Navigator.pushReplacementNamed(context, AppRoutes.mainApp); 
+    if (_formKey.currentState!.saveAndValidate()) {
+      setState(() => _isLoading = true);
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      try {
+        final success = await authProvider.login(
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+        );
+        if (success) {
+            final isVerified = await authProvider.fetchIsVerified();
+            if (isVerified) {
+            Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
+          } else {
+            Navigator.pushReplacementNamed(context, AppRoutes.emailVerification);
+          }
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Login failed. Please check your credentials.')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      } finally {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -117,8 +146,9 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(height: 40.h), 
               CustomButton(
-                text: 'Sign In', 
-                onPressed: _login, 
+                text: 'Sign In',
+                onPressed: _login,
+                isLoading: _isLoading,
               ),
               SizedBox(height: 20.h), 
               Row(
@@ -149,8 +179,7 @@ class _LoginPageState extends State<LoginPage> {
                 text: 'Continue with Google',
                 imagePath: 'assets/google_logo.png', 
                 onPressed: () {
-                  
-                  Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
+                  // Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
                 },
               ),
               SizedBox(height: 20.h), 
@@ -160,8 +189,7 @@ class _LoginPageState extends State<LoginPage> {
                     ? 'assets/apple_logo_white.png'
                     : 'assets/apple_logo_black.png', 
                 onPressed: () {
-                  
-                  Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
+                  // Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
                 },
               ),
               SizedBox(height: 40.h), 
