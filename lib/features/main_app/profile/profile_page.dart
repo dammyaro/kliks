@@ -6,6 +6,9 @@ import 'package:share_plus/share_plus.dart';
 import 'package:kliks/shared/widgets/handle_bar.dart';
 import 'package:kliks/shared/widgets/custom_navbar.dart';
 import 'package:random_avatar/random_avatar.dart';
+import 'package:kliks/shared/widgets/button.dart';
+import 'package:kliks/shared/widgets/profile_picture.dart';
+import 'package:kliks/core/utils/print_wrapped.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -13,12 +16,16 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = Provider.of<AuthProvider>(context).profile;
+    // printWrapped('Profile: \\${profile}');
     final fullName = profile?['fullname'] ?? 'Kliks User';
     final username = profile?['username'] ?? '@kliksuser';
     final bio = profile?['about'] ?? '';
     final kycStatusSumsub = profile?['kycStatusSumub'];
     final userId = profile?['id'] ?? '';
     final interests = profile?['categories'];
+    final profilePictureFileName = profile?['image'];
+    final followerCount = profile?['followersCount'] ?? 0;
+    final followingCount = profile?['followingCount'] ?? 0;
     // final location = profile?['location'] ?? 'Ontario, Canada';
 
     return Scaffold(
@@ -27,7 +34,7 @@ class ProfilePage extends StatelessWidget {
           children: [
             SizedBox(height: 10.h),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              padding: EdgeInsets.symmetric(horizontal: 10.w),
               child: Row(
                 children: [
                   CustomNavBar(title: 'My Profile'),
@@ -52,11 +59,18 @@ class ProfilePage extends StatelessWidget {
                         children: [
                           ClipRRect(
                           borderRadius: BorderRadius.circular(50.r),
-                          child: RandomAvatar(
-                              userId,
-                              height: 100.r,
-                              width: 100.r,
-                            ),
+                          child: 
+                              ProfilePicture(
+                                  fileName: profilePictureFileName,
+                                  folderName: 'profile_pictures',
+                                  size: 100.r,
+                                  userId: userId,
+                                )
+                              // : RandomAvatar(
+                              //     userId,
+                              //     height: 100.r,
+                              //     width: 100.r,
+                              //   ),
                           ),
                           Positioned(
                           bottom: -4.r,
@@ -438,8 +452,8 @@ class ProfilePage extends StatelessWidget {
                   Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildStatItem(context, 'Attendance', '0%'),
-                    _buildStatItem(context, 'Total events', '0'),
+                    Expanded(child: _buildStatItem(context, 'Attendance', '0%', align: TextAlign.left)),
+                    Expanded(child: _buildStatItem(context, 'Total events', '0', align: TextAlign.right)),
                   ],
                   ),
                   Divider(height: 32.h, thickness: 1),
@@ -450,8 +464,8 @@ class ProfilePage extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                    _buildStatItem(context, 'Followers', '0'),
-                    _buildStatItem(context, 'Following', '0'),
+                    Expanded(child: _buildStatItem(context, 'Followers', followerCount.toString(), align: TextAlign.left)),
+                    Expanded(child: _buildStatItem(context, 'Following', followingCount.toString(), align: TextAlign.right)),
                     ],
                   ),
                   ),
@@ -465,7 +479,7 @@ class ProfilePage extends StatelessWidget {
                bio,
             ),
             Divider(height: 32.h, thickness: 1),
-            _buildInterestsSection(context),
+            _buildInterestsSection(context, interests),
             Divider(height: 32.h, thickness: 1),
             _buildEventsSection(context),
             SizedBox(height: 40.h),
@@ -475,25 +489,22 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildStatItem(BuildContext context, String label, String value) {
+  Widget _buildStatItem(BuildContext context, String label, String value, {TextAlign align = TextAlign.left}) {
     return Column(
+      crossAxisAlignment: align == TextAlign.right ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: EdgeInsets.only(left: 0.w),
-            child: Text(
-              value,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                fontSize: 18.sp,
-                fontFamily: 'Metropolis-SemiBold',
-              ),
-            ),
+        Text(
+          value,
+          textAlign: align,
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+            fontSize: 18.sp,
+            fontFamily: 'Metropolis-SemiBold',
           ),
         ),
         SizedBox(height: 4.h),
         Text(
           label,
+          textAlign: align,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
             fontSize: 14.sp,
             fontFamily: 'Metropolis-Regular',
@@ -509,7 +520,7 @@ class ProfilePage extends StatelessWidget {
 
   Widget _buildSection(BuildContext context, String title, String content) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: EdgeInsets.symmetric(horizontal: 5.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -538,30 +549,27 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildInterestsSection(BuildContext context) {
-    final interests = [
-      'Social & Networking',
-      'Food & Drinks',
-      'Games & Hobbies',
-    ];
-
+  Widget _buildInterestsSection(BuildContext context, dynamic interests) {
+    final List<String> interestsList = interests != null && interests is List ? List<String>.from(interests) : [];
     final allInterests = [
       'Social & Networking',
-      'Food & Drinks',
-      'Games & Hobbies',
-      'Tech & Startups',
-      'Music & Concerts',
-      'Sports & Fitness',
-      'Arts & Culture',
-      'Business & Finance',
-      'Travel & Adventure',
       'Health & Wellness',
       'Education & Learning',
+      'Sports & Fitness',
+      'Environment & Nature',
       'Fashion & Beauty',
-      'Photography',
-      'Movies & Entertainment',
-      'Volunteering',
-      'Other',
+      'Technology & Science',
+      'Arts & Culture',
+      'Travel & Adventure',
+      // 'Food & Drinks',
+      // 'Games & Hobbies',
+      // 'Tech & Startups',
+      // 'Music & Concerts',
+      // 'Business & Finance',
+      // 'Photography',
+      // 'Movies & Entertainment',
+      // 'Volunteering',
+      // 'Other',
     ];
 
     void showInterestSheet() {
@@ -574,15 +582,16 @@ class ProfilePage extends StatelessWidget {
         ),
         builder: (context) {
           // Use StatefulBuilder to manage selection state inside the bottom sheet
-          List<String> tempSelected = List<String>.from(interests);
+          List<String> tempSelected = List<String>.from(interestsList);
+          bool isLoading = false;
           return StatefulBuilder(
             builder: (context, setModalState) {
               return Container(
                 height: MediaQuery.of(context).size.height * 0.9,
                 width: double.infinity,
                 padding: EdgeInsets.only(
-                  left: 24.w,
-                  right: 24.w,
+                  left: 5.w,
+                  right: 5.w,
                   top: 0,
                   bottom: MediaQuery.of(context).viewInsets.bottom + 24.h,
                 ),
@@ -617,86 +626,103 @@ class ProfilePage extends StatelessWidget {
                     ),
                     SizedBox(height: 18.h),
                     Expanded(
-                      child: GridView.builder(
-                        shrinkWrap: true,
-                        itemCount: allInterests.length,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 14.h,
-                          crossAxisSpacing: 14.w,
-                          childAspectRatio: 3.5,
-                        ),
-                        itemBuilder: (context, index) {
-                          final interest = allInterests[index];
-                          final isSelected = tempSelected.contains(interest);
-                          return GestureDetector(
-                            onTap: () {
-                              setModalState(() {
-                                if (isSelected) {
-                                  tempSelected.remove(interest);
-                                } else {
-                                  tempSelected.add(interest);
-                                }
-                              });
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? const Color(0xffbbd953)
-                                    : Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.5),
-                                borderRadius: BorderRadius.circular(10.r),
-                                border: Border.all(
-                                  color: isSelected
-                                      ? const Color(0xffbbd953)
-                                      : Theme.of(context).dividerColor.withOpacity(0.2),
+                      child: SingleChildScrollView(
+                        child: Wrap(
+                          spacing: 10.w,
+                          runSpacing: 10.h,
+                          alignment: WrapAlignment.start,
+                          children: [
+                            for (var interest in allInterests)
+                              GestureDetector(
+                                onTap: () {
+                                  setModalState(() {
+                                    if (tempSelected.contains(interest)) {
+                                      tempSelected.remove(interest);
+                                    } else {
+                                      tempSelected.add(interest);
+                                    }
+                                  });
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+                                  decoration: BoxDecoration(
+                                    color: tempSelected.contains(interest)
+                                        ? (Theme.of(context).brightness == Brightness.light
+                                            ? Colors.grey[800]
+                                            : Colors.white)
+                                        : (Theme.of(context).brightness == Brightness.light
+                                            ? Colors.grey[300]
+                                            : Colors.grey[800]),
+                                    borderRadius: BorderRadius.circular(20.r),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        interest,
+                                        style: TextStyle(
+                                          fontSize: 12.sp,
+                                          letterSpacing: 0,
+                                          color: tempSelected.contains(interest)
+                                              ? (Theme.of(context).brightness == Brightness.light
+                                                  ? Colors.white
+                                                  : Colors.black)
+                                              : (Theme.of(context).brightness == Brightness.light
+                                                  ? Colors.black
+                                                  : Colors.white),
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      if (tempSelected.contains(interest)) ...[
+                                        SizedBox(width: 6.w),
+                                        Icon(
+                                          Icons.close,
+                                          size: 13.sp,
+                                          color: Theme.of(context).brightness == Brightness.light
+                                              ? Colors.white
+                                              : Colors.black,
+                                        ),
+                                      ]
+                                    ],
+                                  ),
                                 ),
                               ),
-                              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      interest,
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                        fontSize: 13.sp,
-                                        fontFamily: 'Metropolis-SemiBold',
-                                        color: isSelected ? Colors.black : Theme.of(context).textTheme.bodyMedium?.color,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  if (isSelected)
-                                    Icon(Icons.check_circle, color: Colors.black, size: 18.sp),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(height: 24.h),
                     SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xffbbd953),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.r),
-                          ),
-                        ),
-                        onPressed: () {
-                          // Update the selected interests in the parent widget if needed
-                          Navigator.pop(context);
-                          // You may want to use a callback or state management to persist the selection
+                      child: StatefulBuilder(
+                        builder: (context, setButtonState) {
+                          Future<void> handleUpdateInterests() async {
+                            setButtonState(() { isLoading = true; });
+                            final provider = Provider.of<AuthProvider>(context, listen: false);
+                            final success = await provider.updateCategories(categories: tempSelected);
+                            setButtonState(() { isLoading = false; });
+                            if (success) {
+                              Navigator.pop(context);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Failed to update interests')),
+                              );
+                            }
+                          }
+
+                          return CustomButton(
+                            text: 'Save',
+                            isLoading: isLoading,
+                            onPressed: isLoading ? null : handleUpdateInterests,
+                            backgroundColor: const Color(0xffbbd953),
+                            textColor: Colors.black,
+                            textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontSize: 15.sp,
+                              fontFamily: 'Metropolis-SemiBold',
+                              color: Colors.black,
+                            ),
+                          );
                         },
-                        child: Text(
-                          'Save',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontSize: 15.sp,
-                            fontFamily: 'Metropolis-SemiBold',
-                            color: Colors.black,
-                          ),
-                        ),
                       ),
                     ),
                   ],
@@ -709,12 +735,12 @@ class ProfilePage extends StatelessWidget {
     }
 
     return Padding(
-      padding: EdgeInsets.only(top: 20.h, bottom: 20.h),
+      padding: EdgeInsets.only(top: 10.h, bottom: 10.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.only(left: 16.w),
+            padding: EdgeInsets.only(left: 5.w),
             child: Row(
               children: [
                 Text(
@@ -733,9 +759,9 @@ class ProfilePage extends StatelessWidget {
             padding: EdgeInsets.only(left: 16.w),
             child: Wrap(
               spacing: 8.w,
-              runSpacing: 8.h,
+              runSpacing: 0.h,
               children: [
-                ...interests.map(
+                ...interestsList.map(
                   (interest) => Chip(
                     label: Text(
                       interest,
@@ -751,10 +777,10 @@ class ProfilePage extends StatelessWidget {
                 GestureDetector(
                   onTap: showInterestSheet,
                   child: Chip(
-                    label: Icon(Icons.add_outlined, size: 18.sp, color: Theme.of(context).iconTheme.color),
+                    label: Icon(Icons.add_outlined, size: 16.sp, color: Theme.of(context).iconTheme.color),
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.r),
+                      borderRadius: BorderRadius.circular(30.r),
                     ),
                   ),
                 ),

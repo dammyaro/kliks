@@ -34,6 +34,8 @@ import 'package:kliks/features/main_app/profile/settings/user_information/update
 import 'package:kliks/features/main_app/profile/requests/follow_requests.dart';
 import 'package:kliks/features/main_app/profile/people.dart';
 import 'package:kliks/features/main_app/profile/settings/verification/selfie_verification.dart';
+import 'package:kliks/features/main_app/search/search_page.dart';
+import 'package:kliks/features/main_app/profile/user_profile_page.dart';
 
 
 
@@ -75,6 +77,8 @@ class AppRoutes {
   static const String followRequests = '/follow-requests';
   static const String people = '/people';
   static const String selfieVerification = '/selfie-verification';
+  static const String search = '/search';
+  static const String userProfile = '/user-profile';
 
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -149,6 +153,10 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const PeoplePage());
       case selfieVerification:
         return MaterialPageRoute(builder: (_) => const SelfieVerificationPage());
+      case search:
+        return MaterialPageRoute(builder: (_) => const SearchPage());
+      case userProfile:
+        return MaterialPageRoute(builder: (_) => UserProfilePage(userData: settings.arguments as Map<String, dynamic>));
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

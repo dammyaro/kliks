@@ -4,6 +4,7 @@ import 'package:kliks/core/di/service_locator.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:io';
 import 'package:geolocator/geolocator.dart';
+import 'package:kliks/core/services/media_service.dart';
 
 class AuthProvider with ChangeNotifier {
   final ApiService _apiService;
@@ -11,6 +12,7 @@ class AuthProvider with ChangeNotifier {
   // bool _isVerified = false;
   String? currentEmail;
   Map<String, dynamic>? _profile;
+  String? profilePictureFileName;
 
   AuthProvider({ApiService? apiService})
       : _apiService = apiService ?? locator<ApiService>();
@@ -211,7 +213,7 @@ class AuthProvider with ChangeNotifier {
     required dynamic value,
   }) async {
     try {
-      final response = await _apiService.postAuth(
+      final response = await _apiService.post(
         '/auth/updateProfile',
         data: {
           field: value,
@@ -294,9 +296,14 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  void printWrapped(String text) {
+  final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
+  pattern.allMatches(text).forEach((match) => print(match.group(0)));
+}
+
   Future<void> loadProfile() async {
     _profile = await retrieveProfile();
-    print('Loaded profile: $_profile');
+    printWrapped('Loaded profile: $_profile');
     await checkProfileSetupComplete();
     notifyListeners();
   }
@@ -324,4 +331,51 @@ class AuthProvider with ChangeNotifier {
     _isProfileSetupComplete = locationAllowed && hasCategories;
     notifyListeners();
   }
+
+  Future<void> updateProfilePicture(File file) async {
+    final mediaService = MediaService();
+    final fileName = await mediaService.uploadProfilePicture(
+      file: file,
+      folderName: 'profile_pictures',
+    );
+    if (fileName != null) {
+      // Save fileName to your backend user profile (call your updateProfile API)
+      await updateProfile(field: 'image', value: fileName);
+      await loadProfile();
+      // Optionally update local state
+      profilePictureFileName = fileName;
+      notifyListeners();
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchUsers({
+    required String searchName,
+    int limit = 10,
+    int offset = 0,
+  }) async {
+    try {
+      final response = await _apiService.getSearchUser(
+        searchName: searchName,
+        limit: limit,
+        offset: offset,
+      );
+      print('Search user response: \\${response.data}');
+      final data = response.data as List<dynamic>? ?? [];
+      return data.cast<Map<String, dynamic>>();
+    } catch (e) {
+      print('fetchUsers error: $e');
+      return [];
+    }
+  }
+
+  Future<Map<String, dynamic>?> getUserById(String userId) async {
+    try {
+      final response = await _apiService.get('/auth/getUserProfile/$userId');
+      return response.data as Map<String, dynamic>?;
+    } catch (e) {
+      print('getUserById error: $e');
+      return null;
+    }
+  }
+
 }

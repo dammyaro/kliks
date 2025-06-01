@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'dart:ui';
 
 class ThemeConfig {
   static final lightTheme = ThemeData(
@@ -34,6 +35,22 @@ class ThemeConfig {
         letterSpacing: 0,
       ),
     ),
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: Colors.black.withOpacity(0.95),
+      contentTextStyle: TextStyle(
+        color: Colors.white,
+        fontSize: 12.sp,
+        fontFamily: 'Metropolis-ExtraBold',
+        height: 1.6,
+      ),
+      actionTextColor: Color(0xffbbd953),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(50),
+      ),
+      width: 0.9 * window.physicalSize.width / window.devicePixelRatio,
+      elevation: 8,
+    ),
   );
 
   static final darkTheme = ThemeData(
@@ -65,6 +82,22 @@ class ThemeConfig {
         fontSize: 14.sp, 
         letterSpacing: 0,
       ),
+    ),
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: Colors.white.withOpacity(0.95),
+      contentTextStyle: TextStyle(
+        color: Colors.black,
+        fontSize: 12.sp,
+        fontFamily: 'Metropolis-ExtraBold',
+        height: 1.6,
+      ),
+      actionTextColor: Color(0xffbbd953),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(50),
+      ),
+      width: 0.9 * window.physicalSize.width / window.devicePixelRatio,
+      elevation: 8,
     ),
   );
 

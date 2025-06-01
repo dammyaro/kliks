@@ -4,7 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/auth_provider.dart';
-import 'package:random_avatar/random_avatar.dart';
+import 'package:kliks/shared/widgets/profile_picture.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -15,6 +15,7 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePageState extends State<EditProfilePage> {
   XFile? _selectedImage;
+  bool _isUploading = false;
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -22,6 +23,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (picked != null) {
       setState(() {
         _selectedImage = picked;
+        _isUploading = true;
+      });
+      // Call updateProfilePicture
+      final provider = Provider.of<AuthProvider>(context, listen: false);
+      await provider.updateProfilePicture(File(picked.path));
+      setState(() {
+        _isUploading = false;
       });
     }
   }
@@ -83,6 +91,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final gender = profile?['gender'] ?? '';
     final bio = profile?['about'] ?? '';
     final userId = profile?['id'] ?? '';
+    final profilePictureFileName = profile?['image'];
 
     return Scaffold(
       body: SafeArea(
@@ -121,17 +130,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 alignment: Alignment.center,
                 children: [
                   ClipOval(
-                    child: _selectedImage == null
-                        ? RandomAvatar(
-                            userId,
-                            height: 100.r,
-                            width: 100.r,
-                          )
-                        : Image.file(
+                    child: _selectedImage != null
+                        ? Image.file(
                             File(_selectedImage!.path),
                             width: 100.r,
                             height: 100.r,
                             fit: BoxFit.cover,
+                          )
+                        : ProfilePicture(
+                            fileName: profilePictureFileName,
+                            userId: userId,
+                            size: 100.r,
                           ),
                   ),
                   Container(
@@ -142,11 +151,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       shape: BoxShape.circle,
                     ),
                   ),
-                  Icon(
-                    Icons.camera_alt_outlined,
-                    color: Colors.white,
-                    size: 32.sp,
-                  ),
+                  _isUploading
+                      ? SizedBox(
+                          width: 32.sp,
+                          height: 32.sp,
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            strokeWidth: 3,
+                          ),
+                        )
+                      : Icon(
+                          Icons.camera_alt_outlined,
+                          color: Colors.white,
+                          size: 32.sp,
+                        ),
                 ],
               ),
             ),
@@ -178,7 +196,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             SizedBox(height: 10.h),
             _buildBar(
               label: 'Bio',
-              value: bio,
+              value: bio.length > 28 ? '${bio.substring(0, 28)}...' : bio,
               onTap: () {
                 Navigator.pushNamed(context, '/edit-bio');
               },

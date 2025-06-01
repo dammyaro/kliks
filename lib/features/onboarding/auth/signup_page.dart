@@ -243,7 +243,7 @@ class _SignupPageState extends State<SignupPage> {
                         text: 'Sign in with Google',
                         imagePath: 'assets/google_logo.png',
                         onPressed: () {
-                          Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
+                          // Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
                         },
                       ),
                       SizedBox(height: 20.h),
@@ -253,7 +253,7 @@ class _SignupPageState extends State<SignupPage> {
                             ? 'assets/apple_logo_white.png'
                             : 'assets/apple_logo_black.png',
                         onPressed: () {
-                          Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
+                          // Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
                         },
                       ),
                       SizedBox(height: 20.h),

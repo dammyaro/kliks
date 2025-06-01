@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kliks/shared/widgets/custom_navbar.dart';
+import 'package:provider/provider.dart';
+import 'package:kliks/core/providers/privacy_provider.dart';
+import 'package:kliks/core/models/privacy_settings.dart';
 
 class AccountPrivacyPage extends StatefulWidget {
   const AccountPrivacyPage({super.key});
@@ -10,11 +13,6 @@ class AccountPrivacyPage extends StatefulWidget {
 }
 
 class _AccountPrivacyPageState extends State<AccountPrivacyPage> {
-  bool isPrivate = false;
-  bool hideProfile = false;
-  bool allowFollow = true;
-  bool showFollowers = true;
-
   Widget _privacyTile({
     required String label,
     required String subText,
@@ -73,6 +71,15 @@ class _AccountPrivacyPageState extends State<AccountPrivacyPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final provider = Provider.of<PrivacyProvider>(context);
+    final settings = provider.settings;
+
+    if (settings == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -86,37 +93,36 @@ class _AccountPrivacyPageState extends State<AccountPrivacyPage> {
                   CustomNavBar(title: 'Account Privacy'),
                 ],
               ),
-              // SizedBox(height: 30.h),
               _privacyTile(
                 label: 'Private account',
                 subText:
-                    'Switching to a private account lets you control who follows you and sees your profile. Only approved followers can view your profile.',
-                value: isPrivate,
-                onChanged: (val) => setState(() => isPrivate = val),
-                context: context,
-              ),
-              _privacyTile(
-                label: 'Hide my profile',
-                subText:
-                    'This allows you to hide your identity while you’re attending events. Your name and profile will be hidden once you’ve checked in.',
-                value: hideProfile,
-                onChanged: (val) => setState(() => hideProfile = val),
+                    'When enabled, only people you approve can follow you and see your full profile. New follow requests must be approved by you.',
+                value: settings.isPrivateAccount,
+                onChanged: (val) => provider.updateSettings(settings.copyWith(isPrivateAccount: val)),
                 context: context,
               ),
               _privacyTile(
                 label: 'Allow follow',
                 subText:
-                    'Switching to a private account lets you control who follows you and sees your profile. Only approved followers can view your profile.',
-                value: allowFollow,
-                onChanged: (val) => setState(() => allowFollow = val),
+                    'Allow others to send you follow requests. If disabled, no one new can request to follow you.',
+                value: settings.allowFollowing,
+                onChanged: (val) => provider.updateSettings(settings.copyWith(allowFollowing: val)),
                 context: context,
               ),
               _privacyTile(
                 label: 'Show followers / Following',
                 subText:
-                    'Switching to a private account lets you control who follows you and sees your profile. Only approved followers can view your profile.',
-                value: showFollowers,
-                onChanged: (val) => setState(() => showFollowers = val),
+                    'Control whether your followers and following lists are visible to others on your profile.',
+                value: settings.showFollowers,
+                onChanged: (val) => provider.updateSettings(settings.copyWith(showFollowers: val)),
+                context: context,
+              ),
+              _privacyTile(
+                label: 'Hide profile',
+                subText:
+                    'Hide your profile from search and public listings. You will not appear to other users while hidden.',
+                value: settings.isActive,
+                onChanged: (val) => provider.updateSettings(settings.copyWith(isActive: val)),
                 context: context,
               ),
             ],

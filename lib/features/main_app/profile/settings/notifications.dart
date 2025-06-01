@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kliks/shared/widgets/custom_navbar.dart';
+import 'package:provider/provider.dart';
+import 'package:kliks/core/providers/notifications_provider.dart';
 
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({super.key});
@@ -10,25 +12,33 @@ class NotificationsPage extends StatefulWidget {
 }
 
 class _NotificationsPageState extends State<NotificationsPage> {
-  // State for switches
-  bool nearbyEvent = true;
-  bool eventAnnouncement = true;
-  bool eventInvite = true;
-  bool newFollower = true;
-  bool profileView = false;
-  bool pointsEarning = true;
-  bool referralPoints = true;
+  // State for switches, will be set from provider
+  Map<String, bool> notificationSwitches = {};
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final provider = Provider.of<NotificationsProvider>(context, listen: false);
+      await provider.getNotificationSettings();
+      setState(() {
+        notificationSwitches = provider.notificationSwitches;
+        _loading = false;
+      });
+    });
+  }
 
   Widget _notificationTile({
     required String label,
     required String subText,
-    required bool value,
-    required ValueChanged<bool> onChanged,
+    required String notificationType,
     required BuildContext context,
+    required ValueChanged<bool> onChanged,
   }) {
     final theme = Theme.of(context);
     return InkWell(
-      onTap: () => onChanged(!value),
+      onTap: () => onChanged(!notificationSwitches[notificationType]!),
       borderRadius: BorderRadius.circular(12.r),
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 0.h),
@@ -64,7 +74,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
               ),
             ),
             Switch(
-              value: value,
+              value: notificationSwitches[notificationType] ?? false,
               onChanged: onChanged,
               activeColor: Color(0xffffbf00),
             ),
@@ -100,66 +110,101 @@ class _NotificationsPageState extends State<NotificationsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Top bar
-              Row(
-                children: [
-                  CustomNavBar(title: 'Notification Settings'),
-                ],
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                child: Row(
+                  children: [
+                    CustomNavBar(title: 'Notification Settings'),
+                  ],
+                ),
               ),
+              if (_loading)
+                const Center(child: CircularProgressIndicator()),
+              if (!_loading) ...[
               // Events Section
               _sectionTitle(context, 'Events'),
               _notificationTile(
                 label: 'Nearby event',
-                subText: 'Notifies you when there’s a new event near your location',
-                value: nearbyEvent,
-                onChanged: (val) => setState(() => nearbyEvent = val),
+                subText: 'Notifies you when there is a new event near your location',
+                notificationType: 'NearbyEvent',
                 context: context,
+                onChanged: (val) async {
+                  setState(() => notificationSwitches['NearbyEvent'] = val);
+                  final provider = Provider.of<NotificationsProvider>(context, listen: false);
+                  await provider.updateNotificationSetting(notificationType: 'NearbyEvent', isOn: val);
+                },
               ),
               _notificationTile(
                 label: 'Event announcement',
                 subText: 'Notifies you when there are changes to your booked event details',
-                value: eventAnnouncement,
-                onChanged: (val) => setState(() => eventAnnouncement = val),
+                notificationType: 'EventAnnouncement',
                 context: context,
+                onChanged: (val) async {
+                  setState(() => notificationSwitches['EventAnnouncement'] = val);
+                  final provider = Provider.of<NotificationsProvider>(context, listen: false);
+                  await provider.updateNotificationSetting(notificationType: 'EventAnnouncement', isOn: val);
+                },
               ),
               _notificationTile(
                 label: 'Event Invite',
                 subText: 'Notifies you when you get invited to an event',
-                value: eventInvite,
-                onChanged: (val) => setState(() => eventInvite = val),
+                notificationType: 'InviteEvent',
                 context: context,
+                onChanged: (val) async {
+                  setState(() => notificationSwitches['InviteEvent'] = val);
+                  final provider = Provider.of<NotificationsProvider>(context, listen: false);
+                  await provider.updateNotificationSetting(notificationType: 'InviteEvent', isOn: val);
+                },
               ),
               // People Section
               _sectionTitle(context, 'People'),
               _notificationTile(
                 label: 'New follower',
                 subText: 'Notifies you when someone follows you',
-                value: newFollower,
-                onChanged: (val) => setState(() => newFollower = val),
+                notificationType: 'Following',
                 context: context,
+                onChanged: (val) async {
+                  setState(() => notificationSwitches['Following'] = val);
+                  final provider = Provider.of<NotificationsProvider>(context, listen: false);
+                  await provider.updateNotificationSetting(notificationType: 'Following', isOn: val);
+                },
               ),
               _notificationTile(
                 label: 'Profile View',
                 subText: 'Notifies you when someone views your profile',
-                value: profileView,
-                onChanged: (val) => setState(() => profileView = val),
+                notificationType: 'CheckProfile',
                 context: context,
+                onChanged: (val) async {
+                  setState(() => notificationSwitches['CheckProfile'] = val);
+                  final provider = Provider.of<NotificationsProvider>(context, listen: false);
+                  await provider.updateNotificationSetting(notificationType: 'CheckProfile', isOn: val);
+                },
               ),
               // Points Section
               _sectionTitle(context, 'Points'),
               _notificationTile(
                 label: 'Points Earning',
                 subText: 'Notifies you when you earn points from events',
-                value: pointsEarning,
-                onChanged: (val) => setState(() => pointsEarning = val),
+                notificationType: 'Reward',
                 context: context,
+                onChanged: (val) async {
+                  setState(() => notificationSwitches['Reward'] = val);
+                  final provider = Provider.of<NotificationsProvider>(context, listen: false);
+                  await provider.updateNotificationSetting(notificationType: 'Reward', isOn: val);
+                },
               ),
               _notificationTile(
                 label: 'Referral points',
                 subText: 'Notifies you when you earn points from referrals',
-                value: referralPoints,
-                onChanged: (val) => setState(() => referralPoints = val),
+                notificationType: 'Referral',
                 context: context,
+                onChanged: (val) async {
+                  setState(() => notificationSwitches['Referral'] = val);
+                  final provider = Provider.of<NotificationsProvider>(context, listen: false);
+                  await provider.updateNotificationSetting(notificationType: 'Referral', isOn: val);
+                },
               ),
+              ],
             ],
           ),
         ),

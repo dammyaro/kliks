@@ -179,8 +179,7 @@ class _LoginPageState extends State<LoginPage> {
                 text: 'Continue with Google',
                 imagePath: 'assets/google_logo.png', 
                 onPressed: () {
-                  
-                  Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
+                  // Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
                 },
               ),
               SizedBox(height: 20.h), 
@@ -190,8 +189,7 @@ class _LoginPageState extends State<LoginPage> {
                     ? 'assets/apple_logo_white.png'
                     : 'assets/apple_logo_black.png', 
                 onPressed: () {
-                  
-                  Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
+                  // Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
                 },
               ),
               SizedBox(height: 40.h), 

@@ -4,6 +4,9 @@ import 'package:kliks/shared/widgets/custom_navbar.dart';
 import 'package:kliks/shared/widgets/text_form_widget.dart';
 import 'package:kliks/shared/widgets/button.dart';
 import 'package:random_avatar/random_avatar.dart';
+import 'package:provider/provider.dart';
+import 'package:kliks/core/providers/follow_provider.dart';
+import 'package:kliks/shared/widgets/profile_picture.dart';
 
 class PeoplePage extends StatefulWidget {
   const PeoplePage({super.key});
@@ -16,13 +19,33 @@ class _PeoplePageState extends State<PeoplePage> {
   int _tabIndex = 0;
   final TextEditingController _searchController = TextEditingController();
 
-  final List<Map<String, String>> people = [
-    {'name': 'Jane Doe', 'username': '@janedoe', 'avatarSeed': 'janedoe'},
-    {'name': 'Kunle A', 'username': '@kunlearo', 'avatarSeed': 'kunlearo'},
-    {'name': 'John Smith', 'username': '@johnsmith', 'avatarSeed': 'johnsmith'},
-    {'name': 'Ada Lovelace', 'username': '@adalovelace', 'avatarSeed': 'adalovelace'},
-    {'name': 'Sam Lee', 'username': '@samlee', 'avatarSeed': 'samlee'},
-  ];
+  List<Map<String, dynamic>> followingList = [];
+  List<Map<String, dynamic>> followersList = [];
+  bool _isLoading = false;
+  final Set<String> _loadingUserIds = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchFollowings();
+    _fetchFollowers();
+  }
+
+  Future<void> _fetchFollowings() async {
+    final provider = Provider.of<FollowProvider>(context, listen: false);
+    final followings = await provider.fetchFollowings();
+    setState(() {
+      followingList = followings.where((user) => user['isAccepted'] == true && user['userFollowed'] != null).toList();
+    });
+  }
+
+  Future<void> _fetchFollowers() async {
+    final provider = Provider.of<FollowProvider>(context, listen: false);
+    final followers = await provider.fetchFollowers();
+    setState(() {
+      followersList = followers.where((user) => user['isAccepted'] == true && user['userFollower'] != null).toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +54,8 @@ class _PeoplePageState extends State<PeoplePage> {
     Widget peopleTile({
       required String name,
       required String username,
-      required String avatarSeed,
+      required String? imageUrl,
+      required String? userId,
       required Widget action,
     }) {
       return Container(
@@ -43,10 +67,10 @@ class _PeoplePageState extends State<PeoplePage> {
         ),
         child: Row(
           children: [
-            RandomAvatar(
-              avatarSeed,
-              height: 44.sp,
-              width: 44.sp,
+            ProfilePicture(
+              fileName: imageUrl,
+              userId: userId ?? '',
+              size: 44.sp,
             ),
             SizedBox(width: 14.w),
             Expanded(
@@ -77,7 +101,7 @@ class _PeoplePageState extends State<PeoplePage> {
       );
     }
 
-    Widget buildTabContent({required Widget actionButton}) {
+    Widget buildTabContent({required Widget actionButton, required List<Map<String, dynamic>> dataList, required bool isFollowingTab}) {
       return Column(
         children: [
           TextFormWidget(
@@ -88,20 +112,157 @@ class _PeoplePageState extends State<PeoplePage> {
             onChanged: (val) => setState(() {}),
           ),
           SizedBox(height: 24.h),
-          ...people
-              .where((user) =>
-                  user['name']!.toLowerCase().contains(_searchController.text.toLowerCase()) ||
-                  user['username']!.toLowerCase().contains(_searchController.text.toLowerCase()))
+          ...dataList
+              .where((user) {
+                final displayName = isFollowingTab
+                  ? (user['userFollowed']?['fullname'] ?? '')
+                  : (user['userFollower']?['fullname'] ?? '');
+                final displayUsername = isFollowingTab
+                  ? (user['userFollowed']?['username'] ?? '')
+                  : (user['userFollower']?['username'] ?? '');
+                return displayName.toLowerCase().contains(_searchController.text.toLowerCase()) ||
+                  displayUsername.toLowerCase().contains(_searchController.text.toLowerCase());
+              })
               .map(
-                (user) => peopleTile(
-                  name: user['name']!,
-                  username: user['username']!,
-                  avatarSeed: user['avatarSeed']!,
-                  action: SizedBox(
-                    width: 110.w,
-                    child: actionButton,
-                  ),
-                ),
+                (user) {
+                  final display = _tabIndex == 2
+                    ? (user['userFollowed'] ?? user['userFollower'])
+                    : (isFollowingTab ? user['userFollowed'] : user['userFollower']);
+                  // For followers tab, check if this follower is also in followingList
+                  final isFollowersTab = !isFollowingTab && _tabIndex == 1;
+                  final isConnectionsTab = _tabIndex == 2;
+                  final isFollowingBack = followingList.any((f) =>
+                    f['userFollowed'] != null &&
+                    f['userFollowed']['id']?.toString() == display['id']?.toString()
+                  );
+                  return peopleTile(
+                    name: display['fullname'] ?? '',
+                    username: '@${display['username'] ?? ''}',
+                    imageUrl: display['image'],
+                    userId: display['id']?.toString(),
+                    action: SizedBox(
+                      width: 110.w,
+                      child: isFollowingTab
+                          ? Builder(
+                              builder: (context) => CustomButton(
+                                text: 'Unfollow',
+                                borderRadius: 10,
+                                isLoading: _loadingUserIds.contains(display['id']?.toString()),
+                                onPressed: _loadingUserIds.contains(display['id']?.toString()) ? null : () async {
+                                  final userId = display['id']?.toString();
+                                  if (userId == null) return;
+                                  setState(() {
+                                    _loadingUserIds.add(userId);
+                                  });
+                                  final provider = Provider.of<FollowProvider>(context, listen: false);
+                                  final success = await provider.unfollow(userId);
+                                  setState(() {
+                                    _loadingUserIds.remove(userId);
+                                  });
+                                  if (success) {
+                                    await _fetchFollowings();
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7),
+                                          child: Text('Unfollowed successfully'),
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7),
+                                          child: Text('Failed to unfollow'),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                                backgroundColor: Colors.transparent,
+                                hasBorder: true,
+                                textStyle: theme.textTheme.bodyMedium?.copyWith(
+                                  fontSize: 10.sp,
+                                  fontFamily: 'Metropolis-SemiBold',
+                                  color: theme.textTheme.bodyMedium?.color,
+                                ),
+                                height: 34.h,
+                              ),
+                            )
+                          : isFollowersTab
+                              ? (isFollowingBack
+                                  ? CustomButton(
+                                      text: 'Following',
+                                      onPressed: null,
+                                      backgroundColor: Colors.grey.shade600,
+                                      textStyle: theme.textTheme.bodyMedium?.copyWith(
+                                        fontSize: 10.sp,
+                                        fontFamily: 'Metropolis-SemiBold',
+                                        color: Colors.black,
+                                      ),
+                                      height: 34.h,
+                                    )
+                                  : CustomButton(
+                                      text: 'Follow back',
+                                      borderRadius: 10,
+                                      isLoading: _loadingUserIds.contains(display['id']?.toString()),
+                                      onPressed: _loadingUserIds.contains(display['id']?.toString()) ? null : () async {
+                                        final userId = display['id']?.toString();
+                                        if (userId == null) return;
+                                        setState(() {
+                                          _loadingUserIds.add(userId);
+                                        });
+                                        final provider = Provider.of<FollowProvider>(context, listen: false);
+                                        final success = await provider.followUser(userId);
+                                        setState(() {
+                                          _loadingUserIds.remove(userId);
+                                        });
+                                        if (success) {
+                                          await _fetchFollowings();
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Padding(
+                                                padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7),
+                                                child: Text('Followed back successfully'),
+                                              ),
+                                            ),
+                                          );
+                                        } else {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Padding(
+                                                padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7),
+                                                child: Text('Failed to follow back'),
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      backgroundColor: const Color(0xffbbd953),
+                                      textStyle: theme.textTheme.bodyMedium?.copyWith(
+                                        fontSize: 10.sp,
+                                        fontFamily: 'Metropolis-SemiBold',
+                                        color: Colors.black,
+                                      ),
+                                      height: 34.h,
+                                    ))
+                              : isConnectionsTab
+                                  ? CustomButton(
+                                      text: 'Following',
+                                      onPressed: null,
+                                      backgroundColor: Colors.grey.shade600,
+                                      textStyle: theme.textTheme.bodyMedium?.copyWith(
+                                        fontSize: 10.sp,
+                                        fontFamily: 'Metropolis-SemiBold',
+                                        color: Colors.black,
+                                      ),
+                                      height: 34.h,
+                                    )
+                                  : actionButton,
+                    ),
+                  );
+                },
               ),
         ],
       );
@@ -109,7 +270,7 @@ class _PeoplePageState extends State<PeoplePage> {
 
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 0.h),
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 0.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -235,6 +396,8 @@ class _PeoplePageState extends State<PeoplePage> {
                   ),
                   height: 34.h,
                 ),
+                dataList: followingList,
+                isFollowingTab: true,
               ),
             if (_tabIndex == 1)
               buildTabContent(
@@ -250,22 +413,32 @@ class _PeoplePageState extends State<PeoplePage> {
                   ),
                   height: 34.h,
                 ),
+                dataList: followersList,
+                isFollowingTab: false,
               ),
             if (_tabIndex == 2)
               buildTabContent(
-                actionButton: CustomButton(
-                  text: 'Unfollow',
-                  borderRadius: 10,
-                  onPressed: () {},
-                  backgroundColor: Colors.transparent,
-                  hasBorder: true,
-                  textStyle: theme.textTheme.bodyMedium?.copyWith(
-                    fontSize: 10.sp,
-                    fontFamily: 'Metropolis-SemiBold',
-                    color: theme.textTheme.bodyMedium?.color,
-                  ),
-                  height: 34.h,
-                ),
+                actionButton: SizedBox.shrink(),
+                dataList: followingList
+                    .where((followingUser) =>
+                        followersList.any((followerUser) =>
+                            followerUser['userFollower'] != null &&
+                            followingUser['userFollowed'] != null &&
+                            followerUser['userFollower']['id']?.toString() ==
+                                followingUser['userFollowed']['id']?.toString()))
+                    .map((user) => {
+                          'userFollower': followersList.firstWhere(
+                              (followerUser) =>
+                                  followerUser['userFollower'] != null &&
+                                  user['userFollowed'] != null &&
+                                  followerUser['userFollower']['id']?.toString() ==
+                                      user['userFollowed']['id']?.toString(),
+                              orElse: () => <String, dynamic>{}),
+                          'userFollowed': user['userFollowed'],
+                        })
+                    .where((user) => user['userFollowed'] != null)
+                    .toList(),
+                isFollowingTab: false,
               ),
           ],
         ),

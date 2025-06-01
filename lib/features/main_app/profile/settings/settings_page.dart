@@ -6,6 +6,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:kliks/shared/widgets/handle_bar.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:kliks/shared/widgets/custom_navbar.dart';
+import 'package:provider/provider.dart';
+import 'package:kliks/core/providers/auth_provider.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -82,6 +84,8 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final profile = Provider.of<AuthProvider>(context).profile;
+    // print('Profile: \\${profile}');
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -89,7 +93,7 @@ class SettingsPage extends StatelessWidget {
             children: [
               // Top bar
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 16.h),
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 16.h),
                 child: Row(
                   children: [
                     // IconButton(
@@ -511,7 +515,7 @@ class SettingsPage extends StatelessWidget {
                     isScrollControlled: true,
                     builder: (context) {
                       final theme = Theme.of(context);
-                      final inviteCode = "KLIKS1234"; // Replace with your logic if needed
+                      final inviteCode = profile != null && profile['myReferralCode'] != null ? profile['myReferralCode'] : "";
                       return Padding(
                         padding: EdgeInsets.only(
                           left: 30.w,
@@ -522,6 +526,8 @@ class SettingsPage extends StatelessWidget {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
+                            const HandleBar(),
+                            SizedBox(height: 5.h),
                             Center(
                               child: Text(
                                 'Referrals',

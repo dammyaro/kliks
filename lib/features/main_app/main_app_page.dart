@@ -172,8 +172,8 @@ class _MainAppPageState extends State<MainAppPage> {
                           : (_currentIndex == 4
                               ? 'assets/icons/activity-lightmode-active.png'
                               : 'assets/icons/activity-lightmode-inactive.png'),
-                      width: 24,
-                      height: 24,
+                      width: 24.w,
+                      height: 24.h,
                     ),
                   ),
                   label: 'Activities',

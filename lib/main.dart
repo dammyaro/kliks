@@ -7,6 +7,11 @@ import 'package:kliks/shared/widgets/theme_wrapper.dart';
 import 'package:kliks/core/di/service_locator.dart';
 import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/auth_provider.dart';
+import 'package:kliks/core/providers/follow_provider.dart';
+import 'package:kliks/core/providers/privacy_provider.dart';
+import 'package:kliks/core/services/privacy_service.dart';
+import 'package:kliks/core/providers/notifications_provider.dart';
+import 'package:kliks/core/providers/event_provider.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 
@@ -30,6 +35,17 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()..checkAuthStatus()),
+        ChangeNotifierProvider(create: (_) => FollowProvider()),
+        ChangeNotifierProvider(
+          create: (context) => PrivacyProvider(
+            PrivacyService(
+              locator(),
+              Provider.of<AuthProvider>(context, listen: false),
+            ),
+          )..loadSettings(),
+        ),
+        ChangeNotifierProvider(create: (_) => NotificationsProvider()),
+        ChangeNotifierProvider(create: (_) => EventProvider()),
         // Add other providers here if needed
       ],
       child: ScreenUtilInit(

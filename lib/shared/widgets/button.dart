@@ -49,11 +49,11 @@ class CustomButton extends StatelessWidget {
             ? Center(
                 child: loadingIndicator ??
                     SizedBox(
-                      height: 24,
-                      width: 24,
+                      height: (height != null && height! > 0) ? height! * 0.6 : 24,
+                      width: (height != null && height! > 0) ? height! * 0.6 : 24,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).scaffoldBackgroundColor),
+                        valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.onPrimary),
                       ),
                     ),
               )

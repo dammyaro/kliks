@@ -119,5 +119,51 @@ class ApiService {
   //   await _secureStorage.delete(key: 'is_verified');
   // }
 
+  Future<Response> getFollowers({
+    int limit = 10,
+    int offset = 0,
+    bool? isAccepted,
+    bool? isRejected,
+    String? searchName,
+  }) async {
+    final params = <String, dynamic>{
+      'limit': limit,
+      'offset': offset,
+      if (isAccepted != null) 'isAccepted': isAccepted,
+      if (isRejected != null) 'isRejected': isRejected,
+      if (searchName != null && searchName.isNotEmpty) 'searchName': searchName,
+    };
+    return await _dio.get('/auth/getFollowers', queryParameters: params);
   }
+
+  Future<Response> getFollowings({
+    int limit = 10,
+    int offset = 0,
+    bool? isAccepted,
+    bool? isRejected,
+    String? searchName,
+  }) async {
+    final params = <String, dynamic>{
+      'limit': limit,
+      'offset': offset,
+      if (isAccepted != null) 'isAccepted': isAccepted,
+      if (isRejected != null) 'isRejected': isRejected,
+      if (searchName != null && searchName.isNotEmpty) 'searchName': searchName,
+    };
+    return await _dio.get('/auth/getFollowings', queryParameters: params);
+  }
+
+  Future<Response> getSearchUser({
+    required String searchName,
+    int limit = 10,
+    int offset = 0,
+  }) async {
+    final params = <String, dynamic>{
+      'searchName': searchName,
+      'limit': limit,
+      'offset': offset,
+    };
+    return await _dio.get('/auth/searchUser', queryParameters: params);
+  }
+}
 
