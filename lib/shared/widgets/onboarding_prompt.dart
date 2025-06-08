@@ -27,31 +27,31 @@ class OnboardingPrompt extends StatelessWidget {
               "You're almost done!",
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     fontFamily: 'Metropolis-SemiBold',
-                    letterSpacing: -1,
-                    fontSize: 20.sp, 
+                    letterSpacing: -0.5,
+                    fontSize: 16.sp, 
                     color: Colors.black, 
-                    
                   ),
             ),
-            SizedBox(height: 8.h), 
+            SizedBox(height: 0.h), 
             Text(
               "Hi, let's get you a personalized experience on Kliks\nPlease continue by providing some details.",
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Colors.black.withOpacity(0.9),
                     letterSpacing: 0,
-                    fontSize: 13.sp, 
+                    fontSize: 10.sp, 
                   ),
             ),
             SizedBox(height: 10.h), 
             Align(
               alignment: Alignment.centerLeft, 
               child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.3, 
+                width: MediaQuery.of(context).size.width * 0.25, 
                 child: SmallButton(
                   text: 'Continue',
                   onPressed: () => _showBottomSheet(context), 
                   backgroundColor: Colors.black, 
                   textColor: Colors.white, 
+                  
                 ),
               ),
             ),

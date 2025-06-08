@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "768960251163",
+    "project_id": "kliks-38747",
+    "storage_bucket": "kliks-38747.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:768960251163:android:827fcd471f506b37313fbe",
+        "android_client_info": {
+          "package_name": "com.app.kliks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "768960251163-pr4b7cug4japu6628u4g87vpcnmvocf1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.kliks",
+            "certificate_hash": "e3921a36f6faa8f9bb69c6cd4559e83053d298c2"
+          }
+        },
+        {
+          "client_id": "768960251163-pvtghv1l5j6rj5u3fl4nvb6f7e0rn6ae.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.kliks",
+            "certificate_hash": "a554afe600dff758bda12df4d6fd26c6f6e1f962"
+          }
+        },
+        {
+          "client_id": "768960251163-9b0rogqieknuk9mj8cvfq3uighncsjc1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCam1uNr3Rq35z4qEy8ahoydjnwKTIvaSM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "768960251163-9b0rogqieknuk9mj8cvfq3uighncsjc1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "768960251163-li2pr1fq362kot2cl3i2f337daiio7us.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.app.kliks"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

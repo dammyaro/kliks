@@ -1,35 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EventFilter extends StatefulWidget {
-  const EventFilter({super.key});
+  final Function(String) onFilterChanged;
+  const EventFilter({super.key, required this.onFilterChanged});
 
   @override
   State<EventFilter> createState() => _EventFilterState();
 }
 
 class _EventFilterState extends State<EventFilter> {
-  bool isNearbySelected = false; 
-  bool isFollowingSelected = false; 
+  String selected = 'none';
+
+  void select(String filter) {
+    setState(() => selected = filter);
+    widget.onFilterChanged(filter);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15), 
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5), 
       color: Theme.of(context).scaffoldBackgroundColor, 
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start, 
         children: [
           
           GestureDetector(
-            onTap: () {
-              setState(() {
-          isNearbySelected = !isNearbySelected; 
-              });
-            },
+            onTap: () => select(selected == 'nearby' ? 'none' : 'nearby'),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10), 
               decoration: BoxDecoration(
-          color: isNearbySelected  ? Theme.of(context).primaryColor // Selected color (adapts to theme)
+          color: selected == 'nearby' ? Theme.of(context).primaryColor // Selected color (adapts to theme)
             : Theme.of(context).brightness == Brightness.light 
               ? Colors.grey[400] 
               : Colors.grey[700], // Unselected
@@ -38,10 +40,10 @@ class _EventFilterState extends State<EventFilter> {
               child: Text(
           'Nearby Events',
           style: TextStyle(
-            fontSize: 12,
+            fontSize: 10.sp,
             fontWeight: FontWeight.bold,
             letterSpacing: 0,
-            color: isNearbySelected ? Theme.of(context).scaffoldBackgroundColor// Text color when selected
+            color: selected == 'nearby' ? Theme.of(context).scaffoldBackgroundColor// Text color when selected
             : Theme.of(context).colorScheme.onSurface.withOpacity(0.7), // Unselected
           ),
               ),
@@ -53,15 +55,11 @@ class _EventFilterState extends State<EventFilter> {
 
           
           GestureDetector(
-            onTap: () {
-              setState(() {
-          isFollowingSelected = !isFollowingSelected; 
-              });
-            },
+            onTap: () => select(selected == 'following' ? 'none' : 'following'),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10), 
               decoration: BoxDecoration(
-          color: isFollowingSelected ? Theme.of(context).primaryColor // Selected color (adapts to theme)
+          color: selected == 'following' ? Theme.of(context).primaryColor // Selected color (adapts to theme)
           : Theme.of(context).brightness == Brightness.light 
               ? Colors.grey[400] 
               : Colors.grey[700], // Unselected
@@ -70,15 +68,43 @@ class _EventFilterState extends State<EventFilter> {
               child: Text(
           'Following',
           style: TextStyle(
-            fontSize: 12,
+            fontSize: 10.sp,
             fontWeight: FontWeight.bold,
             letterSpacing: 0,
-            color: isFollowingSelected ? Theme.of(context).scaffoldBackgroundColor// Text color when selected
+            color: selected == 'following' ? Theme.of(context).scaffoldBackgroundColor// Text color when selected
             : Theme.of(context).colorScheme.onSurface.withOpacity(0.7), // Unselected
           ),
               ),
             ),
           ),
+
+          
+          const SizedBox(width: 15), 
+
+          
+          // GestureDetector(
+          //   onTap: () => select(selected == 'attending' ? 'none' : 'attending'),
+          //   child: Container(
+          //     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10), 
+          //     decoration: BoxDecoration(
+          // color: selected == 'attending' ? Theme.of(context).primaryColor // Selected color (adapts to theme)
+          // : Theme.of(context).brightness == Brightness.light 
+          //     ? Colors.grey[400] 
+          //     : Colors.grey[700], // Unselected
+          // borderRadius: BorderRadius.circular(10), 
+          //     ),
+          //     child: Text(
+          // 'Attending',
+          // style: TextStyle(
+          //   fontSize: 10.sp,
+          //   fontWeight: FontWeight.bold,
+          //   letterSpacing: 0,
+          //   color: selected == 'attending' ? Theme.of(context).scaffoldBackgroundColor// Text color when selected
+          //   : Theme.of(context).colorScheme.onSurface.withOpacity(0.7), // Unselected
+          // ),
+          //     ),
+          //   ),
+          // ),
 
           
           const SizedBox(width: 15), 

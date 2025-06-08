@@ -98,7 +98,34 @@ class _DateTimePageState extends State<DateTimePage> {
 
   Widget _buildDoneButton() {
     return ElevatedButton(
-      onPressed: () => Navigator.pop(context),
+      onPressed: () {
+        // Combine date and time for start
+        DateTime? start;
+        if (_startDate != null && _startTime != null) {
+          start = DateTime(
+            _startDate!.year,
+            _startDate!.month,
+            _startDate!.day,
+            _startTime!.hour,
+            _startTime!.minute,
+          ).toUtc();
+        }
+        // Combine date and time for end
+        DateTime? end;
+        if (_endDate != null && _endTime != null) {
+          end = DateTime(
+            _endDate!.year,
+            _endDate!.month,
+            _endDate!.day,
+            _endTime!.hour,
+            _endTime!.minute,
+          ).toUtc();
+        }
+        Navigator.pop(context, {
+          'eventStart': start?.toIso8601String() ?? '',
+          'eventEnd': end?.toIso8601String() ?? '',
+        });
+      },
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xffbbd953),
         shape: RoundedRectangleBorder(

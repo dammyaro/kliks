@@ -146,7 +146,14 @@ class _GuestsPageState extends State<GuestsPage> {
 
   Widget _buildDoneButton({required VoidCallback onPressed}) {
     return ElevatedButton(
-      onPressed: onPressed,
+      onPressed: () {
+        int count = int.tryParse(_guestCountController.text) ?? 0;
+        Navigator.pop(context, {
+          'whoCanAttend': _guestType,
+          'ageLimit': _ageGroup,
+          'numberAttendeesLimit': count,
+        });
+      },
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xffbbd953),
 
@@ -243,7 +250,7 @@ class _GuestsPageState extends State<GuestsPage> {
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontSize: 20.sp,
                   fontFamily: 'Metropolis-SemiBold',
-                  letterSpacing: -1,
+                  letterSpacing: -0.5,
                 ),
                 ),
                 SizedBox(height: 8.h),

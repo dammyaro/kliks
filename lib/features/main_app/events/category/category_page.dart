@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'package:kliks/core/providers/event_provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});
@@ -11,19 +14,28 @@ class CategoryPage extends StatefulWidget {
 class _CategoryPageState extends State<CategoryPage> {
   final List<String> _selectedCategories = [];
 
-  final List<String> _categories = [
-    'Social & Networking',
-    'Food & Drinks',
-    'Family & Parenting',
-    'Education & Learning',
-    'Environment & Nature',
-    'Health & Wellness',
-    'Technology & Science',
-    'Sport & Fitness',
-    'Travel & Adventure',
-    'Fashion & Beauty',
-    'Arts & Culture'
-  ];
+  List<String> _categories = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCategories();
+  }
+
+  Future<void> _fetchCategories() async {
+    setState(() => _isLoading = true);
+    final eventProvider = Provider.of<EventProvider>(context, listen: false);
+    final cats = await eventProvider.getAllCategory();
+    setState(() {
+      _categories = cats.map<String>((cat) {
+        if (cat is String) return cat;
+        if (cat is Map && cat['category'] != null) return cat['category'].toString();
+        return '';
+      }).where((cat) => cat.isNotEmpty).toList();
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,11 +52,11 @@ class _CategoryPageState extends State<CategoryPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Selevt event category',
+                      'Select event category',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontSize: 18.sp,
+                        fontSize: 16.sp,
                         fontFamily: 'Metropolis-SemiBold',
-                        letterSpacing: -1,
+                        
                       ),
                     ),
                     _buildDoneButton(onPressed: () => Navigator.pop(context)),
@@ -52,34 +64,71 @@ class _CategoryPageState extends State<CategoryPage> {
                 ),
                 SizedBox(height: 20.h),
 
-              // Category selection list
-              ListView.separated(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: _categories.length,
-                separatorBuilder: (context, index) => Divider(
-                  height: 0.h,
-                  color: Colors.grey.withOpacity(0),
-                ),
-                itemBuilder: (context, index) {
-                  final category = _categories[index];
-                  final isSelected = _selectedCategories.contains(category);
-                  return _buildCategoryItem(
-                    context,
-                    category: category,
-                    isSelected: isSelected,
-                    onTap: () {
-                      setState(() {
-                        if (isSelected) {
-                          _selectedCategories.remove(category);
-                        } else {
-                          _selectedCategories.add(category);
-                        }
-                      });
-                    },
-                  );
-                },
-              ),
+              _isLoading
+                  ? Skeletonizer(
+                      enabled: true,
+                      child: ListView.separated(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: 8, // Show 8 skeleton items
+                        separatorBuilder: (context, index) => Divider(
+                          height: 0.h,
+                          color: Colors.grey.withOpacity(0),
+                        ),
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16.h),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  width: 14.w,
+                                  height: 14.h,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.grey[300],
+                                  ),
+                                ),
+                                SizedBox(width: 8.w),
+                                Expanded(
+                                  child: Container(
+                                    height: 16.h,
+                                    color: Colors.grey[300],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                  : ListView.separated(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: _categories.length,
+                      separatorBuilder: (context, index) => Divider(
+                        height: 0.h,
+                        color: Colors.grey.withOpacity(0),
+                      ),
+                      itemBuilder: (context, index) {
+                        final category = _categories[index];
+                        final isSelected = _selectedCategories.contains(category);
+                        return _buildCategoryItem(
+                          context,
+                          category: category,
+                          isSelected: isSelected,
+                          onTap: () {
+                            setState(() {
+                              if (isSelected) {
+                                _selectedCategories.remove(category);
+                              } else {
+                                _selectedCategories.add(category);
+                              }
+                            });
+                          },
+                        );
+                      },
+                    ),
             ],
           ),
         ),
@@ -89,7 +138,10 @@ class _CategoryPageState extends State<CategoryPage> {
 
     Widget _buildDoneButton({required VoidCallback onPressed}) {
     return ElevatedButton(
-      onPressed: onPressed,
+      onPressed: () {
+        // Return the first selected category, or empty string if none
+        Navigator.pop(context, _selectedCategories.isNotEmpty ? _selectedCategories.first : '');
+      },
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xffbbd953),
 
@@ -102,7 +154,7 @@ class _CategoryPageState extends State<CategoryPage> {
         'Done',
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
           color: Colors.black,
-          fontSize: 14.sp,
+          fontSize: 12.sp,
           fontFamily: 'Metropolis-SemiBold',
           letterSpacing: 0,
         ),
@@ -126,8 +178,8 @@ class _CategoryPageState extends State<CategoryPage> {
           children: [
             // Checkbox on the left
             Container(
-              width: 24.w,
-              height: 24.h,
+              width: 14.w,
+              height: 14.h,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: isSelected ? const Color(0xff27ae60) : Colors.transparent,
@@ -139,20 +191,20 @@ class _CategoryPageState extends State<CategoryPage> {
               child: isSelected
                   ? Icon(
                       Icons.check,
-                      size: 16.sp,
+                      size: 12.sp,
                       color: Colors.white,
                     )
                   : null,
             ),
-            SizedBox(width: 12.w),
+            SizedBox(width: 8.w),
             Expanded(
               child: Text(
                 category,
                 textAlign: TextAlign.left,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontSize: 16.sp,
+                      fontSize: 12.sp,
                       fontFamily: 'Metropolis-Regular',
-                      letterSpacing: -1,
+                      
                     ),
               ),
             ),

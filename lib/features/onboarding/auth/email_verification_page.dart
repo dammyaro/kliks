@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/gestures.dart';
 import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/auth_provider.dart';
+import 'package:kliks/shared/widgets/text_form_widget.dart';
 
 class EmailVerificationPage extends StatefulWidget {
   const EmailVerificationPage({super.key});
@@ -34,7 +35,15 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
         otp: otp,
       );
       if (success) {
-        Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
+        await authProvider.loadProfile();
+        final profile = authProvider.profile;
+        if (profile == null ||
+            (profile['fullname'] == null || profile['fullname'].toString().isEmpty) ||
+            (profile['username'] == null || profile['username'].toString().isEmpty)) {
+          Navigator.pushReplacementNamed(context, '/profile-setup');
+        } else {
+          Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Verification failed. Please try again.')),
@@ -81,7 +90,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 40.h),
+              // SizedBox(height: 40.h),
               Image.asset(
                 Theme.of(context).brightness == Brightness.light
                     ? 'assets/logo-inner.png'
@@ -124,27 +133,30 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
                 ),
               ),
               const SizedBox(height: 30),
-              TextFormField(
+              TextFormWidget(
+                name: 'verification_code',
                 controller: _verificationCodeController,
-                decoration: InputDecoration(
-                  labelText: 'Verification code',
-                  labelStyle: Theme.of(context).textTheme.labelSmall,
-                  contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w),
-                  filled: true,
-                  fillColor: Colors.white.withOpacity(0.03),
-                  border: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Color(0xFF3B3B3B)),
-                    borderRadius: BorderRadius.circular(30.r),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.r),
-                    borderSide: BorderSide(color: Color(0xFF3B3B3B).withOpacity(0.2)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.r),
-                    borderSide: const BorderSide(color: Color(0xFFBBD953)),
-                  ),
-                ),
+                labelText: 'Verification code',
+                
+                // decoration: InputDecoration(
+                //   labelText: 'Verification code',
+                //   labelStyle: Theme.of(context).textTheme.labelSmall,
+                //   contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w),
+                //   filled: true,
+                //   fillColor: Colors.white.withOpacity(0.03),
+                  // border: OutlineInputBorder(
+                  //   borderSide: const BorderSide(color: Color(0xFF3B3B3B)),
+                  //   borderRadius: BorderRadius.circular(30.r),
+                  // ),
+                  // enabledBorder: OutlineInputBorder(
+                  //   borderRadius: BorderRadius.circular(10.r),
+                  //   borderSide: BorderSide(color: Color(0xFF3B3B3B).withOpacity(0.2)),
+                  // ),
+                  // focusedBorder: OutlineInputBorder(
+                  //   borderRadius: BorderRadius.circular(10.r),
+                  //   borderSide: const BorderSide(color: Color(0xFFBBD953)),
+                  // ),
+                //),
               ),
               const SizedBox(height: 10),
               RichText(

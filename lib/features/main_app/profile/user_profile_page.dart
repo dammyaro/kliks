@@ -52,14 +52,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
       extraData = await authProvider.getUserById(userId);
     }
     fullname = extraData?['fullname'] ?? widget.userData['fullname'];
-    printWrapped('Fullname: ${fullname}');
+    printWrapped('Fullname: $fullname');
     setState(() {
       _extraUserData = extraData;
     });
     RequestStatus status = RequestStatus.notFollowing;
     if (fullname != null) {
       final followings = await followProvider.fetchFollowings(searchName: fullname);
-      printWrapped('Followings here: ${followings}');
+      printWrapped('Followings here: $followings');
       if (followings.isNotEmpty) {
         final following = followings.first;
         if (following['isAccepted'] == true) {
@@ -69,7 +69,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         }
       }
     }
-    printWrapped('Status: ${status}');
+    printWrapped('Status: $status');
     setState(() {
       _isExtraLoading = false;
       _requestStatus = status;
@@ -115,8 +115,21 @@ class _UserProfilePageState extends State<UserProfilePage> {
   @override
   Widget build(BuildContext context) {
     if (_isExtraLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+      return Scaffold(
+        body: Center(
+          child: SizedBox(
+            width: 20.w,
+            height: 20.w,
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(
+                Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+              ),
+              strokeWidth: 3,
+            ),
+          ),
+        ),
       );
     }
     final fullName = _extraUserData?['fullname'] ?? widget.userData['fullname'] ?? 'Kliks User';

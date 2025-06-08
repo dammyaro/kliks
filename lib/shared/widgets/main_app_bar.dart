@@ -113,6 +113,8 @@ class _MainAppBarState extends State<MainAppBar> {
                                 fontFamily: 'Metropolis-Medium',
                                 color: Colors.grey[500],
                               ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],

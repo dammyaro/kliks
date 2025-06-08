@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kliks/core/services/api_service.dart';
 import 'package:kliks/core/di/service_locator.dart';
+import 'package:provider/provider.dart';
+import 'package:kliks/core/providers/auth_provider.dart';
 
 class FollowProvider with ChangeNotifier {
   final ApiService _apiService;
@@ -175,6 +177,22 @@ class FollowProvider with ChangeNotifier {
       return response.statusCode == 200 || response.statusCode == 201;
     } catch (e) {
       print('unblockUser error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> isFollowingUser({required BuildContext context, required String targetUserId}) async {
+    try {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final profile = await authProvider.retrieveProfile();
+      final currentUserId = profile?['id'];
+      if (currentUserId == null) return false;
+      final followings = await fetchFollowings();
+      // print('Followings from IFU:');
+      // print(followings);
+      return followings.any((user) => user['followedUserId'].toString() == targetUserId);
+    } catch (e) {
+      print('isFollowingUser error: $e');
       return false;
     }
   }

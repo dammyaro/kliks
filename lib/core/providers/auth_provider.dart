@@ -5,6 +5,9 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:io';
 import 'package:geolocator/geolocator.dart';
 import 'package:kliks/core/services/media_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class AuthProvider with ChangeNotifier {
   final ApiService _apiService;
@@ -13,6 +16,7 @@ class AuthProvider with ChangeNotifier {
   String? currentEmail;
   Map<String, dynamic>? _profile;
   String? profilePictureFileName;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   AuthProvider({ApiService? apiService})
       : _apiService = apiService ?? locator<ApiService>();
@@ -175,12 +179,14 @@ class AuthProvider with ChangeNotifier {
           'otp': otp,
         },
       );
-      print('Verification response: $response');
+      printWrapped('Verification response: $response');
       final accessToken = response.data['token']?['access_token'];
-      final userId = response.data['user']['id'];
+      // final userId = response.data['user']['id'];
       print('Access token: $accessToken');
       if ((response.data['status'] == "success") && accessToken != null) {
         await _apiService.saveToken(accessToken);
+        final profile = await retrieveProfile();
+        final userId = profile?['id'];
         await _apiService.saveUserId(userId);
         loadProfile(); // Load profile after successful verification
         // await _apiService.saveIsVerified(true);
@@ -378,4 +384,142 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  /// Sign in with Google using Firebase Auth
+  Future<UserCredential?> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) {
+        // User cancelled the sign-in
+        return null;
+      }
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      final userCredential = await _firebaseAuth.signInWithCredential(credential);
+      // print('Google sign-in success: ${userCredential.user?.email}');
+      // print('UserCredential:');
+      // printWrapped('  user: ${userCredential.user}');
+      // printWrapped('  additionalUserInfo: ${userCredential.additionalUserInfo}');
+      // printWrapped('  credential: ${userCredential.credential}');
+      // final idToken = await userCredential.user?.getIdToken();
+      // printWrapped('Firebase ID Token: $idToken');
+      // final accessToken = await userCredential.user?.getIdTokenResult();
+      // printWrapped('Firebase Access Token: $accessToken');
+      _isAuthenticated = true;
+      notifyListeners();
+      return userCredential;
+    } catch (e) {
+      print('Google sign-in error: $e');
+      return null;
+    }
+  }
+
+  /// Sign in with Apple using Firebase Auth
+  Future<UserCredential?> signInWithApple() async {
+    try {
+      if (!Platform.isIOS) {
+        throw Exception('Apple Sign-In is only available on iOS');
+      }
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+      final oauthCredential = OAuthProvider("apple.com").credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+      );
+      final userCredential = await _firebaseAuth.signInWithCredential(oauthCredential);
+      _isAuthenticated = true;
+      notifyListeners();
+      return userCredential;
+    } catch (e) {
+      print('Apple sign-in error: $e');
+      return null;
+    }
+  }
+
+  Future<bool> oAuthLoginWithGoogle({
+    required String idToken,
+    String? email,
+    String? fullname,
+    String? username,
+    String? phone,
+    String? image,
+    String? gender,
+  }) async {
+    try {
+      // If only idToken is provided, treat as login. If any profile field is provided, treat as register.
+      final Map<String, dynamic> data = {"accessToken": idToken};
+      if ((email?.isNotEmpty ?? false) || (fullname?.isNotEmpty ?? false) || (username?.isNotEmpty ?? false) || (phone?.isNotEmpty ?? false) || (image?.isNotEmpty ?? false) || (gender?.isNotEmpty ?? false)) {
+        if (email != null) data["email"] = email;
+        if (fullname != null) data["fullname"] = fullname;
+        if (username != null) data["username"] = username;
+        if (phone != null) data["phone"] = phone;
+        if (image != null) data["image"] = image;
+        if (gender != null) data["gender"] = gender;
+      }
+      final response = await _apiService.post(
+        '/auth/oauthLogin',
+        data: data,
+      );
+      print('OAuth login response: ${response.data}');
+      final accessToken = response.data['token']?['access_token'];
+      if (accessToken != null) {
+        await _apiService.saveToken(accessToken);
+        final profile = await retrieveProfile();
+        final userId = profile?['id'];
+        await _apiService.saveUserId(userId);
+        loadProfile();
+        notifyListeners();
+      }
+      return response.statusCode == 200 || response.statusCode == 201;
+    } catch (e) {
+      print('OAuth login error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> oAuthLoginWithApple({
+    required String idToken,
+    String? email,
+    String? fullname,
+    String? username,
+    String? phone,
+    String? image,
+    String? gender,
+  }) async {
+    try {
+      final Map<String, dynamic> data = {"accessToken": idToken};
+      if ((email?.isNotEmpty ?? false) || (fullname?.isNotEmpty ?? false) || (username?.isNotEmpty ?? false) || (phone?.isNotEmpty ?? false) || (image?.isNotEmpty ?? false) || (gender?.isNotEmpty ?? false)) {
+        if (email != null) data["email"] = email;
+        if (fullname != null) data["fullname"] = fullname;
+        if (username != null) data["username"] = username;
+        if (phone != null) data["phone"] = phone;
+        if (image != null) data["image"] = image;
+        if (gender != null) data["gender"] = gender;
+      }
+      final response = await _apiService.post(
+        '/auth/oauthLogin',
+        data: data,
+      );
+      print('OAuth Apple login response: ${response.data}');
+      final accessToken = response.data['token']?['access_token'];
+      if (accessToken != null) {
+        await _apiService.saveToken(accessToken);
+        final profile = await retrieveProfile();
+        final userId = profile?['id'];
+        await _apiService.saveUserId(userId);
+        loadProfile();
+        notifyListeners();
+      }
+      return response.statusCode == 200 || response.statusCode == 201;
+    } catch (e) {
+      print('OAuth Apple login error: $e');
+      return false;
+    }
+  }
 }

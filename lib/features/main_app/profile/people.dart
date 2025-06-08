@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kliks/shared/widgets/custom_navbar.dart';
 import 'package:kliks/shared/widgets/text_form_widget.dart';
 import 'package:kliks/shared/widgets/button.dart';
-import 'package:random_avatar/random_avatar.dart';
 import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/follow_provider.dart';
 import 'package:kliks/shared/widgets/profile_picture.dart';
@@ -21,7 +20,7 @@ class _PeoplePageState extends State<PeoplePage> {
 
   List<Map<String, dynamic>> followingList = [];
   List<Map<String, dynamic>> followersList = [];
-  bool _isLoading = false;
+  final bool _isLoading = false;
   final Set<String> _loadingUserIds = {};
 
   @override
@@ -31,17 +30,17 @@ class _PeoplePageState extends State<PeoplePage> {
     _fetchFollowers();
   }
 
-  Future<void> _fetchFollowings() async {
+  Future<void> _fetchFollowings([String search = '']) async {
     final provider = Provider.of<FollowProvider>(context, listen: false);
-    final followings = await provider.fetchFollowings();
+    final followings = await provider.fetchFollowings(searchName: search);
     setState(() {
       followingList = followings.where((user) => user['isAccepted'] == true && user['userFollowed'] != null).toList();
     });
   }
 
-  Future<void> _fetchFollowers() async {
+  Future<void> _fetchFollowers([String search = '']) async {
     final provider = Provider.of<FollowProvider>(context, listen: false);
-    final followers = await provider.fetchFollowers();
+    final followers = await provider.fetchFollowers(searchName: search);
     setState(() {
       followersList = followers.where((user) => user['isAccepted'] == true && user['userFollower'] != null).toList();
     });
@@ -57,6 +56,7 @@ class _PeoplePageState extends State<PeoplePage> {
       required String? imageUrl,
       required String? userId,
       required Widget action,
+      required Map<String, dynamic> userData,
     }) {
       return Container(
         margin: EdgeInsets.only(bottom: 16.h),
@@ -67,21 +67,43 @@ class _PeoplePageState extends State<PeoplePage> {
         ),
         child: Row(
           children: [
-            ProfilePicture(
-              fileName: imageUrl,
-              userId: userId ?? '',
-              size: 44.sp,
+            GestureDetector(
+              onTap: () {
+                if (userId != null && userId.isNotEmpty) {
+                  Navigator.pushNamed(
+                    context,
+                    '/user-profile',
+                    arguments: userData,
+                  );
+                }
+              },
+              child: ProfilePicture(
+                fileName: imageUrl,
+                userId: userId ?? '',
+                size: 44.sp,
+              ),
             ),
             SizedBox(width: 14.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    name,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontSize: 14.sp,
-                      fontFamily: 'Metropolis-SemiBold',
+                  GestureDetector(
+                    onTap: () {
+                      if (userId != null && userId.isNotEmpty) {
+                        Navigator.pushNamed(
+                          context,
+                          '/user-profile',
+                          arguments: userData,
+                        );
+                      }
+                    },
+                    child: Text(
+                      name,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontSize: 14.sp,
+                        fontFamily: 'Metropolis-SemiBold',
+                      ),
                     ),
                   ),
                   SizedBox(height: 2.h),
@@ -109,7 +131,10 @@ class _PeoplePageState extends State<PeoplePage> {
             controller: _searchController,
             labelText: 'Search',
             prefixIcon: Icon(Icons.search_outlined, color: theme.iconTheme.color?.withOpacity(0.5)),
-            onChanged: (val) => setState(() {}),
+            onChanged: (val) {
+              _fetchFollowings(val ?? '');
+              _fetchFollowers(val ?? '');
+            },
           ),
           SizedBox(height: 24.h),
           ...dataList
@@ -140,6 +165,7 @@ class _PeoplePageState extends State<PeoplePage> {
                     username: '@${display['username'] ?? ''}',
                     imageUrl: display['image'],
                     userId: display['id']?.toString(),
+                    userData: display,
                     action: SizedBox(
                       width: 110.w,
                       child: isFollowingTab
@@ -275,108 +301,106 @@ class _PeoplePageState extends State<PeoplePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomNavBar(title: 'People'),
-            SizedBox(height: 5.h),
+            // SizedBox(height: 5.h),
             Column(
               children: [
                 Row(
-                children: [
-                  // Following - extreme left
-                  Expanded(
-                  child: GestureDetector(
-                    onTap: () => setState(() => _tabIndex = 0),
-                    child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                      'Following',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        fontSize: 13.sp,
-                        fontFamily: 'Metropolis-SemiBold',
-                        color: _tabIndex == 0
-                          ? const Color(0xffbbd953)
-                          : theme.textTheme.bodyMedium?.color,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    GestureDetector(
+                      onTap: () => setState(() => _tabIndex = 0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Following',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              fontSize: 13.sp,
+                              fontFamily: 'Metropolis-SemiBold',
+                              color: _tabIndex == 0
+                                  ? const Color(0xffbbd953)
+                                  : theme.textTheme.bodyMedium?.color,
+                            ),
+                          ),
+                          SizedBox(height: 6.h),
+                          Center(
+                            child: Container(
+                              height: 3.h,
+                              width: 36.w,
+                              decoration: BoxDecoration(
+                                color: _tabIndex == 0
+                                    ? const Color(0xffbbd953)
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(2.r),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      ),
-                      SizedBox(height: 6.h),
-                      Container(
-                      height: 3.h,
-                      width: 36.w,
-                      decoration: BoxDecoration(
-                        color: _tabIndex == 0
-                          ? const Color(0xffbbd953)
-                          : Colors.transparent,
-                        borderRadius: BorderRadius.circular(2.r),
-                      ),
-                      ),
-                    ],
                     ),
-                  ),
-                  ),
-                  // Followers - center
-                  Expanded(
-                  child: GestureDetector(
-                    onTap: () => setState(() => _tabIndex = 1),
-                    child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                      'Followers',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        fontSize: 13.sp,
-                        fontFamily: 'Metropolis-SemiBold',
-                        color: _tabIndex == 1
-                          ? const Color(0xffbbd953)
-                          : theme.textTheme.bodyMedium?.color,
+                    GestureDetector(
+                      onTap: () => setState(() => _tabIndex = 1),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Followers',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              fontSize: 13.sp,
+                              fontFamily: 'Metropolis-SemiBold',
+                              color: _tabIndex == 1
+                                  ? const Color(0xffbbd953)
+                                  : theme.textTheme.bodyMedium?.color,
+                            ),
+                          ),
+                          SizedBox(height: 6.h),
+                          Center(
+                            child: Container(
+                              height: 3.h,
+                              width: 36.w,
+                              decoration: BoxDecoration(
+                                color: _tabIndex == 1
+                                    ? const Color(0xffbbd953)
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(2.r),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      ),
-                      SizedBox(height: 6.h),
-                      Container(
-                      height: 3.h,
-                      width: 36.w,
-                      decoration: BoxDecoration(
-                        color: _tabIndex == 1
-                          ? const Color(0xffbbd953)
-                          : Colors.transparent,
-                        borderRadius: BorderRadius.circular(2.r),
-                      ),
-                      ),
-                    ],
                     ),
-                  ),
-                  ),
-                  // Connections - extreme right
-                  Expanded(
-                  child: GestureDetector(
-                    onTap: () => setState(() => _tabIndex = 2),
-                    child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                      'Connections',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        fontSize: 13.sp,
-                        fontFamily: 'Metropolis-SemiBold',
-                        color: _tabIndex == 2
-                          ? const Color(0xffbbd953)
-                          : theme.textTheme.bodyMedium?.color,
+                    GestureDetector(
+                      onTap: () => setState(() => _tabIndex = 2),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Connections',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              fontSize: 13.sp,
+                              fontFamily: 'Metropolis-SemiBold',
+                              color: _tabIndex == 2
+                                  ? const Color(0xffbbd953)
+                                  : theme.textTheme.bodyMedium?.color,
+                            ),
+                          ),
+                          SizedBox(height: 6.h),
+                          Center(
+                            child: Container(
+                              height: 3.h,
+                              width: 36.w,
+                              decoration: BoxDecoration(
+                                color: _tabIndex == 2
+                                    ? const Color(0xffbbd953)
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(2.r),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      ),
-                      SizedBox(height: 6.h),
-                      Container(
-                      height: 3.h,
-                      width: 36.w,
-                      decoration: BoxDecoration(
-                        color: _tabIndex == 2
-                          ? const Color(0xffbbd953)
-                          : Colors.transparent,
-                        borderRadius: BorderRadius.circular(2.r),
-                      ),
-                      ),
-                    ],
                     ),
-                  ),
-                  ),
-                ],
+                  ],
                 ),
               ],
             ),

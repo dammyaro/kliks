@@ -93,7 +93,7 @@ class SettingsPage extends StatelessWidget {
             children: [
               // Top bar
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 16.h),
+                padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 10.h),
                 child: Row(
                   children: [
                     // IconButton(

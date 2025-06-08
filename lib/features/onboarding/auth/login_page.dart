@@ -42,9 +42,17 @@ class _LoginPageState extends State<LoginPage> {
           password: _passwordController.text,
         );
         if (success) {
-            final isVerified = await authProvider.fetchIsVerified();
-            if (isVerified) {
-            Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
+          final isVerified = await authProvider.fetchIsVerified();
+          if (isVerified) {
+            await authProvider.loadProfile();
+            final profile = authProvider.profile;
+            if (profile == null ||
+                (profile['fullname'] == null || profile['fullname'].toString().isEmpty) ||
+                (profile['username'] == null || profile['username'].toString().isEmpty)) {
+              Navigator.pushReplacementNamed(context, '/profile-setup');
+            } else {
+              Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
+            }
           } else {
             Navigator.pushReplacementNamed(context, AppRoutes.emailVerification);
           }
@@ -178,8 +186,25 @@ class _LoginPageState extends State<LoginPage> {
               IconButtonWidget(
                 text: 'Continue with Google',
                 imagePath: 'assets/google_logo.png', 
-                onPressed: () {
-                  // Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
+                onPressed: () async {
+                  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                  final userCredential = await authProvider.signInWithGoogle();
+                  if (userCredential != null) {
+                    final idToken = await userCredential.user?.getIdToken();
+                    final accessToken = await userCredential.user?.getIdTokenResult();
+                    final success = await authProvider.oAuthLoginWithGoogle(idToken: accessToken?.token ?? '');
+                    if (success) {
+                      Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('OAuth login failed')),
+                      );
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Google sign-in failed')),
+                    );
+                  }
                 },
               ),
               SizedBox(height: 20.h), 
@@ -188,8 +213,24 @@ class _LoginPageState extends State<LoginPage> {
                 imagePath: Theme.of(context).brightness == Brightness.dark
                     ? 'assets/apple_logo_white.png'
                     : 'assets/apple_logo_black.png', 
-                onPressed: () {
-                  // Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
+                onPressed: () async {
+                  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                  final userCredential = await authProvider.signInWithApple();
+                  if (userCredential != null) {
+                    final idToken = await userCredential.user?.getIdToken();
+                    final success = await authProvider.oAuthLoginWithApple(idToken: idToken ?? '');
+                    if (success) {
+                      Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('OAuth Apple login failed')),
+                      );
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Apple sign-in failed')),
+                    );
+                  }
                 },
               ),
               SizedBox(height: 40.h), 
@@ -198,7 +239,7 @@ class _LoginPageState extends State<LoginPage> {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: 'Don’t have an account? ',
+                        text: 'Don\'t have an account? ',
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                       TextSpan(

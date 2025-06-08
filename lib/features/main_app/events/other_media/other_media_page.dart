@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class OtherMediaPage extends StatefulWidget {
   const OtherMediaPage({super.key});
@@ -43,7 +44,11 @@ class _OtherMediaPageState extends State<OtherMediaPage> {
                       icon: const Icon(Icons.arrow_back),
                       onPressed: () => Navigator.pop(context),
                     ),
-                    _buildDoneButton(onPressed: () => Navigator.pop(context)),
+                    _buildDoneButton(onPressed: () {
+                      // Return only the non-null picked images as XFile
+                      final pickedImages = _images.where((img) => img != null).map((img) => XFile(img!.path)).toList();
+                      Navigator.pop(context, pickedImages);
+                    }),
                     // SmallButton(
                     //   text: "Done",
                     //   onPressed: () {
@@ -130,7 +135,6 @@ class _OtherMediaPageState extends State<OtherMediaPage> {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xffbbd953),
-
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.r),
         ),

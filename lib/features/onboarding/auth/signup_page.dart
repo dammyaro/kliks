@@ -9,6 +9,7 @@ import 'package:kliks/shared/widgets/icon_button.dart';
 import 'package:kliks/shared/widgets/text_form_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/auth_provider.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -242,8 +243,47 @@ class _SignupPageState extends State<SignupPage> {
                       IconButtonWidget(
                         text: 'Sign in with Google',
                         imagePath: 'assets/google_logo.png',
-                        onPressed: () {
-                          // Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
+                        onPressed: () async {
+                          final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                          final userCredential = await authProvider.signInWithGoogle();
+                          if (userCredential != null) {
+                            final user = userCredential.user;
+                            // final googleAuth = await userCredential.user?.getIdTokenResult();
+                            // final accessToken = (await GoogleSignIn().currentUser?.authentication)?.accessToken;
+
+                            final idToken = await userCredential.user?.getIdToken();
+                            final accessToken = await userCredential.user?.getIdTokenResult();
+
+                            // You may need to get these fields from user or prompt the user for missing info
+                            final email = user?.email ?? '';
+                            final fullname = user?.displayName ?? '';
+                            final username = user?.displayName?.replaceAll(' ', '').toLowerCase() ?? '';
+                            final phone = user?.phoneNumber ?? '';
+                            final image = user?.photoURL ?? '';
+                            final gender = ''; // You may need to prompt the user for this
+
+                            final success = await authProvider.oAuthLoginWithGoogle(
+                              idToken: accessToken?.token ?? '',
+                              email: email,
+                              fullname: fullname,
+                              username: username,
+                              phone: phone,
+                              image: image,
+                              gender: gender,
+                            );
+
+                            if (success) {
+                              Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('OAuth login failed')),
+                              );
+                            }
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Google sign-in failed')),
+                            );
+                          }
                         },
                       ),
                       SizedBox(height: 20.h),
@@ -252,8 +292,24 @@ class _SignupPageState extends State<SignupPage> {
                         imagePath: Theme.of(context).brightness == Brightness.dark
                             ? 'assets/apple_logo_white.png'
                             : 'assets/apple_logo_black.png',
-                        onPressed: () {
-                          // Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
+                        onPressed: () async {
+                          final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                          final userCredential = await authProvider.signInWithApple();
+                          if (userCredential != null) {
+                            final idToken = await userCredential.user?.getIdToken();
+                            final success = await authProvider.oAuthLoginWithApple(idToken: idToken ?? '');
+                            if (success) {
+                              Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('OAuth Apple login failed')),
+                              );
+                            }
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Apple sign-in failed')),
+                            );
+                          }
                         },
                       ),
                       SizedBox(height: 20.h),

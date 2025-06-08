@@ -56,8 +56,8 @@ class _ContactSupportPageState extends State<ContactSupportPage> {
         onTap: onTap,
         borderRadius: BorderRadius.circular(12.r),
         child: Container(
-          margin: EdgeInsets.symmetric(vertical: 8.h),
-          padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 10.h),
+          margin: EdgeInsets.symmetric(vertical: 0.h),
+          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
           decoration: BoxDecoration(
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(12.r),
@@ -154,7 +154,7 @@ class _ContactSupportPageState extends State<ContactSupportPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomNavBar(title: 'Contact support'),
-              SizedBox(height: 5.h),
+              // SizedBox(height: 5.h),
               Text(
                 'You can get in touch with us through the platforms below. Our team will reach out to you as soon as possible',
                 style: theme.textTheme.bodySmall?.copyWith(

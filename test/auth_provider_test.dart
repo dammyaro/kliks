@@ -18,14 +18,13 @@ void main() {
       when(mockApiService.post(any, data: anyNamed('data'))).thenAnswer(
         (_) async => Response(
           data: {
-            'user': {'id': '123', 'isVerified': true}
+            'user': {'id': '123'}
           },
           statusCode: 200,
           requestOptions: RequestOptions(path: '/auth/signup'),
         ),
       );
       when(mockApiService.saveToken(any)).thenAnswer((_) async => {});
-      when(mockApiService.saveIsVerified(any)).thenAnswer((_) async => {});
 
       final result = await authProvider.register(
         email: 'test@test.com',
@@ -36,21 +35,19 @@ void main() {
       );
       expect(result, true);
       expect(authProvider.isAuthenticated, true);
-      expect(authProvider.isVerified, true);
     });
 
     test('login returns true on success', () async {
       when(mockApiService.post(any, data: anyNamed('data'))).thenAnswer(
         (_) async => Response(
           data: {
-            'user': {'id': '123', 'isVerified': true}
+            'user': {'id': '123'}
           },
           statusCode: 200,
           requestOptions: RequestOptions(path: '/auth/login'),
         ),
       );
       when(mockApiService.saveToken(any)).thenAnswer((_) async => {});
-      when(mockApiService.saveIsVerified(any)).thenAnswer((_) async => {});
 
       final result = await authProvider.login(
         email: 'test@test.com',
@@ -58,7 +55,6 @@ void main() {
       );
       expect(result, true);
       expect(authProvider.isAuthenticated, true);
-      expect(authProvider.isVerified, true);
     });
 
     test('verifyEmail returns true on success', () async {
@@ -69,14 +65,12 @@ void main() {
           requestOptions: RequestOptions(path: '/verify'),
         ),
       );
-      when(mockApiService.saveIsVerified(any)).thenAnswer((_) async => {});
 
       final result = await authProvider.verifyEmail(
         email: 'test@test.com',
         otp: '123456',
       );
       expect(result, true);
-      expect(authProvider.isVerified, true);
     });
 
     test('resendOtp returns true on success', () async {
@@ -93,30 +87,25 @@ void main() {
 
     test('logout resets auth state', () async {
       when(mockApiService.clearToken()).thenAnswer((_) async => {});
-      when(mockApiService.clearIsVerified()).thenAnswer((_) async => {});
 
       authProvider.setCurrentEmail('test@test.com');
       // Set authentication state using a public method or by calling checkAuthStatus if available
       // For testing, you may need to mock getToken/getIsVerified or add a test-only setter in AuthProvider
       when(mockApiService.getToken()).thenAnswer((_) async => 'token');
-      when(mockApiService.getIsVerified()).thenAnswer((_) async => true);
       await authProvider.checkAuthStatus();
 
       await authProvider.logout();
 
       expect(authProvider.isAuthenticated, false);
-      expect(authProvider.isVerified, false);
       expect(authProvider.currentEmail, 'test@test.com'); // currentEmail is not cleared in logout
     });
 
     test('checkAuthStatus sets auth state', () async {
       when(mockApiService.getToken()).thenAnswer((_) async => 'token');
-      when(mockApiService.getIsVerified()).thenAnswer((_) async => true);
 
       await authProvider.checkAuthStatus();
 
       expect(authProvider.isAuthenticated, true);
-      expect(authProvider.isVerified, true);
     });
 
     test('setCurrentEmail sets the email', () {

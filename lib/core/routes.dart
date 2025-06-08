@@ -4,6 +4,7 @@ import 'package:kliks/features/onboarding/auth/email_verification_page.dart';
 import 'package:kliks/features/onboarding/auth/login_page.dart';
 import 'package:kliks/features/onboarding/auth/signup_page.dart';
 import 'package:kliks/features/onboarding/onboarding_page.dart';
+import 'package:kliks/features/onboarding/profile_setup_page.dart';
 import 'package:kliks/features/onboarding/splash_screen.dart';
 import 'package:kliks/features/guest_app/guest_app_page.dart';
 import 'package:kliks/features/main_app/profile/profile_page.dart';
@@ -36,6 +37,8 @@ import 'package:kliks/features/main_app/profile/people.dart';
 import 'package:kliks/features/main_app/profile/settings/verification/selfie_verification.dart';
 import 'package:kliks/features/main_app/search/search_page.dart';
 import 'package:kliks/features/main_app/profile/user_profile_page.dart';
+import 'package:kliks/features/main_app/events/event_detail_page.dart';
+
 
 
 
@@ -79,7 +82,8 @@ class AppRoutes {
   static const String selfieVerification = '/selfie-verification';
   static const String search = '/search';
   static const String userProfile = '/user-profile';
-
+  static const String eventDetail = '/event-detail';
+  static const String profileSetup = '/profile-setup';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -157,6 +161,10 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const SearchPage());
       case userProfile:
         return MaterialPageRoute(builder: (_) => UserProfilePage(userData: settings.arguments as Map<String, dynamic>));
+      case eventDetail:
+        return MaterialPageRoute(builder: (_) => EventDetailPage(eventId: settings.arguments as String));
+      case profileSetup:
+        return MaterialPageRoute(builder: (_) => const ProfileSetupPage());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

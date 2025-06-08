@@ -5,10 +5,8 @@ import 'package:kliks/core/providers/auth_provider.dart'; // Update this import 
 import 'package:share_plus/share_plus.dart';
 import 'package:kliks/shared/widgets/handle_bar.dart';
 import 'package:kliks/shared/widgets/custom_navbar.dart';
-import 'package:random_avatar/random_avatar.dart';
 import 'package:kliks/shared/widgets/button.dart';
 import 'package:kliks/shared/widgets/profile_picture.dart';
-import 'package:kliks/core/utils/print_wrapped.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -34,18 +32,18 @@ class ProfilePage extends StatelessWidget {
           children: [
             SizedBox(height: 10.h),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.w),
+              padding: EdgeInsets.symmetric(horizontal: 5.w),
               child: Row(
                 children: [
                   CustomNavBar(title: 'My Profile'),
                 ],
               ),
             ),
-            SizedBox(height: 25.h),
+            SizedBox(height: 0.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                     GestureDetector(
                       onTap: () {
@@ -99,7 +97,7 @@ class ProfilePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                  SizedBox(width: 16.w),
+                  SizedBox(width: 10.w),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,15 +105,15 @@ class ProfilePage extends StatelessWidget {
                         Row(
                             children: [
                             Text(
-                              fullName.length > 12
+                              fullName.length > 10
                                 ? '${fullName.substring(0, 10)}...'
                                 : fullName,
                               style: Theme.of(
                               context,
                               ).textTheme.bodyLarge?.copyWith(
-                              fontSize: 18.sp,
+                              fontSize: 16.sp,
                               fontFamily: 'Metropolis-SemiBold',
-                              letterSpacing: 0,
+                              letterSpacing: -1,
                               ),
                             ),
                             SizedBox(width: 4.w),
@@ -140,7 +138,7 @@ class ProfilePage extends StatelessWidget {
                               child: Text(
                                 'Verify',
                                 style: TextStyle(
-                                fontSize: 12.sp,
+                                fontSize: 6.sp,
                                 fontFamily: 'Metropolis-SemiBold',
                                 color: Colors.green,
                                 ),
@@ -446,7 +444,7 @@ class ProfilePage extends StatelessWidget {
             SizedBox(height: 24.h),
             Divider(height: 32.h, thickness: 1),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5.w),
+              padding: EdgeInsets.symmetric(horizontal: 10.w),
               child: Column(
                 children: [
                   Row(
@@ -508,7 +506,7 @@ class ProfilePage extends StatelessWidget {
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
             fontSize: 14.sp,
             fontFamily: 'Metropolis-Regular',
-            letterSpacing: -1,
+            letterSpacing: -0.5,
             color: Theme.of(
               context,
             ).textTheme.bodySmall?.color?.withOpacity(0.6),
@@ -520,7 +518,7 @@ class ProfilePage extends StatelessWidget {
 
   Widget _buildSection(BuildContext context, String title, String content) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 5.w),
+      padding: EdgeInsets.symmetric(horizontal: 10.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -740,7 +738,7 @@ class ProfilePage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.only(left: 5.w),
+            padding: EdgeInsets.only(left: 10.w),
             child: Row(
               children: [
                 Text(

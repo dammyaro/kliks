@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kliks/shared/widgets/main_app_bar.dart';
-import 'package:kliks/shared/widgets/event_filter.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class GuestHomePage extends StatelessWidget {
@@ -14,7 +13,7 @@ class GuestHomePage extends StatelessWidget {
           SizedBox(height: 20.h), 
           const MainAppBar(isGuest: true), 
           SizedBox(height: 5.h), 
-          const EventFilter(),
+          // const EventFilter(),
           Expanded(
             child: DefaultTabController(
               length: 4,
@@ -39,12 +38,6 @@ class GuestHomePage extends StatelessWidget {
                         return Column(
                           children: [
                             SizedBox(height: 20.h),
-                            
-                            
-                            
-                            
-                            
-                            
                             Expanded(
                               child: Center(
                                 child: Column(

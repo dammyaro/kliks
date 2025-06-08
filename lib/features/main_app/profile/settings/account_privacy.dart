@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kliks/shared/widgets/custom_navbar.dart';
 import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/privacy_provider.dart';
-import 'package:kliks/core/models/privacy_settings.dart';
 
 class AccountPrivacyPage extends StatefulWidget {
   const AccountPrivacyPage({super.key});
@@ -25,8 +24,8 @@ class _AccountPrivacyPageState extends State<AccountPrivacyPage> {
       onTap: () => onChanged(!value),
       borderRadius: BorderRadius.circular(12.r),
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 8.h),
-        padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 5.w),
+        margin: EdgeInsets.symmetric(vertical: 0.h),
+        padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 10.w),
         decoration: BoxDecoration(
           color: Colors.transparent,
           borderRadius: BorderRadius.circular(12.r),
@@ -73,17 +72,36 @@ class _AccountPrivacyPageState extends State<AccountPrivacyPage> {
     final theme = Theme.of(context);
     final provider = Provider.of<PrivacyProvider>(context);
     final settings = provider.settings;
+    final isLoading = provider.isLoading;
 
+    if (isLoading) {
+      return Scaffold(
+        body: Center(
+          child: SizedBox(
+            width: 20.w,
+            height: 20.w,
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(
+                Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+              ),
+              strokeWidth: 3,
+            ),
+          ),
+        ),
+      );
+    }
     if (settings == null) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+      return Scaffold(
+        body: Center(child: Text('Failed to load settings')),
       );
     }
 
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 10.h),
+          padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

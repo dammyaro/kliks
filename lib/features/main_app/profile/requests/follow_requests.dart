@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kliks/shared/widgets/custom_navbar.dart';
 import 'package:kliks/shared/widgets/button.dart';
-import 'package:random_avatar/random_avatar.dart';
 import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/follow_provider.dart';
 import 'package:kliks/shared/widgets/profile_picture.dart';
@@ -59,6 +58,7 @@ class _FollowRequestsPageState extends State<FollowRequestsPage> {
       required List<Widget> actions,
       String? imageUrl,
       String? userId,
+      required Map<String, dynamic> userData,
     }) {
       return Container(
         margin: EdgeInsets.only(bottom: 16.h),
@@ -69,21 +69,43 @@ class _FollowRequestsPageState extends State<FollowRequestsPage> {
         ),
         child: Row(
           children: [
-            ProfilePicture(
-              fileName: imageUrl,
-              userId: userId ?? '',
-              size: 44.sp,
+            GestureDetector(
+              onTap: () {
+                if (userId != null && userId.isNotEmpty) {
+                  Navigator.pushNamed(
+                    context,
+                    '/user-profile',
+                    arguments: userData,
+                  );
+                }
+              },
+              child: ProfilePicture(
+                fileName: imageUrl,
+                userId: userId ?? '',
+                size: 44.sp,
+              ),
             ),
             SizedBox(width: 14.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    name,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontSize: 12.sp,
-                      fontFamily: 'Metropolis-SemiBold',
+                  GestureDetector(
+                    onTap: () {
+                      if (userId != null && userId.isNotEmpty) {
+                        Navigator.pushNamed(
+                          context,
+                          '/user-profile',
+                          arguments: userData,
+                        );
+                      }
+                    },
+                    child: Text(
+                      name,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontSize: 12.sp,
+                        fontFamily: 'Metropolis-SemiBold',
+                      ),
                     ),
                   ),
                   SizedBox(height: 2.h),
@@ -181,7 +203,22 @@ class _FollowRequestsPageState extends State<FollowRequestsPage> {
               ),
               SizedBox(height: 24.h),
               if (_isLoading)
-                Center(child: CircularProgressIndicator())
+                Expanded(
+                  child: Center(
+                    child: SizedBox(
+                      width: 20.w,
+                      height: 20.w,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                        strokeWidth: 3,
+                      ),
+                    ),
+                  ),
+                )
               else if (_tabIndex == 0)
                 ...receivedRequests
                   .where((user) => user['isAccepted'] == false && user['userFollower'] != null)
@@ -194,6 +231,7 @@ class _FollowRequestsPageState extends State<FollowRequestsPage> {
                       avatarSeed: follower['username'] ?? '',
                       imageUrl: follower['image'],
                       userId: followerUserId,
+                      userData: follower,
                       actions: [
                         SizedBox(
                           width: 50.w,
@@ -270,6 +308,7 @@ class _FollowRequestsPageState extends State<FollowRequestsPage> {
                       avatarSeed: following['username'] ?? '',
                       imageUrl: following['image'],
                       userId: followingUserId,
+                      userData: following,
                       actions: [
                         SizedBox(
                           width: 110.w,

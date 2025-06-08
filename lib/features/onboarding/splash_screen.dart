@@ -3,6 +3,7 @@ import 'package:kliks/core/routes.dart';
 import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/auth_provider.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:geolocator/geolocator.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -20,6 +21,30 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _checkAuthAndNavigate() async {
     await Future.delayed(const Duration(seconds: 2));
+    // 1. Check location permission
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+      permission = await Geolocator.requestPermission();
+      // If still denied, show a dialog and do not proceed
+      if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+        await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Location Required'),
+            content: const Text('Location access is required to use this app.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+        // Try again
+        return _checkAuthAndNavigate();
+      }
+    }
+
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     await authProvider.checkAuthStatus();
 
@@ -45,6 +70,12 @@ class _SplashScreenState extends State<SplashScreen> {
 
     // Token exists and is valid, load profile then go to main page
     await authProvider.loadProfile();
+    final profile = authProvider.profile;
+    if (profile == null || (profile['fullname'] == null || profile['fullname'].toString().isEmpty) || (profile['username'] == null || profile['username'].toString().isEmpty)) {
+      // Redirect to profile setup page
+      Navigator.pushReplacementNamed(context, '/profile-setup');
+      return;
+    }
     Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
   }
 

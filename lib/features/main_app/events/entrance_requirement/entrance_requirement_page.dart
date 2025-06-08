@@ -102,11 +102,17 @@ class _EntranceRequirementPageState extends State<EntranceRequirementPage> {
                 ),
                 SizedBox(height: 24.h),
                 // Points text field
-                TextFormWidget(
-                  name: 'points',
-                  controller: _pointsController,
-                  labelText: 'Points',
-                  keyboardType: TextInputType.number,
+                AbsorbPointer(
+                  absorbing: !_activated,
+                  child: Opacity(
+                    opacity: _activated ? 1.0 : 0.5,
+                    child: TextFormWidget(
+                      name: 'points',
+                      controller: _pointsController,
+                      labelText: 'Points',
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -118,7 +124,14 @@ class _EntranceRequirementPageState extends State<EntranceRequirementPage> {
 
   Widget _buildDoneButton({required VoidCallback onPressed}) {
     return ElevatedButton(
-      onPressed: onPressed,
+      onPressed: () {
+        int points = int.tryParse(_pointsController.text) ?? 1;
+        if (!_activated) points = 0;
+        Navigator.pop(context, {
+          'isRequirePoints': _activated,
+          'attendEventPoint': points,
+        });
+      },
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xffbbd953),
         shape: RoundedRectangleBorder(

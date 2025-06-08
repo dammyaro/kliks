@@ -42,7 +42,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
       borderRadius: BorderRadius.circular(12.r),
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 0.h),
-        padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 0.w),
+        padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 10.w),
         decoration: BoxDecoration(
           color: Colors.transparent,
           borderRadius: BorderRadius.circular(12.r),
@@ -87,7 +87,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   Widget _sectionTitle(BuildContext context, String title) {
     final theme = Theme.of(context);
     return Padding(
-      padding: EdgeInsets.only(top: 10.h, bottom: 8.h),
+      padding: EdgeInsets.only(top: 10.h, bottom: 8.h, left: 10.h),
       child: Text(
         title,
         style: theme.textTheme.bodySmall?.copyWith(
@@ -111,7 +111,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
             children: [
               // Top bar
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                padding: EdgeInsets.symmetric(horizontal: 5.w),
                 child: Row(
                   children: [
                     CustomNavBar(title: 'Notification Settings'),
@@ -119,7 +119,23 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 ),
               ),
               if (_loading)
-                const Center(child: CircularProgressIndicator()),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.7,
+                  child: Center(
+                    child: SizedBox(
+                      width: 20.w,
+                      height: 20.w,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                        strokeWidth: 3,
+                      ),
+                    ),
+                  ),
+                ),
               if (!_loading) ...[
               // Events Section
               _sectionTitle(context, 'Events'),

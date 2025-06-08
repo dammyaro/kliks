@@ -11,7 +11,7 @@ class CustomNavBar extends StatelessWidget implements PreferredSizeWidget {
     final theme = Theme.of(context);
     return SafeArea(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 10.h),
+        padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 5.h),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [

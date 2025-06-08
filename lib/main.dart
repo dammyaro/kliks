@@ -12,11 +12,17 @@ import 'package:kliks/core/providers/privacy_provider.dart';
 import 'package:kliks/core/services/privacy_service.dart';
 import 'package:kliks/core/providers/notifications_provider.dart';
 import 'package:kliks/core/providers/event_provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
 
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   setupLocator();
   runApp(
     DevicePreview(
