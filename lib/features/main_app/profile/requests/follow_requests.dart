@@ -80,9 +80,9 @@ class _FollowRequestsPageState extends State<FollowRequestsPage> {
                 }
               },
               child: ProfilePicture(
-                fileName: imageUrl,
-                userId: userId ?? '',
-                size: 44.sp,
+              fileName: imageUrl,
+              userId: userId ?? '',
+              size: 44.sp,
               ),
             ),
             SizedBox(width: 14.w),
@@ -101,10 +101,10 @@ class _FollowRequestsPageState extends State<FollowRequestsPage> {
                       }
                     },
                     child: Text(
-                      name,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        fontSize: 12.sp,
-                        fontFamily: 'Metropolis-SemiBold',
+                    name,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontSize: 12.sp,
+                      fontFamily: 'Metropolis-SemiBold',
                       ),
                     ),
                   ),
@@ -245,11 +245,11 @@ class _FollowRequestsPageState extends State<FollowRequestsPage> {
                                 await _fetchFollowers();
                                 await _fetchFollowings();
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Request rejected')),
+                                  const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Request rejected'))),
                                 );
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Failed to reject request')),
+                                  const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Failed to reject request'))),
                                 );
                               }
                             },
@@ -276,11 +276,11 @@ class _FollowRequestsPageState extends State<FollowRequestsPage> {
                                 await _fetchFollowers();
                                 await _fetchFollowings();
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Request accepted')),
+                                  const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Request accepted'))),
                                 );
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Failed to accept request')),
+                                  const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Failed to accept request'))),
                                 );
                               }
                             },
@@ -321,11 +321,11 @@ class _FollowRequestsPageState extends State<FollowRequestsPage> {
                               if (success) {
                                 await _fetchFollowings();
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Request cancelled')),
+                                  const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Request cancelled'))),
                                 );
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Failed to cancel request')),
+                                  const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Failed to cancel request'))),
                                 );
                               }
                             },

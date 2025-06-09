@@ -89,7 +89,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(success ? 'Followed successfully' : 'Failed to follow'),
+        content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text(success ? 'Followed successfully' : 'Failed to follow')),
       ),
     );
   }
@@ -107,7 +107,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(success ? 'Request sent' : 'Failed to send request'),
+        content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text(success ? 'Request sent' : 'Failed to send request')),
       ),
     );
   }
@@ -161,9 +161,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(
+                  GestureDetector(
+                    onTap: () {
+                      // Optionally allow viewing avatar fullscreen or similar
+                    },
+                    child: SizedBox(
                     width: 100.r,
                     height: 100.r,
                     child: ProfilePicture(
@@ -173,16 +177,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       userId: userId,
                     ),
                   ),
-                  SizedBox(width: 16.w),
+                  ),
+                  SizedBox(width: 10.w),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     fullName,
@@ -190,6 +191,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                       fontSize: 18.sp,
                                       fontFamily: 'Metropolis-SemiBold',
                                     ),
+                            ),
+                          ],
                                   ),
                                   SizedBox(height: 4.h),
                                   Text(
@@ -243,10 +246,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                               setState(() { _isBlocking = false; });
                                               ScaffoldMessenger.of(context).showSnackBar(
                                                 SnackBar(
-                                                  content: Padding(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
-                                                    child: Text(success ? 'User blocked successfully' : 'Failed to block user'),
-                                                  ),
+                                        content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text(success ? 'User blocked successfully' : 'Failed to block user')),
                                                 ),
                                               );
                                             },
@@ -257,11 +257,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                   },
                                 );
                               },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
                   ),
                 ],
               ),
@@ -350,23 +345,22 @@ class _UserProfilePageState extends State<UserProfilePage> {
             ),
             SizedBox(height: 24.h),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5.w),
-              child: Column(
-                children: [
-                  if (showFollowers)
-                    Row(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(child: _buildStatItem(context, 'Attendance', '0%', align: TextAlign.left)),
                         Expanded(child: _buildStatItem(context, 'Total events', '0', align: TextAlign.right)),
                       ],
                     ),
-                  if (showFollowers) ...[
-                    Divider(height: 32.h, thickness: 1),
+            ),
+            Divider(height: 32.h, thickness: 1, indent: 0, endIndent: 0),
                     GestureDetector(
                       onTap: () {
-                        // Navigator.pushNamed(context, '/people');
+                // Optionally navigate to people page
                       },
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -374,16 +368,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
                           Expanded(child: _buildStatItem(context, 'Following', followingCount.toString(), align: TextAlign.right)),
                         ],
                       ),
-                    ),
-                  ],
-                ],
               ),
             ),
-            Divider(height: 32.h, thickness: 1),
+            Divider(height: 32.h, thickness: 1, indent: 0, endIndent: 0),
             _buildSection(context, 'Bio', bio),
-            Divider(height: 32.h, thickness: 1),
+            Divider(height: 32.h, thickness: 1, indent: 0, endIndent: 0),
             _buildInterestsSection(context, interests),
-            Divider(height: 32.h, thickness: 1),
+            Divider(height: 32.h, thickness: 1, indent: 0, endIndent: 0),
             _buildEventsSection(context),
             SizedBox(height: 40.h),
           ],
@@ -421,7 +412,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   Widget _buildSection(BuildContext context, String title, String content) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 5.w),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -453,18 +444,18 @@ class _UserProfilePageState extends State<UserProfilePage> {
   Widget _buildInterestsSection(BuildContext context, dynamic interests) {
     final List<String> interestsList = interests != null && interests is List ? List<String>.from(interests) : [];
     return Padding(
-      padding: EdgeInsets.only(top: 10.h, bottom: 10.h),
+      padding: EdgeInsets.only(top: 10.h, bottom: 10.h, left: 20.w, right: 20.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.only(left: 5.w),
+            padding: EdgeInsets.only(left: 0),
             child: Row(
               children: [
                 Text(
                   'Interests',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontSize: 18.sp,
+                    fontSize: 20.sp,
                     fontFamily: 'Metropolis-SemiBold',
                     letterSpacing: 0,
                   ),
@@ -474,7 +465,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
           ),
           SizedBox(height: 12.h),
           Padding(
-            padding: EdgeInsets.only(left: 16.w),
+            padding: EdgeInsets.only(left: 0),
             child: Wrap(
               spacing: 8.w,
               runSpacing: 0.h,
@@ -484,7 +475,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     label: Text(
                       interest,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 12.sp,
+                        fontSize: 15.sp,
                         fontFamily: 'Metropolis-SemiBold',
                         letterSpacing: 0,
                       ),

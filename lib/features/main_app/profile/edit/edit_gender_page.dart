@@ -48,7 +48,7 @@ class _EditGenderPageState extends State<EditGenderPage> {
   Future<void> _handleUpdate(BuildContext context) async {
     if (_selectedGender.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a gender')),
+        const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Please select a gender'))),
       );
       return;
     }
@@ -60,7 +60,7 @@ class _EditGenderPageState extends State<EditGenderPage> {
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to update gender')),
+        const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Failed to update gender'))),
       );
     }
   }

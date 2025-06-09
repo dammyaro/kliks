@@ -32,7 +32,7 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
       }
       if (permission == LocationPermission.deniedForever) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Location permissions are permanently denied. Please enable them in settings.')),
+          const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Location permissions are permanently denied. Please enable them in settings.'))),
         );
         setState(() {
           _isLoading = false;
@@ -41,7 +41,7 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
       }
       if (permission == LocationPermission.denied) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Location permission denied')),
+          const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Location permission denied'))),
         );
         setState(() {
           _isLoading = false;
@@ -55,7 +55,7 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error requesting location: $e')),
+        SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Error requesting location: $e'))),
       );
       setState(() {
         _isLoading = false;
@@ -288,7 +288,7 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
                                       Navigator.pop(context);
                                     } else {
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Failed to update interests')),
+                                        const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Failed to update interests'))),
                                       );
                                     }
                                   },

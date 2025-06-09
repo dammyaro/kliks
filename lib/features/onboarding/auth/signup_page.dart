@@ -54,12 +54,12 @@ class _SignupPageState extends State<SignupPage> {
           Navigator.pushReplacementNamed(context, AppRoutes.emailVerification);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Registration failed. Please try again.')),
+            const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Registration failed. Please try again.'))),
           );
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
+          SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Error: $e'))),
         );
       } finally {
         setState(() => _isLoading = false);
@@ -251,37 +251,37 @@ class _SignupPageState extends State<SignupPage> {
                             // final googleAuth = await userCredential.user?.getIdTokenResult();
                             // final accessToken = (await GoogleSignIn().currentUser?.authentication)?.accessToken;
 
-                            final idToken = await userCredential.user?.getIdToken();
+                            // final idToken = await userCredential.user?.getIdToken();
                             final accessToken = await userCredential.user?.getIdTokenResult();
 
                             // You may need to get these fields from user or prompt the user for missing info
-                            final email = user?.email ?? '';
-                            final fullname = user?.displayName ?? '';
-                            final username = user?.displayName?.replaceAll(' ', '').toLowerCase() ?? '';
-                            final phone = user?.phoneNumber ?? '';
-                            final image = user?.photoURL ?? '';
-                            final gender = ''; // You may need to prompt the user for this
+                            // final email = user?.email ?? '';
+                            // final fullname = user?.displayName ?? '';
+                            // final username = user?.displayName?.replaceAll(' ', '').toLowerCase() ?? '';
+                            // final phone = user?.phoneNumber ?? '';
+                            // final image = user?.photoURL ?? '';
+                            // final gender = ''; // You may need to prompt the user for this
 
                             final success = await authProvider.oAuthLoginWithGoogle(
                               idToken: accessToken?.token ?? '',
-                              email: email,
-                              fullname: fullname,
-                              username: username,
-                              phone: phone,
-                              image: image,
-                              gender: gender,
+                              // email: email,
+                              // fullname: fullname,
+                              // username: username,
+                              // phone: phone,
+                              // image: image,
+                              // gender: gender,
                             );
 
                             if (success) {
                               Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('OAuth login failed')),
+                                const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('OAuth login failed'))),
                               );
                             }
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Google sign-in failed')),
+                              const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Google sign-in failed'))),
                             );
                           }
                         },
@@ -302,12 +302,12 @@ class _SignupPageState extends State<SignupPage> {
                               Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('OAuth Apple login failed')),
+                                const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('OAuth Apple login failed'))),
                               );
                             }
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Apple sign-in failed')),
+                              const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Apple sign-in failed'))),
                             );
                           }
                         },

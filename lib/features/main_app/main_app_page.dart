@@ -14,10 +14,10 @@ class MainAppPage extends StatefulWidget {
   State<MainAppPage> createState() => _MainAppPageState();
 }
 
-
-
-class _MainAppPageState extends State<MainAppPage> {
+class _MainAppPageState extends State<MainAppPage> with TickerProviderStateMixin {
   int _currentIndex = 0;
+  int? _tappedIndex;
+  List<AnimationController?> _controllers = List.filled(5, null);
 
   final List<Widget> _pages = [
     const HomePage(),
@@ -27,6 +27,44 @@ class _MainAppPageState extends State<MainAppPage> {
     const ActivitiesPage(),
   ];
   
+
+  @override
+  void initState() {
+    super.initState();
+    for (int i = 0; i < 5; i++) {
+      _controllers[i] = AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 150),
+        lowerBound: 1.0,
+        upperBound: 1.2,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final c in _controllers) {
+      c?.dispose();
+    }
+    super.dispose();
+  }
+
+  void _onNavTap(int index) async {
+    if (index == 2) {
+      print('Map button clicked');
+      return;
+    }
+    setState(() => _tappedIndex = index);
+    final controller = _controllers[index];
+    if (controller != null) {
+      await controller.forward();
+      await controller.reverse();
+    }
+    setState(() {
+      _currentIndex = index;
+      _tappedIndex = null;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +92,7 @@ class _MainAppPageState extends State<MainAppPage> {
       bottomNavigationBar: Stack(
         children: [
           Container(
-            height: MediaQuery.of(context).size.height * 0.15, // Adaptive height
+            height: MediaQuery.of(context).size.height * 0.14, // Adaptive height
             decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
               border: Border(
@@ -65,120 +103,111 @@ class _MainAppPageState extends State<MainAppPage> {
                 ),
               ),
             ),
-            child: BottomNavigationBar(
-              // backgroundColor: Colors.transparent,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              elevation: 0,
-              currentIndex: _currentIndex,
-              onTap: (index) {
-                if (index == 2) {
-                  print('Map button clicked');
-                } else {
-                  setState(() => _currentIndex = index);
-                }
-              },
-              type: BottomNavigationBarType.fixed,
-              selectedLabelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 12.sp,
-                    fontFamily: 'Metropolis-ExtraBold',
-                    color: Theme.of(context).primaryColor,
-                  ),
-              unselectedLabelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 12.sp,
-                    fontFamily: 'Metropolis-SemiBold',
-                  ),
-              items: [
-                BottomNavigationBarItem(
-                    icon: Padding(
-                    padding: EdgeInsets.only(bottom: 8.h),
-                    child: Image.asset(
-                      Theme.of(context).brightness == Brightness.dark
-                        ? (_currentIndex == 0
-                          ? 'assets/icons/home-darkmode-active.png'
-                          : 'assets/icons/home-darkmode-inactive.png')
-                        : (_currentIndex == 0
-                          ? 'assets/icons/home-lightmode-active.png'
-                          : 'assets/icons/home-lightmode-inactive.png'),
-                      width: 24.w,
-                      height: 24.h,
-                      filterQuality: FilterQuality.high,
-                      colorBlendMode: BlendMode.dst,
-                    
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+              ),
+              child: BottomNavigationBar(
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                elevation: 0,
+                currentIndex: _currentIndex,
+                onTap: _onNavTap,
+                type: BottomNavigationBarType.fixed,
+                selectedItemColor: Theme.of(context).primaryColor,
+                unselectedItemColor: Theme.of(context).iconTheme.color,
+                selectedLabelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontSize: 12.sp,
+                      fontFamily: 'Metropolis-ExtraBold',
+                      color: Theme.of(context).primaryColor,
                     ),
-                  ),
-                  label: 'Home',
-                ),
-                BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: EdgeInsets.only(bottom: 8.h),
-                    child: Image.asset(
-                      Theme.of(context).brightness == Brightness.dark
-                          ? (_currentIndex == 1
-                              ? 'assets/icons/wallet-darkmode-active.png'
-                              : 'assets/icons/wallet-darkmode-inactive.png')
-                          : (_currentIndex == 1
-                              ? 'assets/icons/wallet-lightmode-active.png'
-                              : 'assets/icons/wallet-lightmode-inactive.png'),
-                      width: 24.w,
-                      height: 24.h,
+                unselectedLabelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontSize: 12.sp,
+                      fontFamily: 'Metropolis-SemiBold',
                     ),
-                  ),
-                  label: 'Wallet',
-                ),
-                BottomNavigationBarItem(
-                  icon: GestureDetector(
-                  onTap: () {
-                    print('Map button clicked');
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: 0.h),
-                    child: Image.asset(
-                    Theme.of(context).brightness == Brightness.dark
-                      ? 'assets/icons/map-darkmode.png'
-                      : 'assets/icons/map-lightmode.png',
-                    width: 50.w,
-                    height: 50.h,
-                    filterQuality: FilterQuality.high,
-                    ),
-                  ),
-                  ),
-                  label: '',
-                ),
-                BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: EdgeInsets.only(bottom: 8.h),
-                    child: Image.asset(
-                      Theme.of(context).brightness == Brightness.dark
-                          ? (_currentIndex == 3
-                              ? 'assets/icons/marketplace-darkmode-active.png'
-                              : 'assets/icons/marketplace-darkmode-inactive.png')
-                          : (_currentIndex == 3
-                              ? 'assets/icons/marketplace-lightmode-active.png'
-                              : 'assets/icons/marketplace-lightmode-inactive.png'),
-                      width: 24.w,
-                      height: 24.h,
-                    ),
-                  ),
-                  label: 'Marketplace',
-                ),
-                BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: EdgeInsets.only(bottom: 8.h),
-                    child: Image.asset(
-                      Theme.of(context).brightness == Brightness.dark
-                          ? (_currentIndex == 4
-                              ? 'assets/icons/activity-darkmode-active.png'
-                              : 'assets/icons/activity-darkmode-inactive.png')
-                          : (_currentIndex == 4
-                              ? 'assets/icons/activity-lightmode-active.png'
-                              : 'assets/icons/activity-lightmode-inactive.png'),
-                      width: 24.w,
-                      height: 24.h,
-                    ),
-                  ),
-                  label: 'Activities',
-                ),
-              ],
+                items: [
+                  for (int i = 0; i < 5; i++)
+                    if (i == 2)
+                      BottomNavigationBarItem(
+                        icon: GestureDetector(
+                          onTap: () {
+                            print('Map button clicked');
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.only(bottom: 0.h),
+                            child: Image.asset(
+                              Theme.of(context).brightness == Brightness.dark
+                                  ? 'assets/icons/map-darkmode.png'
+                                  : 'assets/icons/map-lightmode.png',
+                              width: 50.w,
+                              height: 50.h,
+                              filterQuality: FilterQuality.high,
+                            ),
+                          ),
+                        ),
+                        label: '',
+                      )
+                    else
+                      BottomNavigationBarItem(
+                        icon: AnimatedBuilder(
+                          animation: _controllers[i]!,
+                          builder: (context, child) {
+                            return AnimatedScale(
+                              scale: (_tappedIndex == i) ? _controllers[i]!.value : 1.0,
+                              duration: const Duration(milliseconds: 150),
+                              child: Padding(
+                                padding: EdgeInsets.only(bottom: 8.h),
+                                child: Image.asset(
+                                  Theme.of(context).brightness == Brightness.dark
+                                      ? (_currentIndex == i
+                                          ? [
+                                              'assets/icons/home-darkmode-active.png',
+                                              'assets/icons/wallet-darkmode-active.png',
+                                              '',
+                                              'assets/icons/marketplace-darkmode-active.png',
+                                              'assets/icons/activity-darkmode-active.png',
+                                            ][i]
+                                          : [
+                                              'assets/icons/home-darkmode-inactive.png',
+                                              'assets/icons/wallet-darkmode-inactive.png',
+                                              '',
+                                              'assets/icons/marketplace-darkmode-inactive.png',
+                                              'assets/icons/activity-darkmode-inactive.png',
+                                            ][i])
+                                      : (_currentIndex == i
+                                          ? [
+                                              'assets/icons/home-lightmode-active.png',
+                                              'assets/icons/wallet-lightmode-active.png',
+                                              '',
+                                              'assets/icons/marketplace-lightmode-active.png',
+                                              'assets/icons/activity-lightmode-active.png',
+                                            ][i]
+                                          : [
+                                              'assets/icons/home-lightmode-inactive.png',
+                                              'assets/icons/wallet-lightmode-inactive.png',
+                                              '',
+                                              'assets/icons/marketplace-lightmode-inactive.png',
+                                              'assets/icons/activity-lightmode-inactive.png',
+                                            ][i]),
+                                  width: 24.w,
+                                  height: 24.h,
+                                  filterQuality: FilterQuality.high,
+                                  colorBlendMode: BlendMode.dst,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        label: [
+                          'Home',
+                          'Wallet',
+                          '',
+                          'Marketplace',
+                          'Activities',
+                        ][i],
+                      ),
+                ],
+              ),
             ),
           ),
           Positioned(

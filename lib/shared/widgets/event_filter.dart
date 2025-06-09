@@ -33,7 +33,7 @@ class _EventFilterState extends State<EventFilter> {
               decoration: BoxDecoration(
           color: selected == 'nearby' ? Theme.of(context).primaryColor // Selected color (adapts to theme)
             : Theme.of(context).brightness == Brightness.light 
-              ? Colors.grey[400] 
+              ? Colors.grey[200] 
               : Colors.grey[700], // Unselected
           borderRadius: BorderRadius.circular(10), 
               ),
@@ -41,7 +41,8 @@ class _EventFilterState extends State<EventFilter> {
           'Nearby Events',
           style: TextStyle(
             fontSize: 10.sp,
-            fontWeight: FontWeight.bold,
+            // 
+            fontFamily: 'Metropolis-Medium',
             letterSpacing: 0,
             color: selected == 'nearby' ? Theme.of(context).scaffoldBackgroundColor// Text color when selected
             : Theme.of(context).colorScheme.onSurface.withOpacity(0.7), // Unselected
@@ -61,7 +62,7 @@ class _EventFilterState extends State<EventFilter> {
               decoration: BoxDecoration(
           color: selected == 'following' ? Theme.of(context).primaryColor // Selected color (adapts to theme)
           : Theme.of(context).brightness == Brightness.light 
-              ? Colors.grey[400] 
+              ? Colors.grey[200] 
               : Colors.grey[700], // Unselected
           borderRadius: BorderRadius.circular(10), 
               ),
@@ -69,7 +70,8 @@ class _EventFilterState extends State<EventFilter> {
           'Following',
           style: TextStyle(
             fontSize: 10.sp,
-            fontWeight: FontWeight.bold,
+            // fontWeight: FontWeight.bold,
+            fontFamily: 'Metropolis-Medium',
             letterSpacing: 0,
             color: selected == 'following' ? Theme.of(context).scaffoldBackgroundColor// Text color when selected
             : Theme.of(context).colorScheme.onSurface.withOpacity(0.7), // Unselected

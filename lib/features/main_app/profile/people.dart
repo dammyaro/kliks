@@ -78,9 +78,9 @@ class _PeoplePageState extends State<PeoplePage> {
                 }
               },
               child: ProfilePicture(
-                fileName: imageUrl,
-                userId: userId ?? '',
-                size: 44.sp,
+              fileName: imageUrl,
+              userId: userId ?? '',
+              size: 44.sp,
               ),
             ),
             SizedBox(width: 14.w),
@@ -99,10 +99,10 @@ class _PeoplePageState extends State<PeoplePage> {
                       }
                     },
                     child: Text(
-                      name,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        fontSize: 14.sp,
-                        fontFamily: 'Metropolis-SemiBold',
+                    name,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontSize: 14.sp,
+                      fontFamily: 'Metropolis-SemiBold',
                       ),
                     ),
                   ),
@@ -189,19 +189,13 @@ class _PeoplePageState extends State<PeoplePage> {
                                     await _fetchFollowings();
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
-                                        content: Padding(
-                                          padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7),
-                                          child: Text('Unfollowed successfully'),
-                                        ),
+                                        content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Unfollowed successfully')),
                                       ),
                                     );
                                   } else {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
-                                        content: Padding(
-                                          padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7),
-                                          child: Text('Failed to unfollow'),
-                                        ),
+                                        content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Failed to unfollow')),
                                       ),
                                     );
                                   }
@@ -248,19 +242,13 @@ class _PeoplePageState extends State<PeoplePage> {
                                           await _fetchFollowings();
                                           ScaffoldMessenger.of(context).showSnackBar(
                                             const SnackBar(
-                                              content: Padding(
-                                                padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7),
-                                                child: Text('Followed back successfully'),
-                                              ),
+                                              content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Followed back successfully')),
                                             ),
                                           );
                                         } else {
                                           ScaffoldMessenger.of(context).showSnackBar(
                                             const SnackBar(
-                                              content: Padding(
-                                                padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7),
-                                                child: Text('Failed to follow back'),
-                                              ),
+                                              content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Failed to follow back')),
                                             ),
                                           );
                                         }
@@ -306,101 +294,101 @@ class _PeoplePageState extends State<PeoplePage> {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
+                children: [
                     GestureDetector(
-                      onTap: () => setState(() => _tabIndex = 0),
-                      child: Column(
+                    onTap: () => setState(() => _tabIndex = 0),
+                    child: Column(
                         mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'Following',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              fontSize: 13.sp,
-                              fontFamily: 'Metropolis-SemiBold',
-                              color: _tabIndex == 0
-                                  ? const Color(0xffbbd953)
-                                  : theme.textTheme.bodyMedium?.color,
-                            ),
-                          ),
-                          SizedBox(height: 6.h),
+                    children: [
+                      Text(
+                      'Following',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontSize: 13.sp,
+                        fontFamily: 'Metropolis-SemiBold',
+                        color: _tabIndex == 0
+                          ? const Color(0xffbbd953)
+                          : theme.textTheme.bodyMedium?.color,
+                      ),
+                      ),
+                      SizedBox(height: 6.h),
                           Center(
                             child: Container(
-                              height: 3.h,
-                              width: 36.w,
-                              decoration: BoxDecoration(
-                                color: _tabIndex == 0
-                                    ? const Color(0xffbbd953)
-                                    : Colors.transparent,
-                                borderRadius: BorderRadius.circular(2.r),
+                      height: 3.h,
+                      width: 36.w,
+                      decoration: BoxDecoration(
+                        color: _tabIndex == 0
+                          ? const Color(0xffbbd953)
+                          : Colors.transparent,
+                        borderRadius: BorderRadius.circular(2.r),
                               ),
-                            ),
-                          ),
-                        ],
                       ),
+                      ),
+                    ],
                     ),
+                  ),
                     GestureDetector(
-                      onTap: () => setState(() => _tabIndex = 1),
-                      child: Column(
+                    onTap: () => setState(() => _tabIndex = 1),
+                    child: Column(
                         mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'Followers',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              fontSize: 13.sp,
-                              fontFamily: 'Metropolis-SemiBold',
-                              color: _tabIndex == 1
-                                  ? const Color(0xffbbd953)
-                                  : theme.textTheme.bodyMedium?.color,
-                            ),
-                          ),
-                          SizedBox(height: 6.h),
+                    children: [
+                      Text(
+                      'Followers',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontSize: 13.sp,
+                        fontFamily: 'Metropolis-SemiBold',
+                        color: _tabIndex == 1
+                          ? const Color(0xffbbd953)
+                          : theme.textTheme.bodyMedium?.color,
+                      ),
+                      ),
+                      SizedBox(height: 6.h),
                           Center(
                             child: Container(
-                              height: 3.h,
-                              width: 36.w,
-                              decoration: BoxDecoration(
-                                color: _tabIndex == 1
-                                    ? const Color(0xffbbd953)
-                                    : Colors.transparent,
-                                borderRadius: BorderRadius.circular(2.r),
+                      height: 3.h,
+                      width: 36.w,
+                      decoration: BoxDecoration(
+                        color: _tabIndex == 1
+                          ? const Color(0xffbbd953)
+                          : Colors.transparent,
+                        borderRadius: BorderRadius.circular(2.r),
                               ),
-                            ),
-                          ),
-                        ],
                       ),
+                      ),
+                    ],
                     ),
+                  ),
                     GestureDetector(
-                      onTap: () => setState(() => _tabIndex = 2),
-                      child: Column(
+                    onTap: () => setState(() => _tabIndex = 2),
+                    child: Column(
                         mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'Connections',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              fontSize: 13.sp,
-                              fontFamily: 'Metropolis-SemiBold',
-                              color: _tabIndex == 2
-                                  ? const Color(0xffbbd953)
-                                  : theme.textTheme.bodyMedium?.color,
-                            ),
-                          ),
-                          SizedBox(height: 6.h),
+                    children: [
+                      Text(
+                      'Connections',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontSize: 13.sp,
+                        fontFamily: 'Metropolis-SemiBold',
+                        color: _tabIndex == 2
+                          ? const Color(0xffbbd953)
+                          : theme.textTheme.bodyMedium?.color,
+                      ),
+                      ),
+                      SizedBox(height: 6.h),
                           Center(
                             child: Container(
-                              height: 3.h,
-                              width: 36.w,
-                              decoration: BoxDecoration(
-                                color: _tabIndex == 2
-                                    ? const Color(0xffbbd953)
-                                    : Colors.transparent,
-                                borderRadius: BorderRadius.circular(2.r),
+                      height: 3.h,
+                      width: 36.w,
+                      decoration: BoxDecoration(
+                        color: _tabIndex == 2
+                          ? const Color(0xffbbd953)
+                          : Colors.transparent,
+                        borderRadius: BorderRadius.circular(2.r),
                               ),
-                            ),
-                          ),
-                        ],
                       ),
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
+                  ),
+                ],
                 ),
               ],
             ),

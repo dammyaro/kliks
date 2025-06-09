@@ -621,7 +621,7 @@ class SettingsPage extends StatelessWidget {
                                             // Copy code to clipboard
                                             Clipboard.setData(ClipboardData(text: inviteCode));
                                             ScaffoldMessenger.of(context).showSnackBar(
-                                              const SnackBar(content: Text('Referral code copied!')),
+                                              const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Referral code copied!'))),
                                             );
                                           },
                                           child: Icon(Icons.copy_outlined, size: 18.sp, color: theme.iconTheme.color),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter/cupertino.dart';
 
 class WalletPage extends StatelessWidget {
   const WalletPage({super.key});
@@ -18,19 +19,20 @@ class WalletPage extends StatelessWidget {
             Text(
               "Available Points",
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 12.sp,
+                    fontSize: 10.sp,
                     fontWeight: FontWeight.w500,
+                    color: Theme.of(context).hintColor,
                   ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 8.h), 
+            // SizedBox(height: 5.h), 
 
             
             Text(
               "1,000",
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     fontSize: 50.sp,
-                    fontFamily: 'Metropolis-ExtraBold',
+                    fontFamily: 'Metropolis-Bold',
                     fontWeight: FontWeight.bold,
                   ),
               textAlign: TextAlign.center,
@@ -39,9 +41,11 @@ class WalletPage extends StatelessWidget {
 
             
             Container(
-              padding: EdgeInsets.all(12.w),
+              padding: EdgeInsets.all(22.w),
               decoration: BoxDecoration(
-                color: Colors.grey[800],
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.grey[800]
+                    : Colors.grey[100],
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Row(
@@ -49,8 +53,8 @@ class WalletPage extends StatelessWidget {
                   
                   Image.asset(
                     'assets/k-logo.png',
-                    width: 40.w,
-                    height: 40.h,
+                    width: 30.w,
+                    height: 30.h,
                   ),
                   SizedBox(width: 12.w), 
 
@@ -60,7 +64,7 @@ class WalletPage extends StatelessWidget {
                       "Attend events with rewards to earn\nmore points",
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             fontSize: 12.sp,
-                            color: Colors.white,
+                            // color: Colors.white,
                           ),
                     ),
                   ),
@@ -73,24 +77,26 @@ class WalletPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-               
-
-                
                 Text(
                   "Recent Transactions",
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 14.sp,
-                        color: Colors.grey[700],
-                      ),
+                    fontSize: 12.sp,
+                    color: Colors.grey[700]?.withOpacity(0.5) ?? Colors.grey,
+                  ),
                 ),
-
-                 
-                Image.asset(
-                  Theme.of(context).brightness == Brightness.dark
-                      ? 'assets/icons/setting-4.png'
-                      : 'assets/icons/setting-4.png',
-                  width: 24.w,
-                  height: 24.h,
+                Spacer(),
+                GestureDetector(
+                  onTap: () {
+                    // TODO: Open filter modal or perform filter action
+                  },
+                  child: Opacity(
+                    opacity: 0.5,
+                    child: Icon(
+                      CupertinoIcons.slider_horizontal_3,
+                      size: 20.w,
+                      color: Theme.of(context).iconTheme.color,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -100,7 +106,7 @@ class WalletPage extends StatelessWidget {
             Opacity(
               opacity: 0.5,
               child: Icon(
-              Icons.bookmark_outline,
+              CupertinoIcons.bookmark,
               size: 40.w,
               color: Theme.of(context).brightness == Brightness.dark
                 ? Colors.white
@@ -113,9 +119,9 @@ class WalletPage extends StatelessWidget {
             Text(
               "No Transactions to show",
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontSize: 18.sp,
+                    fontSize: 16.sp,
                     height: 1.5,
-                    letterSpacing: -1,
+                    letterSpacing: -0.5,
                     fontFamily: 'Metropolis-SemiBold',
                     fontWeight: FontWeight.bold,
                   ),
@@ -129,7 +135,7 @@ class WalletPage extends StatelessWidget {
               child: Text(
                 "Details on your point earning and\nspending will show here",
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontSize: 12.sp,
+                      fontSize: 10.sp,
                       color: Colors.grey[600],
                     ),
                 textAlign: TextAlign.center,

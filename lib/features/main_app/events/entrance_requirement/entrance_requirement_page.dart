@@ -36,21 +36,24 @@ class _EntranceRequirementPageState extends State<EntranceRequirementPage> {
                 ),
                 SizedBox(height: 24.h),
                 Text(
-                  "Entry Requirements",
+                  'Entry Requirements',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Metropolis-SemiBold',
-                        letterSpacing: -1,
-                      ),
+                    fontSize: 16.sp,
+                    fontFamily: 'Metropolis-SemiBold',
+                    letterSpacing: 0,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
+                  ),
+                  textAlign: TextAlign.left,
                 ),
-                SizedBox(height: 8.h),
+                // SizedBox(height: 8.h),
                 Text(
-                  "Set up the number of points to be\nrequired from guests if activated",
+                  'Set up the number of points to be required from guests if activated',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 12.sp,
-                        color: Colors.grey[600],
-                      ),
+                    fontSize: 10.sp,
+                    color: Theme.of(context).hintColor,
+                    fontFamily: 'Metropolis-Regular',
+                  ),
+                  textAlign: TextAlign.left,
                 ),
                 SizedBox(height: 24.h),
                 Container(
@@ -71,10 +74,10 @@ class _EntranceRequirementPageState extends State<EntranceRequirementPage> {
                           Text(
                             "Activate Entry Points",
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  fontSize: 16.sp,
+                                  fontSize: 14.sp,
                                   fontWeight: FontWeight.w600,
                                   fontFamily: 'Metropolis-SemiBold',
-                                  letterSpacing: -1,
+                                  letterSpacing: 0,
                                 ),
                           ),
                           Switch(
@@ -86,6 +89,7 @@ class _EntranceRequirementPageState extends State<EntranceRequirementPage> {
                             },
                             activeColor: Colors.white,
                             activeTrackColor: const Color(0xff27ae60),
+                            
                           ),
                         ],
                       ),
@@ -93,7 +97,7 @@ class _EntranceRequirementPageState extends State<EntranceRequirementPage> {
                       Text(
                         "Each guests will be required to give the stated\npoints up to get a spot in the event",
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              fontSize: 12.sp,
+                              fontSize: 10.sp,
                               color: Colors.grey[600],
                             ),
                       ),
@@ -123,7 +127,7 @@ class _EntranceRequirementPageState extends State<EntranceRequirementPage> {
   }
 
   Widget _buildDoneButton({required VoidCallback onPressed}) {
-    return ElevatedButton(
+    return TextButton(
       onPressed: () {
         int points = int.tryParse(_pointsController.text) ?? 1;
         if (!_activated) points = 0;
@@ -143,8 +147,8 @@ class _EntranceRequirementPageState extends State<EntranceRequirementPage> {
         'Done',
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Colors.black,
-              fontSize: 14.sp,
-              fontFamily: 'Metropolis-SemiBold',
+              fontSize: 12.sp,
+              fontFamily: 'Metropolis-Medium',
               letterSpacing: 0,
             ),
       ),

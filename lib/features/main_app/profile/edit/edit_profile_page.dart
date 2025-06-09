@@ -5,6 +5,8 @@ import 'dart:io';
 import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/auth_provider.dart';
 import 'package:kliks/shared/widgets/profile_picture.dart';
+import 'package:crop_your_image/crop_your_image.dart';
+import 'dart:typed_data';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -16,21 +18,90 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   XFile? _selectedImage;
   bool _isUploading = false;
+  final CropController _cropController = CropController();
+  Uint8List? _croppingImageBytes;
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
     final picked = await picker.pickImage(source: ImageSource.gallery);
     if (picked != null) {
+      final bytes = await picked.readAsBytes();
       setState(() {
-        _selectedImage = picked;
-        _isUploading = true;
+        _croppingImageBytes = bytes;
       });
-      // Call updateProfilePicture
-      final provider = Provider.of<AuthProvider>(context, listen: false);
-      await provider.updateProfilePicture(File(picked.path));
-      setState(() {
-        _isUploading = false;
-      });
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            backgroundColor: Colors.black,
+            child: SizedBox(
+              width: 350.w,
+              height: 420.h,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: Crop(
+                      image: _croppingImageBytes!,
+                      controller: _cropController,
+                      onCropped: (result) async {
+                        switch (result) {
+                          case CropSuccess(:final croppedImage):
+                            Navigator.of(context).pop();
+                            final tempFile = File('${picked.path}_cropped.png');
+                            await tempFile.writeAsBytes(croppedImage);
+                            setState(() {
+                              _selectedImage = XFile(tempFile.path);
+                              _isUploading = true;
+                            });
+                            final provider = Provider.of<AuthProvider>(context, listen: false);
+                            await provider.updateProfilePicture(tempFile);
+                            setState(() {
+                              _isUploading = false;
+                            });
+                            break;
+                          case CropFailure(:final cause):
+                            Navigator.of(context).pop();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Failed to crop image: \\$cause')),
+                            );
+                            break;
+                        }
+                      },
+                      baseColor: Colors.black,
+                      maskColor: Colors.black.withOpacity(0.5),
+                      cornerDotBuilder: (size, edgeAlignment) => const DotControl(color: Colors.white),
+                      aspectRatio: 1,
+                      interactive: true,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () => _cropController.crop(),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xffbbd953),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+                          ),
+                          child: Text('Crop & Save', style: TextStyle(color: Colors.black)),
+                        ),
+                        SizedBox(width: 16.w),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('Cancel', style: TextStyle(color: Colors.white)),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
     }
   }
 

@@ -135,19 +135,13 @@ class _BlockedAccountsPageState extends State<BlockedAccountsPage> {
                                         await _fetchBlockedUsers();
                                         ScaffoldMessenger.of(context).showSnackBar(
                                           const SnackBar(
-                                            content: Padding(
-                                              padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7),
-                                              child: Text('User unblocked successfully'),
-                                            ),
+                                            content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('User unblocked successfully')),
                                           ),
                                         );
                                       } else {
                                         ScaffoldMessenger.of(context).showSnackBar(
                                           const SnackBar(
-                                            content: Padding(
-                                              padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7),
-                                              child: Text('Failed to unblock user'),
-                                            ),
+                                            content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Failed to unblock user')),
                                           ),
                                         );
                                       }

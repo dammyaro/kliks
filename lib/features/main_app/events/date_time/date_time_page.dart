@@ -80,8 +80,8 @@ class _DateTimePageState extends State<DateTimePage> {
             Text(
               value,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontSize: 16.sp,
-                    letterSpacing: -1,
+                    fontSize: 14.sp,
+                    letterSpacing: 0,
                     fontFamily: 'Metropolis-Regular',
                   ),
             ),
@@ -171,28 +171,32 @@ class _DateTimePageState extends State<DateTimePage> {
               Text(
                 'Set Time & Date',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontSize: 24.sp,
+                      fontSize: 18.sp,
                       fontFamily: 'Metropolis-SemiBold',
-                      letterSpacing: -1,
+                      letterSpacing: -0.5,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
                     ),
+                textAlign: TextAlign.left,
               ),
               SizedBox(height: 8.h),
               Text(
-                'Provide information on when the\n'
-                'event starts and ends',
+                'Provide information on when the event starts and ends',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontSize: 14.sp,
-                      color: Colors.grey,
+                      fontSize: 12.sp,
+                      color: Theme.of(context).hintColor,
+                      fontFamily: 'Metropolis-Regular',
                     ),
+                textAlign: TextAlign.left,
               ),
-              SizedBox(height: 32.h),
+              SizedBox(height: 24.h),
               Text(
                 'Event Starts on',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontSize: 16.sp,
-                      fontFamily: 'Metropolis-SemiBold',
-                      letterSpacing: -1,
+                      fontSize: 14.sp,
+                      fontFamily: 'Metropolis-Medium',
+                      color: Theme.of(context).textTheme.bodyMedium?.color,
                     ),
+                textAlign: TextAlign.left,
               ),
               SizedBox(height: 8.h),
               Row(
@@ -236,9 +240,9 @@ class _DateTimePageState extends State<DateTimePage> {
               Text(
                 'Event Ends on',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontSize: 16.sp,
-                      fontFamily: 'Metropolis-SemiBold',
-                      letterSpacing: -1,
+                      fontSize: 14.sp,
+                      fontFamily: 'Metropolis-Medium',
+                      letterSpacing: 0,
                     ),
               ),
               SizedBox(height: 8.h),

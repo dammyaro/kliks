@@ -40,7 +40,7 @@ class ThemeConfig {
       contentTextStyle: TextStyle(
         color: Colors.white,
         fontSize: 12.sp,
-        fontFamily: 'Metropolis-ExtraBold',
+        fontFamily: 'Metropolis-Medium',
         height: 1.6,
       ),
       actionTextColor: Color(0xffbbd953),
@@ -88,7 +88,7 @@ class ThemeConfig {
       contentTextStyle: TextStyle(
         color: Colors.black,
         fontSize: 12.sp,
-        fontFamily: 'Metropolis-ExtraBold',
+        fontFamily: 'Metropolis-Medium',
         height: 1.6,
       ),
       actionTextColor: Color(0xffbbd953),

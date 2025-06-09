@@ -11,6 +11,7 @@ import 'dart:io';
 import 'package:kliks/core/services/media_service.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:confetti/confetti.dart';
+import 'dart:ui' as ui;
 
 class NewEventPage extends StatefulWidget {
   const NewEventPage({super.key});
@@ -61,7 +62,7 @@ class _NewEventPageState extends State<NewEventPage> {
     List<String> parts = [];
     if (_whoCanAttend.isNotEmpty) parts.add(_whoCanAttend);
     if (_ageLimit.isNotEmpty) parts.add(_ageLimit);
-    if (_numberAttendeesLimit > 0) parts.add('$_numberAttendeesLimit attendees');
+    if (_attendeeLimit > 0) parts.add('$_attendeeLimit guests');
     return parts.isNotEmpty ? parts.join(', ') : 'Who can attend this event';
   }
 
@@ -69,6 +70,23 @@ class _NewEventPageState extends State<NewEventPage> {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
+      final bytes = await image.readAsBytes();
+      final decoded = await ui.instantiateImageCodec(bytes);
+      final frame = await decoded.getNextFrame();
+      final img = frame.image;
+      if (img.width != 1024 || img.height != 1024) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7),
+                child: Text('Please select a square image of 1024x1024 pixels.'),
+              ),
+            ),
+          );
+        }
+        return;
+      }
       setState(() {
         _coverImage = image;
         // Do not upload here; upload on event creation
@@ -79,7 +97,7 @@ class _NewEventPageState extends State<NewEventPage> {
   Future<void> _createEvent() async {
     if (_eventNameController.text.isEmpty || _eventDescriptionController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all required fields')),
+        const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Please fill all required fields'))),
       );
       return;
     }
@@ -148,7 +166,7 @@ class _NewEventPageState extends State<NewEventPage> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to create event')),
+        const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Failed to create event'))),
       );
     } finally {
       setState(() => _isLoading = false);
@@ -224,7 +242,7 @@ class _NewEventPageState extends State<NewEventPage> {
                       onPressed: _pickCoverImage,
                       icon: Icon(Icons.add, color: Colors.black),
                       label: Text(
-                        "Cover Image (800x600)",
+                        "Cover Image (1024x1024)",
                         style: TextStyle(color: Colors.black),
                       ),
                       style: ElevatedButton.styleFrom(
@@ -472,23 +490,33 @@ class _NewEventPageState extends State<NewEventPage> {
                 child: Divider(height: 15.h),
               ),
               SizedBox(height: 30.h),
-
-              // Create event button
-              CustomButton(
-                text: "Create Event",
-                onPressed: isFormComplete ? _createEvent : null,
-                backgroundColor: isFormComplete
-                    ? const Color(0xffbbd953)
-                    : Colors.grey[400],
-                textColor: Colors.black,
-                isLoading: _isLoading,
-                textStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontSize: 12.sp,
-                  fontFamily: 'Metropolis-SemiBold',
-                  color: Colors.black,
-                ),
-              ),
             ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.only(
+          left: 20.w,
+          right: 20.w,
+          bottom: 20.h + MediaQuery.of(context).viewPadding.bottom,
+          top: 10.h,
+        ),
+        child: SizedBox(
+          width: double.infinity,
+          height: 40.h,
+          child: CustomButton(
+            text: "Create Event",
+            onPressed: isFormComplete ? _createEvent : null,
+            backgroundColor: isFormComplete
+                ? const Color(0xffbbd953)
+                : Colors.grey[400],
+            textColor: Colors.black,
+            isLoading: _isLoading,
+            textStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
+              fontSize: 12.sp,
+              fontFamily: 'Metropolis-Medium',
+              color: Colors.black,
+            ),
           ),
         ),
       ),
@@ -527,22 +555,58 @@ class _NewEventPageState extends State<NewEventPage> {
                   Text(
                     title,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontSize: 16.sp,
-                      fontFamily: 'Metropolis-SemiBold',
-                      letterSpacing: -0.5,
-                      color: Theme.of(
-                        context,
-                      ).textTheme.bodyLarge?.color?.withOpacity(0.8),
+                      fontSize: 15.sp,
+                      fontFamily: 'Metropolis-Medium',
+                      letterSpacing: 0,
+                      color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.8),
                     ),
                   ),
                   SizedBox(height: 2.h),
-                  Text(
-                    subtitle,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontSize: 12.sp,
-                      color: Colors.grey[500],
-                    ),
-                  ),
+                  // Render subtitle as a single chip for Location and Date and Time, as multiple chips for others
+                  (title == 'Location' || title == 'Date and Time')
+                    ? Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).brightness == Brightness.light ? Colors.grey[200] : Colors.grey[800],
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                        child: Text(
+                          subtitle,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            fontSize: 12.sp,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      )
+                    : (subtitle != 'Where is it happening?' && subtitle != 'Choose event category' && subtitle != 'When is it happening' && subtitle != 'Activate entrance points' && subtitle != 'Add other images related to this event' && subtitle != 'Add guests to this event' && subtitle != 'Who can attend this event')
+                      ? Wrap(
+                          spacing: 6.w,
+                          runSpacing: 4.h,
+                          children: [
+                            for (final part in subtitle.split(','))
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).brightness == Brightness.light ? Colors.grey[200] : Colors.grey[800],
+                                  borderRadius: BorderRadius.circular(8.r),
+                                ),
+                                child: Text(
+                                  part.trim(),
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontSize: 12.sp,
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                              ),
+                          ],
+                        )
+                      : Text(
+                          subtitle,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            fontSize: 12.sp,
+                            color: Colors.grey[500],
+                          ),
+                        ),
                 ],
               ),
             ],
@@ -620,7 +684,7 @@ class _ConfettiSuccessModalState extends State<_ConfettiSuccessModal> {
                   Text(
                     "You're all set!",
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith( 
-                      fontSize: 20,
+                      fontSize: 16.sp,
                       // fontWeight: FontWeight.bold,
                       fontFamily: 'Metropolis-SemiBold',
                       color: Colors.black,
@@ -631,7 +695,7 @@ class _ConfettiSuccessModalState extends State<_ConfettiSuccessModal> {
                   Text(
                     'Congratulations, you have created an event\n titled ${widget.eventTitle}',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontSize: 12,
+                      fontSize: 10.sp,
                       fontFamily: 'Metropolis-Regular',
                       color: Colors.black.withOpacity(0.7),
                     ),
@@ -653,27 +717,27 @@ class _ConfettiSuccessModalState extends State<_ConfettiSuccessModal> {
                           'Share to',
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             fontWeight: FontWeight.w600,
-                            fontSize: 13,
+                            fontSize: 12.sp,
                             color: Colors.black.withOpacity(0.7),
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        SizedBox(height: 12),
+                        SizedBox(height: 12.h),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(Icons.facebook, color: Color(0xFF4267B2), size: 28),
-                            SizedBox(width: 16),
+                            SizedBox(width: 16.w),
                             Icon(Icons.alternate_email, color: Colors.black, size: 28), // X (Twitter) placeholder
-                            SizedBox(width: 16),
+                            SizedBox(width: 16.w),
                             Icon(Icons.camera_alt, color: Color(0xFFE1306C), size: 28), // Instagram placeholder
-                            SizedBox(width: 16),
+                            SizedBox(width: 16.w),
                             Icon(
                               Icons.chat_bubble, // Placeholder for WhatsApp
                               color: Color(0xFF25D366),
                               size: 28,
                             ),
-                            SizedBox(width: 16),
+                            SizedBox(width: 16.w),
                             Icon(Icons.send, color: Color(0xFF0088cc), size: 28), // Telegram placeholder
                           ],
                         ),
@@ -684,12 +748,12 @@ class _ConfettiSuccessModalState extends State<_ConfettiSuccessModal> {
                           'or share link',
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             fontWeight: FontWeight.w500,
-                            fontSize: 12,
+                            fontSize: 12.sp,
                             color: Colors.black.withOpacity(0.6),
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        SizedBox(height: 8),
+                        SizedBox(height: 8.h),
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                           decoration: BoxDecoration(
@@ -703,11 +767,11 @@ class _ConfettiSuccessModalState extends State<_ConfettiSuccessModal> {
                               Text(
                                 'https://kliks.app/event/12345',
                                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  fontSize: 13,
+                                  fontSize: 12.h,
                                   color: Colors.black,
                                 ),
                               ),
-                              SizedBox(width: 8),
+                              SizedBox(width: 8.w),
                               GestureDetector(
                                 onTap: () {
                                   // Copy to clipboard logic
@@ -721,14 +785,14 @@ class _ConfettiSuccessModalState extends State<_ConfettiSuccessModal> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 32),
+                  SizedBox(height: 10.h),
                   CustomButton(
                     text: 'View my profile',
                     onPressed: widget.onProfileTap,
                     backgroundColor: const Color(0xffbbd953),
                     textColor: Colors.black,
                     textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontSize: 16,
+                      fontSize: 14.h,
                       fontFamily: 'Metropolis-SemiBold',
                       color: Colors.black,
                     ),

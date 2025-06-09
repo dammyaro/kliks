@@ -50,7 +50,7 @@ class _EditUsernamePageState extends State<EditUsernamePage> {
     final newUsername = usernameController.text.trim();
     if (newUsername.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Username cannot be empty')),
+        const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Username cannot be empty'))),
       );
       return;
     }
@@ -62,7 +62,7 @@ class _EditUsernamePageState extends State<EditUsernamePage> {
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to update username')),
+        const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Failed to update username'))),
       );
     }
   }

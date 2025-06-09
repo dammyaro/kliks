@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/auth_provider.dart';
 import 'package:kliks/shared/widgets/profile_picture.dart';
+import 'package:flutter/cupertino.dart';
 
 class InviteGuestsPage extends StatefulWidget {
   const InviteGuestsPage({super.key});
@@ -15,7 +16,7 @@ class _InviteGuestsPageState extends State<InviteGuestsPage> {
   bool _isSearching = false;
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> _searchResults = [];
-  List<Map<String, dynamic>> _selectedUsers = [];
+  final List<Map<String, dynamic>> _selectedUsers = [];
   bool _isLoading = false;
   int _offset = 0;
   final int _limit = 20;
@@ -154,27 +155,32 @@ class _InviteGuestsPageState extends State<InviteGuestsPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(height: 40.h),
-            Icon(Icons.person_add_outlined, size: 30.sp, color: Colors.grey),
+            Icon(CupertinoIcons.person_add, size: 30.sp, color: Colors.grey),
             // SizedBox(height: 20.h),
             Text(
               _selectedUsers.isEmpty ? 'Invite guests' : 'Invite more guests',
               style: theme.textTheme.bodyLarge?.copyWith(
-                fontSize: 14.sp,
-                fontFamily: 'Metropolis-SemiBold',
+                fontSize: 16.sp,
+                fontFamily: 'Metropolis-Medium',
+                letterSpacing: 0,
+                color: theme.textTheme.bodyLarge?.color,
               ),
+              textAlign: TextAlign.left,
             ),
-            SizedBox(height: 2.h),
+            SizedBox(height: 8.h),
             Text(
               _selectedUsers.isEmpty ? 'Search for guests' : 'Search for more guests',
               style: theme.textTheme.bodySmall?.copyWith(
-                fontSize: 12.sp,
-                color: Colors.grey,
+                fontSize: 10.sp,
+                color: theme.hintColor,
+                fontFamily: 'Metropolis-Regular',
               ),
+              textAlign: TextAlign.left,
             ),
             SizedBox(height: 14.h),
-            ElevatedButton(
+            TextButton(
               onPressed: _startSearch,
-              style: ElevatedButton.styleFrom(
+              style: TextButton.styleFrom(
                 backgroundColor: const Color(0xffbbd953),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.r),
@@ -184,7 +190,7 @@ class _InviteGuestsPageState extends State<InviteGuestsPage> {
               child: Text('Search', style: theme.textTheme.bodyMedium?.copyWith(
                 color: Colors.black,
                 fontSize: 12.sp,
-                fontFamily: 'Metropolis-SemiBold',
+                fontFamily: 'Metropolis-Medium',
               )),
             ),
             SizedBox(height: 32.h),
@@ -204,8 +210,8 @@ class _InviteGuestsPageState extends State<InviteGuestsPage> {
                           userId: user['id']?.toString() ?? '',
                           size: 40,
                         ),
-                        title: Text(user['fullname'] ?? '', style: theme.textTheme.bodyLarge?.copyWith(fontSize: 14.sp)),
-                        subtitle: Text('@${user['username']}', style: theme.textTheme.bodySmall?.copyWith(fontSize: 12.sp)),
+                        title: Text(user['fullname'] ?? '', style: theme.textTheme.bodyLarge?.copyWith(fontSize: 12.sp, fontFamily: 'Metropolis-Medium' )),
+                        subtitle: Text('@${user['username']}', style: theme.textTheme.bodySmall?.copyWith(fontSize: 10.sp)),
                         trailing: IconButton(
                           icon: Icon(Icons.close, color: Colors.red),
                           onPressed: () => _removeUser(user['id'].toString()),
@@ -293,8 +299,8 @@ class _InviteGuestsPageState extends State<InviteGuestsPage> {
                           userId: user['id']?.toString() ?? '',
                           size: 40,
                         ),
-                        title: Text(user['fullname'] ?? '', style: theme.textTheme.bodyLarge?.copyWith(fontSize: 14.sp)),
-                        subtitle: Text('@${user['username']}', style: theme.textTheme.bodySmall?.copyWith(fontSize: 12.sp)),
+                        title: Text(user['fullname'] ?? '', style: theme.textTheme.bodyLarge?.copyWith(fontSize: 12.sp, fontFamily: 'Metropolis-Medium')),
+                        subtitle: Text('@${user['username']}', style: theme.textTheme.bodySmall?.copyWith(fontSize: 10.sp)),
                         onTap: () => _selectUser(user),
                       );
                     },

@@ -69,7 +69,7 @@ class _AccountPrivacyPageState extends State<AccountPrivacyPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    // final theme = Theme.of(context);
     final provider = Provider.of<PrivacyProvider>(context);
     final settings = provider.settings;
     final isLoading = provider.isLoading;

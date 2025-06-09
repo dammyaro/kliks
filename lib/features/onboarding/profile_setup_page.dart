@@ -41,7 +41,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
     if (!_formKey.currentState!.validate()) return;
     if (_dob == null ) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select date of birth and gender')),
+        const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Please select date of birth and gender'))),
       );
       return;
     }
@@ -56,7 +56,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
       Navigator.pushReplacementNamed(context, '/main-app');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to update profile. Please try again.')),
+        const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Failed to update profile. Please try again.'))),
       );
     }
   }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:skeletonizer/skeletonizer.dart';
 
 class OtherMediaPage extends StatefulWidget {
   const OtherMediaPage({super.key});
@@ -61,22 +60,24 @@ class _OtherMediaPageState extends State<OtherMediaPage> {
                 ),
                 SizedBox(height: 20.h),
                 Text(
-                  "Other media",
+                  'Other media',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontSize: 22.sp,
-                        fontFamily: 'Metropolis-SemiBold',
-                        letterSpacing: -1,
-                      ),
-                ),
-                SizedBox(height: 10.h),
-                Opacity(
-                  opacity: 0.5,
-                  child: Text(
-                    "You can add up to 5 items for this event\nThe content of the cover image should fit into (1080 x 1350)",
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontSize: 12.sp,
-                        ),
+                    fontSize: 18.sp,
+                    fontFamily: 'Metropolis-SemiBold',
+                    letterSpacing: -0.5,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
                   ),
+                  textAlign: TextAlign.left,
+                ),
+                SizedBox(height: 8.h),
+                Text(
+                  'You can add up to 5 items for this event. The content of the cover image should fit into (1080 x 1350)',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontSize: 12.sp,
+                    color: Theme.of(context).hintColor,
+                    fontFamily: 'Metropolis-Regular',
+                  ),
+                  textAlign: TextAlign.left,
                 ),
                 SizedBox(height: 24.h),
                 // 5 boxes, 2 per row

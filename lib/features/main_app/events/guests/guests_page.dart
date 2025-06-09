@@ -156,7 +156,6 @@ class _GuestsPageState extends State<GuestsPage> {
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xffbbd953),
-
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.r),
         ),
@@ -248,18 +247,22 @@ class _GuestsPageState extends State<GuestsPage> {
                 Text(
                   'Guests',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontSize: 20.sp,
-                  fontFamily: 'Metropolis-SemiBold',
-                  letterSpacing: -0.5,
-                ),
+                    fontSize: 18.sp,
+                    fontFamily: 'Metropolis-SemiBold',
+                    letterSpacing: -0.5,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
+                  ),
+                  textAlign: TextAlign.left,
                 ),
                 SizedBox(height: 8.h),
                 Text(
                   'Who can attend this event?',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontSize: 14.sp,
-                  color: Colors.grey,
-                ),
+                    fontSize: 12.sp,
+                    color: Theme.of(context).hintColor,
+                    fontFamily: 'Metropolis-Regular',
+                  ),
+                  textAlign: TextAlign.left,
                 ),
                 SizedBox(height: 24.h),
                 _buildDropdownField(

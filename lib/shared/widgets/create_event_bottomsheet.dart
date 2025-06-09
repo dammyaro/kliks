@@ -55,7 +55,14 @@ class CreateEventBottomSheet extends StatelessWidget {
                     color: const Color(0xffbbd953),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.add, color: Colors.black, size: 30),
+                  child: Center(
+                    child: Icon(
+                      Icons.add,
+                      color: Colors.black,
+                      size: 30,
+                      weight: 900, // For Material 3, makes the icon thicker. If not supported, fallback to a custom icon or use a bold font.
+                    ),
+                  ),
                 ),
                 SizedBox(height: 20.h),
 
@@ -86,8 +93,8 @@ class CreateEventBottomSheet extends StatelessWidget {
                   width: MediaQuery.of(context).size.width * 0.9, // 90% of screen width
                   decoration: BoxDecoration(
                     color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.grey[900]
-                        : Colors.grey[200],
+                        ? Colors.grey[850]
+                        : Colors.grey[300],
                     borderRadius: BorderRadius.circular(10.r),
                   ),
                   child: Row(
@@ -145,11 +152,11 @@ class CreateEventBottomSheet extends StatelessWidget {
                 SizedBox(height: 20.h),
 
                 Container(
-                  padding: EdgeInsets.all(12.w),
+                  padding: EdgeInsets.all(22.w),
                   decoration: BoxDecoration(
                     color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.grey[900]
-                        : Colors.grey[200],
+                        ? Colors.grey[850]
+                        : Colors.grey[300],
                     borderRadius: BorderRadius.circular(12.r),
                   ),
                   child: Row(
@@ -173,43 +180,35 @@ class CreateEventBottomSheet extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 20.h),
-
-                // Buttons
-                Column(
-                  children: [
-                    // Yes, Create event button
-                    CustomButton(
-                      text: "Yes, Create event",
-                      onPressed: () {
-                        // Navigator.pop(context);
-                        Navigator.pushNamed(context, '/new-event');
-                      },
-                      backgroundColor: const Color(0xffbbd953),
-                      textColor: Colors.black,
-                      textStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontSize: 12.sp,
-                            fontFamily: 'Metropolis-SemiBold',
-                            color: Colors.black,
-                          ),
-                    ),
-                    SizedBox(height: 10.h),
-                    // No, Cancel button
-                    CustomButton(
-                      text: "No, Cancel",
-                      onPressed: () {
-                        // Add your logic here
-                        Navigator.pop(context);
-                      },
-                      backgroundColor: Colors.transparent,
-                      textColor: Colors.black,
-                      // constraints: BoxConstraints.tightFor(height: 50.h),
-                      hasBorder: true,
-                      textStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontSize: 12.sp,
-                            fontFamily: 'Metropolis-SemiBold',
-                          ),
-                    ),
-                  ],
+                const Spacer(),
+                // Yes, Create event button
+                CustomButton(
+                  text: "Yes, Create event",
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/new-event');
+                  },
+                  backgroundColor: const Color(0xffbbd953),
+                  textColor: Colors.black,
+                  textStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontSize: 12.sp,
+                        fontFamily: 'Metropolis-Medium',
+                        color: Colors.black,
+                      ),
+                ),
+                SizedBox(height: 10.h),
+                // No, Cancel button
+                CustomButton(
+                  text: "No, Cancel",
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  backgroundColor: Colors.transparent,
+                  textColor: Colors.black,
+                  hasBorder: true,
+                  textStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontSize: 12.sp,
+                        fontFamily: 'Metropolis-Medium',
+                      ),
                 ),
               ],
             ),

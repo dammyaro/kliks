@@ -8,6 +8,8 @@ import 'package:kliks/core/providers/event_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:kliks/core/providers/auth_provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:photo_view/photo_view_gallery.dart';
+import 'package:photo_view/photo_view.dart';
 
 class EventDetailPage extends StatefulWidget {
   final String? eventId;
@@ -319,30 +321,53 @@ class _EventDetailPageState extends State<EventDetailPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 1. Custom nav bar
-              CustomNavBar(title: eventName),
+              // 1. Custom nav bar (replace with back button)
+              Padding(
+                padding: EdgeInsets.only(left: 10.w, top: 18.h, right: 10.w, bottom: 0),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.arrow_back, size: 24.sp),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+              ),
               SizedBox(height: 10.h),
               // 2. Event banner with overlay and reward
               Center(
                 child: Stack(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(24.r),
-                      child: eventBanner.isNotEmpty
-                          ? Image.network(
-                              eventBanner,
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              height: 300.h,
-                              fit: BoxFit.cover,
-                            )
-                          : Container(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              height: 200.h,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[300],
-                                borderRadius: BorderRadius.circular(24.r),
+                    GestureDetector(
+                      onTap: eventBanner.isNotEmpty
+                          ? () {
+                              final allImages = [eventBanner, ...otherImages];
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => _GalleryView(images: allImages, initialIndex: 0),
+                                ),
+                              );
+                            }
+                          : null,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(24.r),
+                        child: eventBanner.isNotEmpty
+                            ? Image.network(
+                                eventBanner,
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                height: 300.h,
+                                fit: BoxFit.cover,
+                              )
+                            : Container(
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                height: 200.h,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                  borderRadius: BorderRadius.circular(24.r),
+                                ),
                               ),
-                            ),
+                      ),
                     ),
                     Positioned(
                       left: 0,
@@ -409,14 +434,15 @@ class _EventDetailPageState extends State<EventDetailPage> {
                   children: [
                     Text(eventName,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontSize: 20.sp,
-                        fontFamily: 'Metropolis-Bold',
+                        fontSize: 16.sp,
+                        fontFamily: 'Metropolis-SemiBold',
+
                       ),
                     ),
                     SizedBox(height: 8.h),
                     Text(eventDate,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 13.sp,
+                        fontSize: 10.sp,
                         color: Theme.of(context).hintColor,
                         fontFamily: 'Metropolis-SemiBold',
                       ),
@@ -424,7 +450,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                     SizedBox(height: 8.h),
                     Text(eventLocation,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 13.sp,
+                        fontSize: 10.sp,
                         color: Theme.of(context).hintColor,
                         fontFamily: 'Metropolis-Regular',
                       ),
@@ -437,11 +463,11 @@ class _EventDetailPageState extends State<EventDetailPage> {
                         padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.4),
-                          borderRadius: BorderRadius.circular(16.r),
+                          borderRadius: BorderRadius.circular(8.r),
                         ),
                         child: Text(cat ?? '',
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontSize: 12.sp,
+                            fontSize: 10.sp,
                             fontFamily: 'Metropolis-SemiBold',
                           ),
                         ),
@@ -450,7 +476,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                   ],
                 ),
               ),
-              SizedBox(height: 18.h),
+              SizedBox(height: 25.h),
               // 4. Organizer
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -459,9 +485,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
                   children: [
                     Text('Organizer',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 13.sp,
-                        fontFamily: 'Metropolis-SemiBold',
-                        color: Theme.of(context).hintColor,
+                        fontSize: 12.sp,
+                        fontFamily: 'Metropolis-Medium',
+                        color: Theme.of(context).hintColor.withOpacity(0.5),
                       ),
                     ),
                     SizedBox(height: 10.h),
@@ -489,40 +515,66 @@ class _EventDetailPageState extends State<EventDetailPage> {
                             children: [
                               Text(organizerName,
                                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  fontSize: 14.sp,
+                                  fontSize: 12.sp,
                                   fontFamily: 'Metropolis-SemiBold',
+                                  color: Theme.of(context).textTheme.bodyMedium?.color,
                                 ),
                               ),
                               Text('@$organizerUsername',
                                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  fontSize: 12.sp,
+                                  fontSize: 8.sp,
                                   color: Theme.of(context).hintColor,
-                                  fontFamily: 'Metropolis-Regular',
+                                  fontFamily: 'Metropolis-Medium',
                                 ),
                               ),
                             ],
                           ),
                           const Spacer(),
-                          Icon(Icons.navigate_next, size: 28.sp, color: Theme.of(context).iconTheme.color),
+                          Icon(Icons.navigate_next, size: 20.sp, color: Theme.of(context).iconTheme.color),
                         ],
                       ),
                     ),
-                    SizedBox(height: 10.h),
-                    Divider(),
+                    SizedBox(height: 20.h),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 0),
+                      child: Divider(),
+                    ),
+                    SizedBox(height: 18.h),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _actionCircle(context, Icons.bookmark_border, 'Save'),
-                        _actionCircle(context, Icons.link_outlined, 'Copy link'),
-                        _actionCircle(context, Icons.calendar_today_outlined, 'To calendar', bg: Colors.green),
-                        _actionCircle(context, Icons.report_gmailerrorred_outlined, 'Report', bg: Colors.red),
+                        _actionCircle(
+                          context,
+                          Icons.bookmark_border,
+                          'Save',
+                          size: 50.sp,
+                          iconSize: 20.sp,
+                          bg: Colors.transparent,
+                          border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.3), width: 1),
+                        ),
+                        _actionCircle(
+                          context,
+                          Icons.link_outlined,
+                          'Copy link',
+                          size: 50.sp,
+                          iconSize: 20.sp,
+                          bg: Colors.transparent,
+                          border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.3), width: 1),
+                        ),
+                        _actionCircle(context, Icons.calendar_today_outlined, 'To calendar', bg: const Color(0xffbbd953), size: 50.sp, iconSize: 20.sp),
+                        _actionCircle(context, Icons.report_gmailerrorred_outlined, 'Report', bg: Colors.red, size: 50.sp, iconSize: 20.sp),
                       ],
+                    ),
+                    SizedBox(height: 18.h),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 0),
+                      child: Divider(),
                     ),
                   ],
                 ),
               ),
               SizedBox(height: 18.h),
-              Divider(),
+              // Divider(),
               // 5. People Attending
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -534,17 +586,17 @@ class _EventDetailPageState extends State<EventDetailPage> {
                         children: [
                           Text('People Attending',
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              fontSize: 13.sp,
-                              fontFamily: 'Metropolis-SemiBold',
-                              color: Theme.of(context).hintColor,
+                              fontSize: 12.sp,
+                              fontFamily: 'Metropolis-Medium',
+                              color: Theme.of(context).hintColor.withOpacity(0.5),
                             ),
                           ),
                           SizedBox(height: 4.h),
                           Text(
                             '${(event?['attendingUserDocuments'] as List?)?.length ?? 0} attending',
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontSize: 14.sp,
-                              fontFamily: 'Metropolis-SemiBold',
+                              fontSize: 12.sp,
+                              fontFamily: 'Metropolis-Medium',
                             ),
                           ),
                         ],
@@ -555,14 +607,17 @@ class _EventDetailPageState extends State<EventDetailPage> {
                 ),
               ),
               SizedBox(height: 10.h),
-              Divider(),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                child: Divider(),
+              ),
               // 6. About Event
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: Text('About Event',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontSize: 18.sp,
-                    fontFamily: 'Metropolis-Bold',
+                    fontSize: 14.sp,
+                    fontFamily: 'Metropolis-SemiBold',
                   ),
                 ),
               ),
@@ -571,9 +626,10 @@ class _EventDetailPageState extends State<EventDetailPage> {
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: Text('Description',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 15.sp,
-                    fontFamily: 'Metropolis-SemiBold',
-                    color: Theme.of(context).textTheme.bodyMedium?.color,
+                    fontSize: 12.sp,
+                    fontFamily: 'Metropolis-Medium',
+                    color: Theme.of(context).hintColor.withOpacity(0.5),
+                    letterSpacing: -0.5,
                   ),
                 ),
               ),
@@ -581,19 +637,24 @@ class _EventDetailPageState extends State<EventDetailPage> {
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
                 child: Text(eventDescription,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 13.sp,
+                    fontSize: 10.sp,
                     fontFamily: 'Metropolis-Regular',
+                    letterSpacing: 0,
+                    height: 1.7,
                   ),
                 ),
               ),
-              Divider(),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                child: Divider(),
+              ),
               // 7. Who can attend
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: Text('Who can attend',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontSize: 15.sp,
-                    fontFamily: 'Metropolis-SemiBold',
+                    fontSize: 14.sp,
+                    fontFamily: 'Metropolis-Bold',
                     color: Theme.of(context).textTheme.bodyMedium?.color,
                   ),
                 ),
@@ -602,19 +663,22 @@ class _EventDetailPageState extends State<EventDetailPage> {
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
                 child: Text(whoCanAttend,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 13.sp,
+                    fontSize: 10.sp,
                     fontFamily: 'Metropolis-Regular',
                   ),
                 ),
               ),
-              Divider(),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                child: Divider(),
+              ),
               // 8. Time frame
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: Text('Time frame',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 15.sp,
-                    fontFamily: 'Metropolis-SemiBold',
+                    fontSize: 14.sp,
+                    fontFamily: 'Metropolis-Bold',
                     color: Theme.of(context).textTheme.bodyMedium?.color,
                   ),
                 ),
@@ -626,28 +690,31 @@ class _EventDetailPageState extends State<EventDetailPage> {
                   children: [
                     Text('Starts: $startDate',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 13.sp,
-                        fontFamily: 'Metropolis-Regular',
+                        fontSize: 10.sp,
+                        fontFamily: 'Metropolis-Medium',
                       ),
                     ),
                     SizedBox(height: 4.h),
                     Text('Ends: $endDate',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 13.sp,
-                        fontFamily: 'Metropolis-Regular',
+                        fontSize: 10.sp,
+                        fontFamily: 'Metropolis-Medium',
                       ),
                     ),
                   ],
                 ),
               ),
-              Divider(),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                child: Divider(),
+              ),
               // 9. Location
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: Text('Location',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 15.sp,
-                    fontFamily: 'Metropolis-SemiBold',
+                    fontSize: 14.sp,
+                    fontFamily: 'Metropolis-Bold',
                     color: Theme.of(context).textTheme.bodyMedium?.color,
                   ),
                 ),
@@ -656,7 +723,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
                 child: Text(eventLocation,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 13.sp,
+                    fontSize: 10.sp,
                     fontFamily: 'Metropolis-Regular',
                   ),
                 ),
@@ -668,20 +735,21 @@ class _EventDetailPageState extends State<EventDetailPage> {
                   height: 120.h,
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(16.r),
+                    borderRadius: BorderRadius.circular(10.r),
                   ),
                   child: Center(
                     child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.3,
+                      width: MediaQuery.of(context).size.width * 0.25,
+                      height: 30.h,
                       child: CustomButton(
                         text: 'Open maps',
                         onPressed: () {},
-                        backgroundColor: Colors.white,
-                        textColor: Colors.black,
+                        backgroundColor: Colors.black,
+                        textColor: const Color(0xffbbd953),
                         textStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontSize: 13.sp,
+                          fontSize: 10.sp,
                           fontFamily: 'Metropolis-SemiBold',
-                          color: Colors.black,
+                          color: const Color(0xffbbd953),
                         ),
                       ),
                     ),
@@ -689,15 +757,18 @@ class _EventDetailPageState extends State<EventDetailPage> {
                 ),
               ),
               SizedBox(height: 15.h),
-              Divider(),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                child: Divider(),
+              ),
               // 10. Media upload
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: Text('Media upload',
+                child: Text('Media uploads',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     fontSize: 13.sp,
                     fontFamily: 'Metropolis-SemiBold',
-                    color: Theme.of(context).hintColor,
+                    // color: Theme.of(context).hintColor,
                   ),
                 ),
               ),
@@ -709,93 +780,155 @@ class _EventDetailPageState extends State<EventDetailPage> {
                   mainAxisSpacing: 10.h,
                   crossAxisSpacing: 10.w,
                   physics: const NeverScrollableScrollPhysics(),
-                  childAspectRatio: 0.5,
-                  children: otherImages.map((img) {
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(14.r),
-                      child: (img.isNotEmpty)
-                          ? Image.network(
-                              img,
-                              width: double.infinity,
-                              height: 300.h,
-                              fit: BoxFit.cover,
-                            )
-                          : Container(
-                              width: double.infinity,
-                              height: 300.h,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[300],
-                                borderRadius: BorderRadius.circular(14.r),
+                  childAspectRatio: 0.8,
+                  children: otherImages.asMap().entries.map((entry) {
+                    final img = entry.value;
+                    final idx = entry.key;
+                    return GestureDetector(
+                      onTap: img.isNotEmpty
+                          ? () {
+                              final allImages = [eventBanner, ...otherImages];
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => _GalleryView(images: allImages, initialIndex: idx + 1),
+                                ),
+                              );
+                            }
+                          : null,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(14.r),
+                        child: (img.isNotEmpty)
+                            ? Image.network(
+                                img,
+                                width: double.infinity,
+                                height: 300.h,
+                                fit: BoxFit.cover,
+                              )
+                            : Container(
+                                width: double.infinity,
+                                height: 300.h,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                  borderRadius: BorderRadius.circular(14.r),
+                                ),
                               ),
-                            ),
+                      ),
                     );
                   }).toList(),
                 ),
               ),
-              Divider(),
-              // 11. Attend button
-              if (!isUserAttending)
-                Center(
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    height: 50.h,
-                    child: CustomButton(
-                      text: 'Attend Event for Free',
-                      isLoading: _isAttendingLoading,
-                      onPressed: _isAttendingLoading
-                          ? null
-                          : () async {
-                              setState(() {
-                                _isAttendingLoading = true;
-                              });
-                              final eventProvider = Provider.of<EventProvider>(context, listen: false);
-                              final success = await eventProvider.attendEvent(widget.eventId ?? '');
-                              if (success) {
-                                await _loadEvent();
-                              }
-                              setState(() {
-                                _isAttendingLoading = false;
-                              });
-                            },
-                      backgroundColor: const Color(0xffbbd953),
-                      textColor: Colors.black,
-                      textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontSize: 12.sp,
-                        fontFamily: 'Metropolis-SemiBold',
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
-              SizedBox(height: 30.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                child: Divider(),
+              ),
             ],
           ),
         ),
       ),
+      bottomNavigationBar: !isUserAttending
+          ? Padding(
+              padding: EdgeInsets.only(
+                left: 20.w,
+                right: 20.w,
+                bottom: 20.h + MediaQuery.of(context).viewPadding.bottom,
+                top: 10.h,
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                height: 40.h,
+                child: CustomButton(
+                  text: 'Attend Event for Free',
+                  isLoading: _isAttendingLoading,
+                  onPressed: _isAttendingLoading
+                      ? null
+                      : () async {
+                          setState(() {
+                            _isAttendingLoading = true;
+                          });
+                          final eventProvider = Provider.of<EventProvider>(context, listen: false);
+                          final success = await eventProvider.attendEvent(widget.eventId ?? '');
+                          if (success) {
+                            await _loadEvent();
+                          }
+                          setState(() {
+                            _isAttendingLoading = false;
+                          });
+                        },
+                  backgroundColor: const Color(0xffbbd953),
+                  textColor: Colors.black,
+                  textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontSize: 10.sp,
+                    fontFamily: 'Metropolis-Medium',
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            )
+          : null,
     );
   }
 
-  Widget _actionCircle(BuildContext context, IconData icon, String label, {Color? bg}) {
+  Widget _actionCircle(BuildContext context, IconData icon, String label, {Color? bg, double size = 48, double iconSize = 24, BoxBorder? border}) {
     final theme = Theme.of(context);
     return Column(
       children: [
         Container(
-          width: 48.sp,
-          height: 48.sp,
+          width: size,
+          height: size,
           decoration: BoxDecoration(
             color: bg ?? theme.colorScheme.surfaceContainerHighest.withOpacity(0.2),
             shape: BoxShape.circle,
+            border: border,
           ),
-          child: Icon(icon, color: bg != null ? Colors.white : theme.iconTheme.color, size: 24.sp),
+          child: Icon(icon, color: bg != null && bg != Colors.transparent ? Colors.white : theme.iconTheme.color, size: iconSize),
         ),
         SizedBox(height: 4.h),
         Text(label,
           style: theme.textTheme.bodySmall?.copyWith(
-            fontSize: 11.sp,
-            fontFamily: 'Metropolis-SemiBold',
+            fontSize: 10.sp,
+            fontFamily: 'Metropolis-Medium',
           ),
         ),
       ],
+    );
+  }
+}
+
+// Move _GalleryView here as a top-level widget
+class _GalleryView extends StatelessWidget {
+  final List<String> images;
+  final int initialIndex;
+  const _GalleryView({required this.images, required this.initialIndex});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          PhotoViewGallery.builder(
+            itemCount: images.length,
+            pageController: PageController(initialPage: initialIndex),
+            builder: (context, index) {
+              return PhotoViewGalleryPageOptions(
+                imageProvider: NetworkImage(images[index]),
+                minScale: 0.8,
+                maxScale: 2.5,
+              );
+            },
+            backgroundDecoration: const BoxDecoration(color: Colors.black),
+          ),
+          Positioned(
+            top: 40,
+            left: 10,
+            child: IconButton(
+              icon: const Icon(Icons.close, color: Colors.white, size: 32),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

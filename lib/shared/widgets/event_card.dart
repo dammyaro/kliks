@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/auth_provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:flutter/cupertino.dart';
 
 class EventCard extends StatefulWidget {
   final Map<String, dynamic> event;
@@ -75,6 +76,12 @@ class _EventCardState extends State<EventCard> {
       }
     } catch (_) {}
 
+    String cityState = eventLocation;
+    final parts = eventLocation.split(',').map((s) => s.trim()).toList();
+    if (parts.length >= 2) {
+      cityState = parts[parts.length - 2] + ', ' + parts.last;
+    }
+
     final skeletonColor = Theme.of(context).brightness == Brightness.dark
         ? const Color(0xFF232323)
         : const Color(0xFFE0E0E0);
@@ -92,7 +99,7 @@ class _EventCardState extends State<EventCard> {
       color: Colors.transparent,
       elevation: 0,
       child: Padding(
-        padding: EdgeInsets.all(12.w),
+        padding: EdgeInsets.all(10.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -137,6 +144,28 @@ class _EventCardState extends State<EventCard> {
                           ),
                     ),
                   ],
+                ),
+                Spacer(),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFBF00),
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.emoji_events, color: Colors.black, size: 16.sp),
+                      SizedBox(width: 4.w),
+                      Text(
+                        '1 POINTS',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 11.sp,
+                          fontFamily: 'Metropolis-Bold',
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -202,14 +231,19 @@ class _EventCardState extends State<EventCard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        eventName,
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              fontSize: 16.sp,
-                              fontFamily: 'Metropolis-Bold',
-                              color: Colors.white,
-                              shadows: [Shadow(blurRadius: 6, color: Colors.black.withOpacity(0.5))],
-                            ),
+                      SizedBox(
+                        width: 180.w,
+                        child: Text(
+                          eventName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                fontSize: 16.sp,
+                                fontFamily: 'Metropolis-Bold',
+                                color: Colors.white,
+                                shadows: [Shadow(blurRadius: 6, color: Colors.black.withOpacity(0.5))],
+                              ),
+                        ),
                       ),
                       SizedBox(height: 4.h),
                       Row(
@@ -218,7 +252,7 @@ class _EventCardState extends State<EventCard> {
                           // SizedBox(width: 4.w),
                           ConstrainedBox(
                             constraints: BoxConstraints(
-                              maxWidth: MediaQuery.of(context).size.width * 0.3,
+                              maxWidth: MediaQuery.of(context).size.width * 0.5,
                             ),
                             child: Container(
                               padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
@@ -227,9 +261,9 @@ class _EventCardState extends State<EventCard> {
                                 borderRadius: BorderRadius.circular(12.r),
                               ),
                               child: Text(
-                                eventLocation,
+                                cityState,
                                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      fontSize: 11.sp,
+                                      fontSize: 10.sp,
                                       color: Colors.black,
                                       fontFamily: 'Metropolis-SemiBold',
                                     ),
@@ -259,7 +293,7 @@ class _EventCardState extends State<EventCard> {
                         Text(
                           '$attendees attending',
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                fontSize: 12.sp,
+                                fontSize: 10.sp,
                                 color: Colors.white,
                               ),
                         ),

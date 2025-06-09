@@ -7,6 +7,8 @@ import 'package:kliks/shared/widgets/handle_bar.dart';
 import 'package:kliks/shared/widgets/custom_navbar.dart';
 import 'package:kliks/shared/widgets/button.dart';
 import 'package:kliks/shared/widgets/profile_picture.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -30,7 +32,6 @@ class ProfilePage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 10.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 5.w),
               child: Row(
@@ -39,10 +40,11 @@ class ProfilePage extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 0.h),
+            // SizedBox(height: 24.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
               child: Row(
+                
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                     GestureDetector(
@@ -99,87 +101,10 @@ class ProfilePage extends StatelessWidget {
                     ),
                   SizedBox(width: 10.w),
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                            children: [
-                            Text(
-                              fullName.length > 10
-                                ? '${fullName.substring(0, 10)}...'
-                                : fullName,
-                              style: Theme.of(
-                              context,
-                              ).textTheme.bodyLarge?.copyWith(
-                              fontSize: 16.sp,
-                              fontFamily: 'Metropolis-SemiBold',
-                              letterSpacing: -1,
-                              ),
-                            ),
-                            SizedBox(width: 4.w),
-                            if (kycStatusSumsub == null)
-                              TextButton(
-                              onPressed: () {
-                                // Navigate to verification page or handle verification
-                                Navigator.pushNamed(context, '/settings');
-                              },
-                              style: TextButton.styleFrom(
-                                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-                                minimumSize: Size(0, 0),
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                side: BorderSide(
-                                color: Colors.green,
-                                width: 1.2,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.r),
-                                ),
-                              ),
-                              child: Text(
-                                'Verify',
-                                style: TextStyle(
-                                fontSize: 6.sp,
-                                fontFamily: 'Metropolis-SemiBold',
-                                color: Colors.green,
-                                ),
-                              ),
-                              )
-                            else
-                              Icon(
-                              Icons.verified,
-                              size: 16.sp,
-                              color: Colors.green,
-                              ),
-                          ],
-                        ),
-                        SizedBox(height: 4.h),
-                        Text(
-                          '@$username',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodySmall?.copyWith(
-                            fontSize: 12.sp,
-                            fontFamily: 'Metropolis-Regular',
-                          ),
-                        ),
-                        SizedBox(height: 4.h),
-                        Row(
-                          children: [
-                            Text(
-                              'Ontario, Canada',
-                              style: Theme.of(
-                                context,
-                              ).textTheme.bodySmall?.copyWith(
-                                fontSize: 10.sp,
-                                fontFamily: 'Metropolis-Regular',
-                                color: Theme.of(
-                                  context,
-                                ).textTheme.bodySmall?.color?.withOpacity(0.6),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                    child: _ProfileHeaderColumn(
+                      fullName: fullName,
+                      username: username,
+                      kycStatusSumsub: kycStatusSumsub,
                     ),
                   ),
                   IconButton(
@@ -261,9 +186,13 @@ class ProfilePage extends StatelessWidget {
                                               children: [
                                                 TextSpan(
                                                   text: 'Follow requests ',
-                                                  style: TextStyle(
-                                                    fontSize: 14.sp,
-                                                  ),
+                                                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                                 fontSize: 14.sp,
+                                                 color:
+                                                    Theme.of(context).textTheme.bodyLarge?.color,
+                                                 fontFamily: 'Metropolis-SemiBold',
+                                                 letterSpacing: 0,
+                                               ),
                                                 ),
                                                 TextSpan(
                                                   text: '+2',
@@ -342,7 +271,7 @@ class ProfilePage extends StatelessWidget {
                                             ),
                                             SizedBox(height: 16.h),
                                             Text(
-                                            'Are you sure you want to log out\n@kunlearoo from Kliks',
+                                            'Are you sure you want to log out\nfrom Kliks',
                                             style: Theme.of(context)
                                               .textTheme
                                               .bodySmall
@@ -442,43 +371,61 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 24.h),
-            Divider(height: 32.h, thickness: 1),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.w),
-              child: Column(
-                children: [
-                  Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(child: _buildStatItem(context, 'Attendance', '0%', align: TextAlign.left)),
-                    Expanded(child: _buildStatItem(context, 'Total events', '0', align: TextAlign.right)),
-                  ],
-                  ),
-                  Divider(height: 32.h, thickness: 1),
-                  GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/people');
-                  },
+            SizedBox(
+              width: double.infinity,
+              child: Divider(height: 32.h, thickness: 1, indent: 0, endIndent: 0),
+            ),
+            Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                    Expanded(child: _buildStatItem(context, 'Followers', followerCount.toString(), align: TextAlign.left)),
-                    Expanded(child: _buildStatItem(context, 'Following', followingCount.toString(), align: TextAlign.right)),
+                      Expanded(child: _buildStatItem(context, 'Attendance', '0%', align: TextAlign.left)),
+                      Expanded(child: _buildStatItem(context, 'Total events', '0', align: TextAlign.right)),
                     ],
                   ),
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  child: Divider(height: 32.h, thickness: 1, indent: 0, endIndent: 0),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/people');
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(child: _buildStatItem(context, 'Followers', followerCount.toString(), align: TextAlign.left)),
+                        Expanded(child: _buildStatItem(context, 'Following', followingCount.toString(), align: TextAlign.right)),
+                      ],
+                    ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            Divider(height: 32.h, thickness: 1),
+            SizedBox(
+              width: double.infinity,
+              child: Divider(height: 32.h, thickness: 1, indent: 0, endIndent: 0),
+            ),
             _buildSection(
               context,
               'Bio',
                bio,
             ),
-            Divider(height: 32.h, thickness: 1),
+            SizedBox(
+              width: double.infinity,
+              child: Divider(height: 32.h, thickness: 1, indent: 0, endIndent: 0),
+            ),
             _buildInterestsSection(context, interests),
-            Divider(height: 32.h, thickness: 1),
+            SizedBox(
+              width: double.infinity,
+              child: Divider(height: 32.h, thickness: 1, indent: 0, endIndent: 0),
+            ),
             _buildEventsSection(context),
             SizedBox(height: 40.h),
           ],
@@ -495,7 +442,7 @@ class ProfilePage extends StatelessWidget {
           value,
           textAlign: align,
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            fontSize: 18.sp,
+            fontSize: 20.sp,
             fontFamily: 'Metropolis-SemiBold',
           ),
         ),
@@ -504,7 +451,7 @@ class ProfilePage extends StatelessWidget {
           label,
           textAlign: align,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            fontSize: 14.sp,
+            fontSize: 15.sp,
             fontFamily: 'Metropolis-Regular',
             letterSpacing: -0.5,
             color: Theme.of(
@@ -518,14 +465,14 @@ class ProfilePage extends StatelessWidget {
 
   Widget _buildSection(BuildContext context, String title, String content) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10.w),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontSize: 18.sp,
+              fontSize: 20.sp,
               fontFamily: 'Metropolis-SemiBold',
               letterSpacing: 0,
             ),
@@ -537,8 +484,9 @@ class ProfilePage extends StatelessWidget {
               content,
               textAlign: TextAlign.left,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                fontSize: 12.sp,
+                fontSize: 15.sp,
                 fontFamily: 'Metropolis-Regular',
+                
               ),
             ),
           ),
@@ -703,7 +651,7 @@ class ProfilePage extends StatelessWidget {
                               Navigator.pop(context);
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Failed to update interests')),
+                                const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Failed to update interests'))),
                               );
                             }
                           }
@@ -733,18 +681,18 @@ class ProfilePage extends StatelessWidget {
     }
 
     return Padding(
-      padding: EdgeInsets.only(top: 10.h, bottom: 10.h),
+      padding: EdgeInsets.only(top: 10.h, bottom: 10.h, left: 20.w, right: 20.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.only(left: 10.w),
+            padding: EdgeInsets.only(left: 0),
             child: Row(
               children: [
                 Text(
                   'Interests',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontSize: 18.sp,
+                    fontSize: 20.sp,
                     fontFamily: 'Metropolis-SemiBold',
                     letterSpacing: 0,
                   ),
@@ -754,7 +702,7 @@ class ProfilePage extends StatelessWidget {
           ),
           SizedBox(height: 12.h),
           Padding(
-            padding: EdgeInsets.only(left: 16.w),
+            padding: EdgeInsets.only(left: 0),
             child: Wrap(
               spacing: 8.w,
               runSpacing: 0.h,
@@ -764,7 +712,7 @@ class ProfilePage extends StatelessWidget {
                     label: Text(
                       interest,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 12.sp,
+                        fontSize: 15.sp,
                         fontFamily: 'Metropolis-SemiBold',
                         letterSpacing: 0,
                       ),
@@ -791,12 +739,12 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget _buildEventsSection(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: Text(
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
             'Events',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
               fontSize: 18.sp,
@@ -804,80 +752,80 @@ class ProfilePage extends StatelessWidget {
               letterSpacing: 0,
             ),
           ),
-        ),
-        SizedBox(height: 16.h),
-        DefaultTabController(
-          length: 4,
-          child: Column(
-            children: [
-              TabBar(
-                labelColor: Theme.of(context).textTheme.bodyLarge?.color,
-                unselectedLabelColor:
-                    Theme.of(context).textTheme.bodySmall?.color,
-                labelStyle: const TextStyle(fontFamily: 'Metropolis-SemiBold'),
-                tabs: const [
-                  Tab(text: 'My Events'),
-                  Tab(text: 'Blocked'),
-                  Tab(text: 'Invitations'),
-                  Tab(text: 'Saved'),
-                ],
-              ),
-              SizedBox(
-                height: 200.h,
-                child: TabBarView(
-                  children: List.generate(4, (index) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 35.sp,
-                            height: 35.sp,
-                            decoration: BoxDecoration(
-                              color: const Color(0xffbbd953),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.add,
-                              size: 20.sp,
-                              color: Colors.white,
-                            ),
-                          ),
-                          SizedBox(height: 16.h),
-                          Text(
-                            'No events',
-                            style: Theme.of(
-                              context,
-                            ).textTheme.bodySmall?.copyWith(
-                              fontSize: 15.sp,
-                              fontFamily: 'Metropolis-SemiBold',
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(height: 2.h),
-                          Text(
-                            'Add new events, invite your friends,\nadded events will appear here',
-                            style: Theme.of(
-                              context,
-                            ).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(
-                                context,
-                              ).textTheme.bodySmall?.color?.withOpacity(0.4),
-                              fontSize: 12.sp,
-                              fontFamily: 'Metropolis-Regular',
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
+          SizedBox(height: 16.h),
+          DefaultTabController(
+            length: 4,
+            child: Column(
+              children: [
+                TabBar(
+                  labelColor: Theme.of(context).textTheme.bodyLarge?.color,
+                  unselectedLabelColor:
+                      Theme.of(context).textTheme.bodySmall?.color,
+                  labelStyle: const TextStyle(fontFamily: 'Metropolis-SemiBold'),
+                  tabs: const [
+                    Tab(text: 'My Events'),
+                    Tab(text: 'Blocked'),
+                    Tab(text: 'Invitations'),
+                    Tab(text: 'Saved'),
+                  ],
                 ),
-              ),
-            ],
+                SizedBox(
+                  height: 200.h,
+                  child: TabBarView(
+                    children: List.generate(4, (index) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 35.sp,
+                              height: 35.sp,
+                              decoration: BoxDecoration(
+                                color: const Color(0xffbbd953),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.add,
+                                size: 20.sp,
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(height: 16.h),
+                            Text(
+                              'No events',
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodySmall?.copyWith(
+                                fontSize: 15.sp,
+                                fontFamily: 'Metropolis-SemiBold',
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(height: 2.h),
+                            Text(
+                              'Add new events, invite your friends,\nadded events will appear here',
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodySmall?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).textTheme.bodySmall?.color?.withOpacity(0.4),
+                                fontSize: 12.sp,
+                                fontFamily: 'Metropolis-Regular',
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -917,6 +865,134 @@ class ProfilePage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ProfileHeaderColumn extends StatefulWidget {
+  final String fullName;
+  final String username;
+  final dynamic kycStatusSumsub;
+  const _ProfileHeaderColumn({required this.fullName, required this.username, required this.kycStatusSumsub});
+
+  @override
+  State<_ProfileHeaderColumn> createState() => _ProfileHeaderColumnState();
+}
+
+class _ProfileHeaderColumnState extends State<_ProfileHeaderColumn> {
+  String _locationText = 'Ontario, Canada';
+  bool _isLoadingLocation = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _getLocation();
+  }
+
+  Future<void> _getLocation() async {
+    setState(() => _isLoadingLocation = true);
+    try {
+      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+      if (placemarks.isNotEmpty) {
+        final place = placemarks.first;
+        setState(() {
+          _locationText = '${place.locality ?? ''}, ${place.country ?? ''}'.trim().replaceAll(RegExp(r'^,|,$'), '');
+        });
+      } else {
+        setState(() {
+          _locationText = 'Location not found';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _locationText = 'Location error';
+      });
+    } finally {
+      setState(() => _isLoadingLocation = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(
+              widget.fullName.length > 14
+                  ? '${widget.fullName.substring(0, 14)}...'
+                  : widget.fullName,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                fontSize: 18.sp,
+                fontFamily: 'Metropolis-SemiBold',
+                letterSpacing: -1,
+              ),
+            ),
+            SizedBox(width: 4.w),
+            if (widget.kycStatusSumsub != null)
+              Icon(
+                Icons.verified,
+                size: 16.sp,
+                color: Colors.green,
+              ),
+          ],
+        ),
+        if (widget.kycStatusSumsub == null) ...[
+          SizedBox(height: 2.h),
+          TextButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/settings');
+            },
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+              minimumSize: Size(0, 0),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              side: BorderSide(
+                color: Colors.green,
+                width: 1.2,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+            ),
+            child: Text(
+              'Verify',
+              style: TextStyle(
+                fontSize: 12.sp,
+                fontFamily: 'Metropolis-SemiBold',
+                color: Colors.green,
+              ),
+            ),
+          ),
+        ],
+        SizedBox(height: 4.h),
+        Text(
+          '@${widget.username}',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            fontSize: 12.sp,
+            fontFamily: 'Metropolis-Regular',
+          ),
+        ),
+        SizedBox(height: 4.h),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                _isLoadingLocation ? 'Getting location...' : _locationText,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  fontSize: 10.sp,
+                  fontFamily: 'Metropolis-Regular',
+                  color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.6),
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

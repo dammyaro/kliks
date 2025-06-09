@@ -238,19 +238,30 @@ class _HomePageState extends State<HomePage> {
                                         : RefreshIndicator(
                                             onRefresh: _reloadEvents,
                                             child: ListView.builder(
-                                              shrinkWrap: true,
-                                              physics: const AlwaysScrollableScrollPhysics(),
-                                              itemCount: eventsToShow.length + 1,
-                                              itemBuilder: (context, idx) {
-                                                if (idx == eventsToShow.length) {
-                                                  return SizedBox(height: 140.h);
-                                                }
-                                                final event = eventsToShow[idx];
-                                                return Padding(
-                                                  padding: EdgeInsets.only(bottom: 8.h),
-                                                  child: EventCard(event: event),
-                                                );
-                                              },
+                                            shrinkWrap: true,
+                                            physics: const AlwaysScrollableScrollPhysics(),
+                                            itemCount: eventsToShow.length + 1,
+                                            itemBuilder: (context, idx) {
+                                              if (idx == eventsToShow.length) {
+                                                return SizedBox(height: 140.h);
+                                              }
+                                              final event = eventsToShow[idx];
+                                                return Column(
+                                                  children: [
+                                                    Padding(
+                                                padding: EdgeInsets.only(bottom: 8.h),
+                                                child: EventCard(event: event),
+                                                    ),
+                                                    Divider(
+                                                      height: 1,
+                                                      thickness: 0.5,
+                                                      color: Theme.of(context).brightness == Brightness.light
+                                                          ? Colors.grey[300]!.withOpacity(0.7)
+                                                          : Colors.grey[100]!.withOpacity(0.5),
+                                                    ),
+                                                  ],
+                                              );
+                                            },
                                             ),
                                           ),
                               ),
@@ -349,19 +360,30 @@ class _HomePageState extends State<HomePage> {
                                           : RefreshIndicator(
                                               onRefresh: _reloadEvents,
                                               child: ListView.builder(
-                                                shrinkWrap: true,
-                                                physics: const AlwaysScrollableScrollPhysics(),
-                                                itemCount: filteredEvents.length + 1,
-                                                itemBuilder: (context, idx) {
-                                                  if (idx == filteredEvents.length) {
-                                                    return SizedBox(height: 140.h);
-                                                  }
-                                                  final event = filteredEvents[idx];
-                                                  return Padding(
-                                                    padding: EdgeInsets.only(bottom: 8.h),
-                                                    child: EventCard(event: event),
-                                                  );
-                                                },
+                                              shrinkWrap: true,
+                                              physics: const AlwaysScrollableScrollPhysics(),
+                                              itemCount: filteredEvents.length + 1,
+                                              itemBuilder: (context, idx) {
+                                                if (idx == filteredEvents.length) {
+                                                  return SizedBox(height: 140.h);
+                                                }
+                                                final event = filteredEvents[idx];
+                                                  return Column(
+                                                    children: [
+                                                      Padding(
+                                                  padding: EdgeInsets.only(bottom: 8.h),
+                                                  child: EventCard(event: event),
+                                                      ),
+                                                      Divider(
+                                                        height: 1,
+                                                        thickness: 0.5,
+                                                        color: Theme.of(context).brightness == Brightness.light
+                                                            ? Colors.grey[300]!.withOpacity(0.4)
+                                                            : Colors.grey[100]!.withOpacity(0.2),
+                                                      ),
+                                                    ],
+                                                );
+                                              },
                                               ),
                                             ),
                                 ),
