@@ -53,6 +53,8 @@
 		<string>This app needs access to your location to show relevant events near you.</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>This app requires access to your photo library to allow you to select and upload photos.</string>
+		<key>NSCalendarsUsageDescription</key>
+		<string>This app needs access to your calendar to add events.</string>
 		<key>CFBundleURLTypes</key>
 		<array>
 			<dict>
