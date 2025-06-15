@@ -24,19 +24,21 @@ class ApiService {
       return client;
     };
 
-    _dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) async {
-        final token = await _secureStorage.read(key: 'auth_token');
-        if (token != null) {
-          options.headers['Authorization'] = token;
-          // print('Interceptor added header: Bearer $token');
-        } else {
-          print('Interceptor: No token found');
-        }
-        // print('Request headers: ${options.headers}');
-        return handler.next(options);
-      },
-    ));
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final token = await _secureStorage.read(key: 'auth_token');
+          if (token != null) {
+            options.headers['Authorization'] = token;
+            // printWrapped('Interceptor added header: Bearer $token');
+          } else {
+            print('Interceptor: No token found');
+          }
+          // print('Request headers: ${options.headers}');
+          return handler.next(options);
+        },
+      ),
+    );
   }
 
   Future<Response> get(String endpoint, {Map<String, dynamic>? params}) async {
@@ -55,10 +57,18 @@ class ApiService {
     }
   }
 
+  Future<Response> delete(String endpoint) async {
+    try {
+      return await _dio.delete(endpoint);
+    } catch (e) {
+      throw Exception('Failed to delete data: $e');
+    }
+  }
+
   void printWrapped(String text) {
-  final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
-  pattern.allMatches(text).forEach((match) => print(match.group(0)));
-}
+    final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
+    pattern.allMatches(text).forEach((match) => print(match.group(0)));
+  }
 
   Future<Response> postAuth(
     String endpoint, {
@@ -72,7 +82,7 @@ class ApiService {
       options = Options(
         headers: token != null ? {'Authorization': token} : null,
       );
-      if (token != null){
+      if (token != null) {
         printWrapped(token);
       }
       printWrapped(options.headers.toString());
@@ -166,4 +176,3 @@ class ApiService {
     return await _dio.get('/auth/searchUser', queryParameters: params);
   }
 }
-

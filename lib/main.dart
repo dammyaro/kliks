@@ -12,6 +12,8 @@ import 'package:kliks/core/providers/privacy_provider.dart';
 import 'package:kliks/core/services/privacy_service.dart';
 import 'package:kliks/core/providers/notifications_provider.dart';
 import 'package:kliks/core/providers/event_provider.dart';
+import 'package:kliks/core/providers/saved_events_provider.dart';
+import 'package:kliks/core/providers/transaction_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -52,6 +54,8 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(create: (_) => NotificationsProvider()),
         ChangeNotifierProvider(create: (_) => EventProvider()),
+        ChangeNotifierProvider(create: (_) => SavedEventsProvider()),
+        ChangeNotifierProvider(create: (_) => TransactionProvider()),
         // Add other providers here if needed
       ],
       child: ScreenUtilInit(

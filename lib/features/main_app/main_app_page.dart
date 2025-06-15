@@ -17,7 +17,7 @@ class MainAppPage extends StatefulWidget {
 class _MainAppPageState extends State<MainAppPage> with TickerProviderStateMixin {
   int _currentIndex = 0;
   int? _tappedIndex;
-  List<AnimationController?> _controllers = List.filled(5, null);
+  final List<AnimationController?> _controllers = List.filled(5, null);
 
   final List<Widget> _pages = [
     const HomePage(),
@@ -70,7 +70,10 @@ class _MainAppPageState extends State<MainAppPage> with TickerProviderStateMixin
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: _pages[_currentIndex],
+        child: IndexedStack(
+          index: _currentIndex,
+          children: _pages,
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -125,6 +128,8 @@ class _MainAppPageState extends State<MainAppPage> with TickerProviderStateMixin
                       fontSize: 12.sp,
                       fontFamily: 'Metropolis-SemiBold',
                     ),
+                showSelectedLabels: false,
+                showUnselectedLabels: false,
                 items: [
                   for (int i = 0; i < 5; i++)
                     if (i == 2)

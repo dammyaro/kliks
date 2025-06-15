@@ -22,10 +22,10 @@ class MediaService {
     };
 
     // Add token interceptor
-    final _secureStorage = const FlutterSecureStorage();
+    final secureStorage = const FlutterSecureStorage();
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
-        final token = await _secureStorage.read(key: 'auth_token');
+        final token = await secureStorage.read(key: 'auth_token');
         if (token != null) {
           options.headers['Authorization'] = token;
         }

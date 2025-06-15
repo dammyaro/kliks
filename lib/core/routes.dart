@@ -38,6 +38,10 @@ import 'package:kliks/features/main_app/profile/settings/verification/selfie_ver
 import 'package:kliks/features/main_app/search/search_page.dart';
 import 'package:kliks/features/main_app/profile/user_profile_page.dart';
 import 'package:kliks/features/main_app/events/event_detail_page.dart';
+import 'package:kliks/features/main_app/events/organizer_event_detail_page.dart';
+import 'package:kliks/features/main_app/events/invite_guests/organizer_invite_guests_page.dart';
+import 'package:kliks/features/main_app/announcements/announcement_page.dart';
+import 'package:kliks/features/main_app/announcements/announcement_location_page.dart';
 
 
 
@@ -83,7 +87,11 @@ class AppRoutes {
   static const String search = '/search';
   static const String userProfile = '/user-profile';
   static const String eventDetail = '/event-detail';
+  static const String organizerEventDetail = '/organizer-event-detail';
   static const String profileSetup = '/profile-setup';
+  static const String organizerInviteGuests = '/organizer-invite-guests';
+  static const String announcement = '/announcement';
+  static const String announcementLocation = '/announcement-location';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -163,8 +171,19 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => UserProfilePage(userData: settings.arguments as Map<String, dynamic>));
       case eventDetail:
         return MaterialPageRoute(builder: (_) => EventDetailPage(eventId: settings.arguments as String));
+      case organizerEventDetail:
+        return MaterialPageRoute(builder: (_) => OrganizerEventDetailPage(eventId: settings.arguments as String));
       case profileSetup:
         return MaterialPageRoute(builder: (_) => const ProfileSetupPage());
+      case organizerInviteGuests:
+        return MaterialPageRoute(
+          builder: (_) => const OrganizerInviteGuestsPage(),
+          settings: settings,
+        );
+      case announcement:
+        return MaterialPageRoute(builder: (_) => AnnouncementPage(eventId: settings.arguments as String));
+      case announcementLocation:
+        return MaterialPageRoute(builder: (_) => const AnnouncementLocationPage());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

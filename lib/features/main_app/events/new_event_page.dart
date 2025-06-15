@@ -9,9 +9,8 @@ import 'package:kliks/core/providers/event_provider.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:kliks/core/services/media_service.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 import 'package:confetti/confetti.dart';
-import 'dart:ui' as ui;
+import 'package:image_cropper/image_cropper.dart';
 
 class NewEventPage extends StatefulWidget {
   const NewEventPage({super.key});
@@ -31,7 +30,7 @@ class _NewEventPageState extends State<NewEventPage> {
   // Placeholder/defaults for other required fields
   String _selectedCategory = '';
   
-  int _attendeeLimit = 100;
+  int _attendeeLimit = 0; //100
   int? _ageMin;
   int? _ageMax;
   double? _lat;
@@ -56,7 +55,7 @@ class _NewEventPageState extends State<NewEventPage> {
   String _dateTimeSubtitle = 'When is it happening';
   String _entranceRequirementSubtitle = 'Activate entrance points';
   String _otherMediaSubtitle = 'Add other images related to this event';
-  String _inviteGuestsSubtitle = 'Add guests to this event';
+  String _inviteGuestsSubtitle = 'Who can attend this event';
 
   String get _guestsSubtitle {
     List<String> parts = [];
@@ -70,27 +69,36 @@ class _NewEventPageState extends State<NewEventPage> {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
-      final bytes = await image.readAsBytes();
-      final decoded = await ui.instantiateImageCodec(bytes);
-      final frame = await decoded.getNextFrame();
-      final img = frame.image;
-      if (img.width != 1024 || img.height != 1024) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7),
-                child: Text('Please select a square image of 1024x1024 pixels.'),
-              ),
-            ),
-          );
-        }
+      // Crop the image to 1024x1024
+      final CroppedFile? cropped = await ImageCropper().cropImage(
+        sourcePath: image.path,
+        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+        maxWidth: 1024,
+        maxHeight: 1024,
+        compressFormat: ImageCompressFormat.jpg,
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Crop Banner',
+            toolbarColor: Colors.black,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.square,
+            lockAspectRatio: true,
+          ),
+          IOSUiSettings(
+            title: 'Crop Banner',
+            aspectRatioLockEnabled: true,
+            minimumAspectRatio: 1.0,
+          ),
+        ],
+      );
+      if (cropped != null) {
+        setState(() {
+          _coverImage = XFile(cropped.path);
+        });
+      } else {
+        // User cancelled cropping
         return;
       }
-      setState(() {
-        _coverImage = image;
-        // Do not upload here; upload on event creation
-      });
     }
   }
 
@@ -479,7 +487,7 @@ class _NewEventPageState extends State<NewEventPage> {
                       if (_invitedUserIds.isNotEmpty) {
                         _inviteGuestsSubtitle = '${_invitedUserIds.length} guest${_invitedUserIds.length > 1 ? 's' : ''}';
                       } else {
-                        _inviteGuestsSubtitle = 'Add guests to this event';
+                        _inviteGuestsSubtitle = 'Who can attend this event';
                       }
                     });
                   }
@@ -563,50 +571,55 @@ class _NewEventPageState extends State<NewEventPage> {
                   ),
                   SizedBox(height: 2.h),
                   // Render subtitle as a single chip for Location and Date and Time, as multiple chips for others
-                  (title == 'Location' || title == 'Date and Time')
-                    ? Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).brightness == Brightness.light ? Colors.grey[200] : Colors.grey[800],
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
-                        child: Text(
-                          subtitle,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontSize: 12.sp,
-                            color: Colors.grey[700],
-                          ),
-                        ),
-                      )
-                    : (subtitle != 'Where is it happening?' && subtitle != 'Choose event category' && subtitle != 'When is it happening' && subtitle != 'Activate entrance points' && subtitle != 'Add other images related to this event' && subtitle != 'Add guests to this event' && subtitle != 'Who can attend this event')
-                      ? Wrap(
-                          spacing: 6.w,
-                          runSpacing: 4.h,
-                          children: [
-                            for (final part in subtitle.split(','))
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).brightness == Brightness.light ? Colors.grey[200] : Colors.grey[800],
-                                  borderRadius: BorderRadius.circular(8.r),
-                                ),
-                                child: Text(
-                                  part.trim(),
-                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    fontSize: 12.sp,
-                                    color: Colors.grey[700],
-                                  ),
+                  (title == 'Guests' && subtitle != _inviteGuestsSubtitle)
+                    ? Wrap(
+                        spacing: 6.w,
+                        runSpacing: 4.h,
+                        children: [
+                          for (final part in subtitle.split(','))
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).brightness == Brightness.light ? Colors.grey[200] : Colors.grey[800],
+                                borderRadius: BorderRadius.circular(8.r),
+                              ),
+                              child: Text(
+                                part.trim(),
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  fontSize: 12.sp,
+                                  color: _subtitleTextColor(context),
                                 ),
                               ),
-                          ],
-                        )
-                      : Text(
-                          subtitle,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontSize: 12.sp,
-                            color: Colors.grey[500],
+                            ),
+                        ],
+                      )
+                    : ((title == 'Location' && subtitle != 'Where is it happening?') ||
+                        (title == 'Date and Time' && subtitle != 'When is it happening') ||
+                        (title == 'Category' && subtitle != 'Choose event category') ||
+                        (title == 'Other media' && subtitle != 'Add other images related to this event') ||
+                        (title == 'Invite guests (optional)' && subtitle != 'Who can attend this event') ||
+                        (title == 'Entrance requirement (optional)' && subtitle != 'Activate entrance points'))
+                        ? Container(
+                            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).brightness == Brightness.light ? Colors.grey[200] : Colors.grey[800],
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            child: Text(
+                              subtitle,
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                fontSize: 12.sp,
+                                color: _subtitleTextColor(context),
+                              ),
+                            ),
+                          )
+                        : Text(
+                            subtitle,
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              fontSize: 12.sp,
+                              color: Colors.grey[500],
+                            ),
                           ),
-                        ),
                 ],
               ),
             ],
@@ -619,6 +632,11 @@ class _NewEventPageState extends State<NewEventPage> {
         ],
       ),
     );
+  }
+
+  Color _subtitleTextColor(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark ? Colors.white.withOpacity(0.95) : Colors.grey[700]!;
   }
 }
 

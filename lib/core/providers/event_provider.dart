@@ -7,7 +7,93 @@ class EventProvider with ChangeNotifier {
   final ApiService _apiService;
 
   EventProvider({ApiService? apiService})
-      : _apiService = apiService ?? locator<ApiService>();
+    : _apiService = apiService ?? locator<ApiService>();
+
+  Future<List<dynamic>> getEvents({
+    String? userId,
+    bool? isDeleted,
+    bool? isLive,
+    bool? isRecentlyViewed,
+    bool? isReported,
+    String? search,
+    String? location,
+    String? category,
+    String? dateMin,
+    String? dateMax,
+    num? numberAttendesLimit,
+    num? ageLimitMin,
+    num? ageLimitMax,
+    num? age,
+    bool? isRequirePoints,
+    bool? isUpcoming,
+    bool? isPastEvent,
+    num? radiusMin,
+    num? radiusMax,
+    bool? isNearBy,
+    String? sortBy,
+    String? sortOrder,
+    int limit = 10,
+    int offset = 0,
+  }) async {
+    try {
+      final Map<String, dynamic> params = {
+        if (userId != null) 'userId': userId,
+        if (isDeleted != null) 'isDeleted': isDeleted,
+        if (isLive != null) 'isLive': isLive,
+        if (isRecentlyViewed != null) 'isRecentlyViewed': isRecentlyViewed,
+        if (isReported != null) 'isReported': isReported,
+        if (search != null) 'search': search,
+        if (location != null) 'location': location,
+        if (category != null) 'category': category,
+        if (dateMin != null) 'dateMin': dateMin,
+        if (dateMax != null) 'dateMax': dateMax,
+        if (numberAttendesLimit != null)
+          'numberAttendesLimit': numberAttendesLimit,
+        if (ageLimitMin != null) 'ageLimitMin': ageLimitMin,
+        if (ageLimitMax != null) 'ageLimitMax': ageLimitMax,
+        if (age != null) 'age': age,
+        if (isRequirePoints != null) 'isRequirePoints': isRequirePoints,
+        if (isUpcoming != null) 'isUpcoming': isUpcoming,
+        if (isPastEvent != null) 'isPastEvent': isPastEvent,
+        if (radiusMin != null) 'radiusMin': radiusMin,
+        if (radiusMax != null) 'radiusMax': radiusMax,
+        if (isNearBy != null) 'isNearBy': isNearBy,
+        if (sortBy != null) 'sortBy': sortBy,
+        if (sortOrder != null) 'sortOrder': sortOrder,
+        'limit': limit,
+        'offset': offset,
+      };
+      final uri = Uri(
+        queryParameters: params.map((k, v) => MapEntry(k, v.toString())),
+      );
+      final url =
+          '/event/getEvents${uri.query.isNotEmpty ? '?${uri.query}' : ''}';
+      final response = await _apiService.get(url);
+      return response.data as List<dynamic>? ?? [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  Future<List<dynamic>> getAllCategory() async {
+    try {
+      final response = await _apiService.get('/event/getAllCategory');
+      return response.data as List<dynamic>? ?? [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  Future<Map<String, dynamic>?> getEventDetailById(String eventId) async {
+    try {
+      final response = await _apiService.get(
+        '/event/getEventDetail?eventId=$eventId',
+      );
+      return response.data as Map<String, dynamic>?;
+    } catch (e) {
+      return null;
+    }
+  }
 
   Future<void> createEvent({
     required String title,
@@ -49,95 +135,10 @@ class EventProvider with ChangeNotifier {
           'attendEventPoint': attendEventPoint,
         },
       );
+      notifyListeners();
       // print('Create event response: \\${response.data}');
     } catch (e) {
       // print('createEvent error: $e');
-    }
-  }
-
-  Future<List<dynamic>> getEvents({
-    String? userId,
-    bool? isDeleted,
-    bool? isLive,
-    bool? isRecentlyViewed,
-    bool? isReported,
-    String? search,
-    String? location,
-    String? category,
-    String? dateMin,
-    String? dateMax,
-    num? numberAttendesLimit,
-    num? ageLimitMin,
-    num? ageLimitMax,
-    num? age,
-    bool? isRequirePoints,
-    bool? isUpcoming,
-    bool? isPastEvent,
-    num? radiusMin,
-    num? radiusMax,
-    bool? isNearBy,
-    String? sortBy,
-    String? sortOrder,
-    int limit = 10,
-    int offset = 0,
-  }) async {
-    try {
-      final Map<String, dynamic> params = {
-        if (userId != null) 'userId': userId,
-        if (isDeleted != null) 'isDeleted': isDeleted,
-        if (isLive != null) 'isLive': isLive,
-        if (isRecentlyViewed != null) 'isRecentlyViewed': isRecentlyViewed,
-        if (isReported != null) 'isReported': isReported,
-        if (search != null) 'search': search,
-        if (location != null) 'location': location,
-        if (category != null) 'category': category,
-        if (dateMin != null) 'dateMin': dateMin,
-        if (dateMax != null) 'dateMax': dateMax,
-        if (numberAttendesLimit != null) 'numberAttendesLimit': numberAttendesLimit,
-        if (ageLimitMin != null) 'ageLimitMin': ageLimitMin,
-        if (ageLimitMax != null) 'ageLimitMax': ageLimitMax,
-        if (age != null) 'age': age,
-        if (isRequirePoints != null) 'isRequirePoints': isRequirePoints,
-        if (isUpcoming != null) 'isUpcoming': isUpcoming,
-        if (isPastEvent != null) 'isPastEvent': isPastEvent,
-        if (radiusMin != null) 'radiusMin': radiusMin,
-        if (radiusMax != null) 'radiusMax': radiusMax,
-        if (isNearBy != null) 'isNearBy': isNearBy,
-        if (sortBy != null) 'sortBy': sortBy,
-        if (sortOrder != null) 'sortOrder': sortOrder,
-        'limit': limit,
-        'offset': offset,
-      };
-      final uri = Uri(queryParameters: params.map((k, v) => MapEntry(k, v.toString())));
-      final url = '/event/getEvents${uri.query.isNotEmpty ? '?${uri.query}' : ''}';
-      final response = await _apiService.get(url);
-      // printWrapped('Get events response: \\${response.data}');
-      return response.data as List<dynamic>? ?? [];
-    } catch (e) {
-      // print('getEvents error: $e');
-      return [];
-    }
-  }
-
-  Future<List<dynamic>> getAllCategory() async {
-    try {
-      final response = await _apiService.get('/event/getAllCategory');
-      // printWrapped('Get all category response: \\${response.data}');
-      return response.data as List<dynamic>? ?? [];
-    } catch (e) {
-      // print('getAllCategory error: $e');
-      return [];
-    }
-  }
-
-  Future<Map<String, dynamic>?> getEventDetailById(String eventId) async {
-    try {
-      final response = await _apiService.get('/event/getEventDetail?eventId=$eventId');
-      printWrapped('Get event detail response: \\${response.data}');
-      return response.data as Map<String, dynamic>?;
-    } catch (e) {
-      // print('getEventDetailById error: $e');
-      return null;
     }
   }
 
@@ -147,6 +148,8 @@ class EventProvider with ChangeNotifier {
         '/event/attendEvent',
         data: {'eventId': eventId},
       );
+      if (response.statusCode == 200 || response.statusCode == 201)
+        notifyListeners();
       return response.statusCode == 200 || response.statusCode == 201;
     } catch (e) {
       // print('attendEvent error: $e');
@@ -161,15 +164,190 @@ class EventProvider with ChangeNotifier {
     try {
       final response = await _apiService.post(
         '/event/eventInvite',
-        data: {
-          'userId': userId,
-          'eventId': eventId,
-        },
+        data: {'userId': userId, 'eventId': eventId},
       );
+      if (response.statusCode == 200 || response.statusCode == 201)
+        notifyListeners();
       return response.statusCode == 200 || response.statusCode == 201;
     } catch (e) {
       // print('inviteGuestsToEvent error: $e');
       return false;
     }
   }
-} 
+
+  Future<List<dynamic>> getMyEvents({
+    bool? isDeleted,
+    bool? isLive,
+    String? category,
+    int limit = 10,
+    int offset = 0,
+  }) async {
+    try {
+      final Map<String, dynamic> params = {
+        if (isDeleted != null) 'isDeleted': isDeleted.toString(),
+        if (isLive != null) 'isLive': isLive.toString(),
+        if (category != null) 'category': category,
+        'limit': limit.toString(),
+        'offset': offset.toString(),
+      };
+      final uri = Uri(queryParameters: params);
+      final url =
+          '/event/getMyEvents${uri.query.isNotEmpty ? '?${uri.query}' : ''}';
+      final response = await _apiService.get(url);
+      return response.data as List<dynamic>? ?? [];
+    } catch (e) {
+      // print('getMyEvents error: $e');
+      return [];
+    }
+  }
+
+  Future<bool> deleteEvent(String eventId) async {
+    try {
+      final response = await _apiService.post(
+        '/event/deleteEvent',
+        data: {'eventId': eventId},
+      );
+      if (response.statusCode == 200 || response.statusCode == 201)
+        notifyListeners();
+      return response.statusCode == 200 || response.statusCode == 201;
+    } catch (e) {
+      print('deleteEvent error: $e');
+      return false;
+    }
+  }
+
+  Future<List<dynamic>> getInvitedEvents({
+    int limit = 10,
+    int offset = 0,
+    String? category,
+  }) async {
+    try {
+      final Map<String, dynamic> params = {
+        'limit': limit.toString(),
+        'offset': offset.toString(),
+        if (category != null) 'category': category,
+      };
+      final uri = Uri(queryParameters: params);
+      final url =
+          '/event/getInvitedEvents${uri.query.isNotEmpty ? '?${uri.query}' : ''}';
+      final response = await _apiService.get(url);
+      return response.data as List<dynamic>? ?? [];
+    } catch (e) {
+      // print('getInvitedEvents error: $e');
+      return [];
+    }
+  }
+
+  Future<bool> inviteToEvent({
+    required String userId,
+    required String eventId,
+  }) async {
+    try {
+      final response = await _apiService.post(
+        '/event/eventInvite',
+        data: {'userId': userId, 'eventId': eventId},
+      );
+      if (response.statusCode == 200 || response.statusCode == 201)
+        notifyListeners();
+      printWrapped('Invite to event response: \\${response.data}');
+      return response.statusCode == 200 || response.statusCode == 201;
+    } catch (e) {
+      // print('inviteToEvent error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> acceptEventInvite({
+    required String userId,
+    required String inviteCode,
+  }) async {
+    try {
+      final params = {'userId': userId, 'inviteCode': inviteCode};
+      final uri = Uri(queryParameters: params);
+      final url =
+          '/event/acceptEventInvite${uri.query.isNotEmpty ? '?${uri.query}' : ''}';
+      final response = await _apiService.get(url);
+      if (response.statusCode == 200 || response.statusCode == 201)
+        notifyListeners();
+      return response.statusCode == 200 || response.statusCode == 201;
+    } catch (e) {
+      // print('acceptEventInvite error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> rejectEventInvite({
+    required String userId,
+    required String inviteCode,
+  }) async {
+    try {
+      final params = {'userId': userId, 'inviteCode': inviteCode};
+      final uri = Uri(queryParameters: params);
+      final url =
+          '/event/rejectEventInvite${uri.query.isNotEmpty ? '?${uri.query}' : ''}';
+      final response = await _apiService.get(url);
+      if (response.statusCode == 200 || response.statusCode == 201)
+        notifyListeners();
+      return response.statusCode == 200 || response.statusCode == 201;
+    } catch (e) {
+      // print('rejectEventInvite error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> createAnnouncement({
+    required String eventId,
+    required String announcement,
+    String description = '',
+    String? startDate,
+    String? endDate,
+    double? lat,
+    double? lng,
+    String location = '',
+  }) async {
+    try {
+      final response = await _apiService.post(
+        '/announcement/createAnnouncemnet',
+        data: {
+          'eventId': eventId,
+          'announcement': announcement,
+          'description': description,
+          'startDate': startDate,
+          'endDate': endDate,
+          'lat': null,
+          'lng': null,
+          'location': location,
+        },
+      );
+      if (response.statusCode == 200 || response.statusCode == 201)
+        notifyListeners();
+      printWrapped('Create announcement response: \\${response.data}');
+      return response.statusCode == 200 || response.statusCode == 201;
+    } catch (e) {
+      printWrapped('Create announcement error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> reportEvent({
+    required String eventId,
+    required String reportType,
+    String description = '',
+  }) async {
+    try {
+      final response = await _apiService.post(
+        '/event/reportEvent',
+        data: {
+          'eventId': eventId,
+          'reportType': reportType,
+          'description': description,
+        },
+      );
+      printWrapped('Report event response: \\${response.data}');
+      return response.statusCode == 200 || response.statusCode == 201;
+    } catch (e) {
+      print('reportEvent error: $e');
+      return false;
+    }
+  }
+}

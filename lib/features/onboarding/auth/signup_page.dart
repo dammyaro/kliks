@@ -9,7 +9,6 @@ import 'package:kliks/shared/widgets/icon_button.dart';
 import 'package:kliks/shared/widgets/text_form_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/auth_provider.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});

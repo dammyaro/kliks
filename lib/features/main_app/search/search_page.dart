@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/auth_provider.dart';
 import 'dart:async';
 import 'package:kliks/shared/widgets/profile_picture.dart';
+import 'package:flutter/cupertino.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -16,7 +17,9 @@ class _SearchPageState extends State<SearchPage> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   List<Map<String, dynamic>> _users = [];
+  List<Map<String, dynamic>> _searchHistory = [];
   bool _isLoading = false;
+  bool _isLoadingHistory = false;
   bool _hasMore = true;
   int _offset = 0;
   final int _limit = 20;
@@ -27,6 +30,17 @@ class _SearchPageState extends State<SearchPage> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    _loadSearchHistory();
+  }
+
+  Future<void> _loadSearchHistory() async {
+    setState(() => _isLoadingHistory = true);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final history = await authProvider.getSearchHistory(searchType: 'User');
+    setState(() {
+      _searchHistory = history;
+      _isLoadingHistory = false;
+    });
   }
 
   @override
@@ -115,7 +129,7 @@ class _SearchPageState extends State<SearchPage> {
                                 ),
                             prefixIcon: Icon(Icons.search, color: Colors.grey, size: 20.sp),
                             isDense: true,
-                            contentPadding: EdgeInsets.symmetric(vertical: 12.h),
+                            contentPadding: EdgeInsets.symmetric(vertical: 15.h),
                           ),
                           style: TextStyle(
                             fontSize: 14.sp,
@@ -128,7 +142,13 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.filter_list_outlined, size: 24.sp),
+                    icon: Icon(
+                      // Cupertino filter icon
+                      // CupertinoIcons.line_horizontal_3_decrease is the filter icon
+                      // Import CupertinoIcons if not already imported
+                      CupertinoIcons.line_horizontal_3_decrease,
+                      size: 24.sp,
+                    ),
                     onPressed: () {},
                   ),
                 ],
@@ -141,9 +161,51 @@ class _SearchPageState extends State<SearchPage> {
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontSize: 12.sp,
                           fontFamily: 'Metropolis-SemiBold',
+                          color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
                         ),
                   ),
-                  // Add more recently searched widgets here if needed
+                  SizedBox(height: 16.h),
+                  if (_isLoadingHistory)
+                    Center(child: CircularProgressIndicator())
+                  else if (_searchHistory.isEmpty)
+                    Center(
+                      child: Text(
+                        'No recent searches',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              fontSize: 12.sp,
+                              color: Theme.of(context).hintColor,
+                            ),
+                      ),
+                    )
+                  else
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: _searchHistory.length,
+                        itemBuilder: (context, index) {
+                          final historyItem = _searchHistory[index];
+                          return ListTile(
+                            contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 0.h),
+                            onTap: () {
+                              _controller.text = historyItem['searchParam'] ?? '';
+                              _onSearchChanged(_controller.text);
+                            },
+                            title: Text(
+                              historyItem['searchParam'] ?? '',
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                fontSize: 12.sp,
+                                fontFamily: 'Metropolis-Regular',
+                                color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.8),
+                              ),
+                            ),
+                            trailing: Icon(
+                              Icons.north_west,
+                              size: 12.sp,
+                              color: const Color(0xffbbd953),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                 ]
               else
                 Expanded(
@@ -196,7 +258,6 @@ class _SearchPageState extends State<SearchPage> {
                               ),
                             ],
                           ),
-                          subtitle: null,
                           trailing: Icon(
                             Icons.north_west,
                             size: 12.sp,

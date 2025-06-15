@@ -3,12 +3,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kliks/shared/widgets/button.dart';
 // Import for BackdropFilter
 import 'package:kliks/shared/widgets/handle_bar.dart';
+import 'package:provider/provider.dart';
+import 'package:kliks/core/providers/auth_provider.dart';
 
 class CreateEventBottomSheet extends StatelessWidget {
   const CreateEventBottomSheet({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final profile = Provider.of<AuthProvider>(context).profile;
+    final availablePoints = profile?['points'] ?? 0;
     return Stack(
       children: [
         // Blurred background with increased intensity
@@ -115,7 +119,7 @@ class CreateEventBottomSheet extends StatelessWidget {
                           ),
                           SizedBox(height: 5.h),
                           Text(
-                            "1,000",
+                            availablePoints.toString(),
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                   fontSize: 16.sp,
                                   fontFamily: 'Metropolis-ExtraBold',

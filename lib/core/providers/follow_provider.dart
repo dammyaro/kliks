@@ -88,6 +88,7 @@ class FollowProvider with ChangeNotifier {
       final response = await _apiService.get('/auth/follow/$followedUserId');
       print('Follow user response: \\${response.data}');
       if (response.statusCode == 200 || response.statusCode == 201) {
+        notifyListeners();
         return true;
       }
       return false;
@@ -102,6 +103,7 @@ class FollowProvider with ChangeNotifier {
       final response = await _apiService.get('/auth/acceptFollow/$followerUserId');
       print('Accept follow response: \\${response.data}');
       if (response.statusCode == 200 || response.statusCode == 201) {
+        notifyListeners();
         return true;
       }
       return false;
@@ -116,6 +118,7 @@ class FollowProvider with ChangeNotifier {
       final response = await _apiService.get('/auth/rejectFollow/$followerUserId');
       print('Reject follow response: \\${response.data}');
       if (response.statusCode == 200 || response.statusCode == 201) {
+        notifyListeners();
         return true;
       }
       return false;
@@ -130,6 +133,7 @@ class FollowProvider with ChangeNotifier {
       final response = await _apiService.get('/auth/unfollow/$followedUserId');
       print('Unfollow response: \\${response.data}');
       if (response.statusCode == 200 || response.statusCode == 201) {
+        notifyListeners();
         return true;
       }
       return false;
@@ -163,7 +167,11 @@ class FollowProvider with ChangeNotifier {
     try {
       final response = await _apiService.get('/auth/block/$blockedUserId');
       print('Block user response: \\${response.data}');
-      return response.statusCode == 200 || response.statusCode == 201;
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        notifyListeners();
+        return true;
+      }
+      return false;
     } catch (e) {
       print('blockUser error: $e');
       return false;
@@ -174,7 +182,11 @@ class FollowProvider with ChangeNotifier {
     try {
       final response = await _apiService.get('/auth/unblock/$blockedUserId');
       print('Unblock user response: \\${response.data}');
-      return response.statusCode == 200 || response.statusCode == 201;
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        notifyListeners();
+        return true;
+      }
+      return false;
     } catch (e) {
       print('unblockUser error: $e');
       return false;

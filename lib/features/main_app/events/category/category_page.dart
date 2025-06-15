@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/event_provider.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});
@@ -65,41 +64,17 @@ class _CategoryPageState extends State<CategoryPage> {
                 SizedBox(height: 20.h),
 
               _isLoading
-                  ? Skeletonizer(
-                      enabled: true,
-                      child: ListView.separated(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: 8, // Show 8 skeleton items
-                        separatorBuilder: (context, index) => Divider(
-                          height: 0.h,
-                          color: Colors.grey.withOpacity(0),
+                  ? SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.5,
+                      child: Center(
+                        child: SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            color: const Color(0xffbbd953),
+                            strokeWidth: 3,
+                          ),
                         ),
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: EdgeInsets.symmetric(vertical: 16.h),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  width: 14.w,
-                                  height: 14.h,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.grey[300],
-                                  ),
-                                ),
-                                SizedBox(width: 8.w),
-                                Expanded(
-                                  child: Container(
-                                    height: 16.h,
-                                    color: Colors.grey[300],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
                       ),
                     )
                   : ListView.separated(
@@ -112,18 +87,16 @@ class _CategoryPageState extends State<CategoryPage> {
                       ),
                       itemBuilder: (context, index) {
                         final category = _categories[index];
-                        final isSelected = _selectedCategories.contains(category);
+                        final isSelected = _selectedCategories.isNotEmpty && _selectedCategories.first == category;
                         return _buildCategoryItem(
                           context,
                           category: category,
                           isSelected: isSelected,
                           onTap: () {
                             setState(() {
-                              if (isSelected) {
-                                _selectedCategories.remove(category);
-                              } else {
-                                _selectedCategories.add(category);
-                              }
+                              _selectedCategories
+                                ..clear()
+                                ..add(category);
                             });
                           },
                         );

@@ -522,4 +522,20 @@ class AuthProvider with ChangeNotifier {
       return false;
     }
   }
+
+  Future<List<Map<String, dynamic>>> getSearchHistory({String? searchType}) async {
+    try {
+      String url = '/auth/getSearchHistory';
+      if (searchType != null) {
+        url += '?searchType=$searchType';
+      }
+      final response = await _apiService.get(url);
+      print('Search history response: ${response.data}');
+      final data = response.data as List<dynamic>? ?? [];
+      return data.cast<Map<String, dynamic>>();
+    } catch (e) {
+      print('getSearchHistory error: $e');
+      return [];
+    }
+  }
 }
