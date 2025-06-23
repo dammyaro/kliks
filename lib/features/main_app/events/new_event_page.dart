@@ -378,6 +378,7 @@ class _NewEventPageState extends State<NewEventPage> {
                       _lng = result['lng'] ?? _lng;
                       _locationSubtitle = _location.isNotEmpty ? _location : 'Where is it happening?';
                     });
+                    print('Selected location: lat=${result['lat']} lng=${result['lng']}');
                   }
                 },
               ),
@@ -605,13 +606,28 @@ class _NewEventPageState extends State<NewEventPage> {
                               color: Theme.of(context).brightness == Brightness.light ? Colors.grey[200] : Colors.grey[800],
                               borderRadius: BorderRadius.circular(8.r),
                             ),
-                            child: Text(
-                              subtitle,
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                fontSize: 12.sp,
-                                color: _subtitleTextColor(context),
-                              ),
-                            ),
+                            child: (title == 'Location')
+                                ? ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      maxWidth: MediaQuery.of(context).size.width * 0.45,
+                                    ),
+                                    child: Text(
+                                      subtitle,
+                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                        fontSize: 12.sp,
+                                        color: _subtitleTextColor(context),
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  )
+                                : Text(
+                                    subtitle,
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      fontSize: 12.sp,
+                                      color: _subtitleTextColor(context),
+                                    ),
+                                  ),
                           )
                         : Text(
                             subtitle,
