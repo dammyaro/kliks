@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kliks/core/providers/main_app_navigation_provider.dart';
 import 'package:kliks/core/theme_config.dart';
 import 'package:kliks/core/routes.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -174,6 +175,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SavedEventsProvider()),
         ChangeNotifierProvider(create: (_) => TransactionProvider()),
         ChangeNotifierProvider(create: (_) => CheckedInEventsProvider()),
+        ChangeNotifierProvider(create: (_) => MainAppNavigationProvider()),
         // Add other providers here if needed
       ],
       child: ScreenUtilInit(

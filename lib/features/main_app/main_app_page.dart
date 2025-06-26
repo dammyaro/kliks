@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kliks/features/main_app/activities/activities_page.dart';
+import 'package:provider/provider.dart';
 import 'package:kliks/features/main_app/home/home_page.dart';
 import 'package:kliks/features/main_app/marketplace/marketplace_page.dart';
 import 'package:kliks/features/main_app/wallet/wallet_page.dart';
 import 'package:kliks/features/main_app/map/map_page.dart';
 import 'package:kliks/shared/widgets/create_event_bottomsheet.dart';
 import 'package:kliks/core/routes.dart';
+import 'package:kliks/core/providers/main_app_navigation_provider.dart';
 
 class MainAppPage extends StatefulWidget {
   const MainAppPage({super.key});
@@ -69,6 +71,7 @@ class _MainAppPageState extends State<MainAppPage> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
+    final navigationProvider = Provider.of<MainAppNavigationProvider>(context);
     return Scaffold(
       body: SafeArea(
         child: IndexedStack(
@@ -218,7 +221,7 @@ class _MainAppPageState extends State<MainAppPage> with TickerProviderStateMixin
           ),
           Positioned(
             top: 0,
-            left: MediaQuery.of(context).size.width / 5 * _currentIndex,
+            left: MediaQuery.of(context).size.width / 5 * navigationProvider.selectedIndex,
             child: Container(
               width: MediaQuery.of(context).size.width / 5,
               height: 4.h,
