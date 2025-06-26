@@ -138,7 +138,7 @@ void main() async {
     // Navigate to the Activity page
     final context = navigatorKey.currentContext;
     if (context != null) {
-      Provider.of<MainAppNavigationProvider>(context, listen: false).selectedIndex = 3;
+      Provider.of<MainAppNavigationProvider>(context, listen: false).setIndex(3);
     }
   });
 
@@ -149,7 +149,7 @@ void main() async {
       // Navigate to the Activity page
       final context = navigatorKey.currentContext;
       if (context != null) {
-        Provider.of<MainAppNavigationProvider>(context, listen: false).selectedIndex = 3;
+        Provider.of<MainAppNavigationProvider>(context, listen: false).setIndex(3);
       }
     }
   });
