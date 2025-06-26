@@ -158,9 +158,8 @@ class _MainAppPageState extends State<MainAppPage> with TickerProviderStateMixin
                         icon: AnimatedBuilder(
                           animation: _controllers[i]!,
                           builder: (context, child) {
-                            return AnimatedScale(
+                            return Transform.scale(
                               scale: (_tappedIndex == i) ? _controllers[i]!.value : 1.0,
-                              duration: const Duration(milliseconds: 150),
                               child: Padding(
                                 padding: EdgeInsets.only(bottom: 8.h),
                                 child: Image.asset(
