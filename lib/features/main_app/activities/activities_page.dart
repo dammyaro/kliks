@@ -54,6 +54,82 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
     }
   }
 
+  List<dynamic> _groupNotifications(List<dynamic> notifications) {
+    final List<dynamic> groupedList = [];
+    final Set<String> processedNotificationKeys = {};
+
+    // Sort notifications by createdAt to ensure consistent grouping (newest first)
+    notifications.sort((a, b) {
+      final DateTime dateA = DateTime.parse(a['createdAt'] ?? DateTime.now().toIso8601String());
+      final DateTime dateB = DateTime.parse(b['createdAt'] ?? DateTime.now().toIso8601String());
+      return dateB.compareTo(dateA);
+    });
+
+    for (int i = 0; i < notifications.length; i++) {
+      final notification = notifications[i];
+      final type = notification['notificationType'] ?? '';
+      final createdAt = notification['createdAt'] ?? '';
+
+      // Create a unique key for this notification to check if it's already processed
+      final String currentNotificationKey = '$type-${notification['eventId']?.toString() ?? notification['data']?['userId']?.toString()}-${createdAt}';
+
+      if (processedNotificationKeys.contains(currentNotificationKey)) {
+        continue; // Already processed as part of a group
+      }
+
+      if (type == 'CheckProfile') {
+        try {
+          final notificationDate = DateTime.parse(createdAt);
+          final viewerId = notification['eventId']?.toString() ?? notification['data']?['userId']?.toString();
+
+          if (viewerId != null) {
+            final List<dynamic> similarNotifications = [];
+            similarNotifications.add(notification);
+            processedNotificationKeys.add(currentNotificationKey);
+
+            // Find other notifications from the same viewer within 1 hour of the current notification
+            for (int j = i + 1; j < notifications.length; j++) {
+              final otherNotification = notifications[j];
+              final otherType = otherNotification['notificationType'] ?? '';
+              final otherCreatedAt = otherNotification['createdAt'] ?? '';
+              final otherViewerId = otherNotification['eventId']?.toString() ?? otherNotification['data']?['userId']?.toString();
+              final String otherNotificationKey = '$otherType-${otherNotification['eventId']?.toString() ?? otherNotification['data']?['userId']?.toString()}-${otherCreatedAt}';
+
+              if (otherType == 'CheckProfile' && viewerId == otherViewerId && !processedNotificationKeys.contains(otherNotificationKey)) {
+                try {
+                  final otherDate = DateTime.parse(otherCreatedAt);
+                  // Group if within 1 hour of the *first* notification in this potential group
+                  if (notificationDate.difference(otherDate).abs().inHours < 1) {
+                    similarNotifications.add(otherNotification);
+                    processedNotificationKeys.add(otherNotificationKey);
+                  }
+                } catch (e) {
+                  // Ignore parsing errors for other notifications
+                }
+              }
+            }
+
+            if (similarNotifications.length > 1) {
+              final combinedNotification = Map<String, dynamic>.from(notification);
+              combinedNotification['viewCount'] = similarNotifications.length;
+              combinedNotification['isGrouped'] = true;
+              groupedList.add(combinedNotification);
+            } else {
+              groupedList.add(notification);
+            }
+          } else {
+            groupedList.add(notification); // Add if viewerId is null
+          }
+        } catch (e) {
+          groupedList.add(notification); // Add if createdAt parsing fails
+        }
+      } else {
+        groupedList.add(notification); // Add non-CheckProfile notifications directly
+      }
+    }
+    return groupedList;
+  }
+
   Widget _buildNotificationItem(dynamic notification) {
     final type = notification['notificationType'] ?? '';
     final data = notification['data'] ?? {};
@@ -873,46 +949,9 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
                           )
                         : ListView.builder(
                             padding: EdgeInsets.only(top: 8.h),
-                            itemCount: filteredNotifications.length,
+                            itemCount: _groupNotifications(filteredNotifications).length,
                             itemBuilder: (context, index) {
-                              final notification = filteredNotifications[index];
-                              if (notification['notificationType'] == 'CheckProfile') {
-                                final now = DateTime.now();
-                                final createdAt = notification['createdAt'] ?? '';
-                                try {
-                                  final notificationDate = DateTime.parse(createdAt);
-                                  if (now.difference(notificationDate).inHours < 1) {
-                                    final viewerId = notification['eventId']?.toString() ?? notification['data']?['userId']?.toString();
-                                    final similarNotifications = filteredNotifications.where((n) {
-                                      final otherType = n['notificationType'] ?? '';
-                                      final otherCreatedAt = n['createdAt'] ?? '';
-                                      final otherViewerId = n['eventId']?.toString() ?? n['data']?['userId']?.toString();
-                                      if (otherType == 'CheckProfile' && viewerId == otherViewerId) {
-                                        try {
-                                          final otherDate = DateTime.parse(otherCreatedAt);
-                                          return now.difference(otherDate).inHours < 1;
-                                        } catch (e) {
-                                          return false;
-                                        }
-                                      }
-                                      return false;
-                                    }).toList();
-
-                                    if (similarNotifications.length > 1 && similarNotifications.first == notification) {
-                                      final combinedNotification = Map<String, dynamic>.from(notification);
-                                      combinedNotification['viewCount'] = similarNotifications.length;
-                                      combinedNotification['isGrouped'] = true;
-                                      return _buildNotificationItem(combinedNotification);
-                                    } else if (similarNotifications.length == 1) {
-                                      return _buildNotificationItem(notification);
-                                    } else if (similarNotifications.length > 1 && similarNotifications.first != notification) {
-                                      return Container();
-                                    }
-                                  }
-                                } catch (e) {
-                                  return _buildNotificationItem(notification);
-                                }
-                              }
+                              final notification = _groupNotifications(filteredNotifications)[index];
                               return _buildNotificationItem(notification);
                             },
                           ),
