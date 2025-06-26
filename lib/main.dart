@@ -134,13 +134,23 @@ void main() async {
 
   // Handle notification tap when app is in background
   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-    print('App opened from background by a notification: \\${message.data}');
+    print('App opened from background by a notification: \${message.data}');
+    // Navigate to the Activity page
+    final context = navigatorKey.currentContext;
+    if (context != null) {
+      Provider.of<MainAppNavigationProvider>(context, listen: false).selectedIndex = 3;
+    }
   });
 
   // Handle notification tap when app is launched from terminated state
   FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
     if (message != null) {
-      print('App opened from terminated state by a notification: \\${message.data}');
+      print('App opened from terminated state by a notification: \${message.data}');
+      // Navigate to the Activity page
+      final context = navigatorKey.currentContext;
+      if (context != null) {
+        Provider.of<MainAppNavigationProvider>(context, listen: false).selectedIndex = 3;
+      }
     }
   });
 
