@@ -704,7 +704,7 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
                                   style: Theme.of(
                                     context,
                                   ).textTheme.titleMedium?.copyWith(
-                                    fontSize: 12.sp,
+                                    fontSize: 13.sp,
                                     fontFamily: 'Metropolis-Bold',
                                     letterSpacing: -0.5,
                                   ),
@@ -718,7 +718,7 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
                                         style: Theme.of(
                                           context,
                                         ).textTheme.bodyMedium?.copyWith(
-                                          fontSize: 10.sp,
+                                          fontSize: 11.sp,
                                           fontFamily: 'Metropolis-Medium',
                                           letterSpacing: -0.5,
                                           color: Theme.of(context)

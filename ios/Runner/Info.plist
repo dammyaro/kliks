@@ -55,6 +55,8 @@
 		<string>This app requires access to your photo library to allow you to select and upload photos.</string>
 		<key>NSCalendarsUsageDescription</key>
 		<string>This app needs access to your calendar to add events.</string>
+		<key>NSUserNotificationsUsageDescription</key>
+		<string>This app uses push notifications to send you important updates and alerts.</string>
 		<key>CFBundleURLTypes</key>
 		<array>
 			<dict>
