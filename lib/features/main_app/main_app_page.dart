@@ -18,7 +18,6 @@ class MainAppPage extends StatefulWidget {
 }
 
 class _MainAppPageState extends State<MainAppPage> with TickerProviderStateMixin {
-  int _currentIndex = 0;
   int? _tappedIndex;
   final List<AnimationController?> _controllers = List.filled(5, null);
 
@@ -63,10 +62,8 @@ class _MainAppPageState extends State<MainAppPage> with TickerProviderStateMixin
       await controller.forward();
       await controller.reverse();
     }
-    setState(() {
-      _currentIndex = index;
-      _tappedIndex = null;
-    });
+    Provider.of<MainAppNavigationProvider>(context, listen: false).setIndex(index);
+    setState(() => _tappedIndex = null);
   }
 
   @override
@@ -75,7 +72,7 @@ class _MainAppPageState extends State<MainAppPage> with TickerProviderStateMixin
     return Scaffold(
       body: SafeArea(
         child: IndexedStack(
-          index: _currentIndex,
+          index: navigationProvider.selectedIndex,
           children: _pages,
         ),
       ),
@@ -118,7 +115,7 @@ class _MainAppPageState extends State<MainAppPage> with TickerProviderStateMixin
               child: BottomNavigationBar(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 elevation: 0,
-                currentIndex: _currentIndex,
+                currentIndex: navigationProvider.selectedIndex,
                 onTap: _onNavTap,
                 type: BottomNavigationBarType.fixed,
                 selectedItemColor: Theme.of(context).primaryColor,
@@ -168,7 +165,7 @@ class _MainAppPageState extends State<MainAppPage> with TickerProviderStateMixin
                                 padding: EdgeInsets.only(bottom: 8.h),
                                 child: Image.asset(
                                   Theme.of(context).brightness == Brightness.dark
-                                      ? (_currentIndex == i
+                                      ? (navigationProvider.selectedIndex == i
                                           ? [
                                               'assets/icons/home-darkmode-active.png',
                                               'assets/icons/wallet-darkmode-active.png',
@@ -183,7 +180,7 @@ class _MainAppPageState extends State<MainAppPage> with TickerProviderStateMixin
                                               'assets/icons/marketplace-darkmode-inactive.png',
                                               'assets/icons/activity-darkmode-inactive.png',
                                             ][i])
-                                      : (_currentIndex == i
+                                      : (navigationProvider.selectedIndex == i
                                           ? [
                                               'assets/icons/home-lightmode-active.png',
                                               'assets/icons/wallet-lightmode-active.png',
