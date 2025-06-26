@@ -240,53 +240,6 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                       SizedBox(height: 20.h),
                       IconButtonWidget(
-                        text: 'Sign in with Google',
-                        imagePath: 'assets/google_logo.png',
-                        onPressed: () async {
-                          final authProvider = Provider.of<AuthProvider>(context, listen: false);
-                          final userCredential = await authProvider.signInWithGoogle();
-                          if (userCredential != null) {
-                            final user = userCredential.user;
-                            // final googleAuth = await userCredential.user?.getIdTokenResult();
-                            // final accessToken = (await GoogleSignIn().currentUser?.authentication)?.accessToken;
-
-                            // final idToken = await userCredential.user?.getIdToken();
-                            final accessToken = await userCredential.user?.getIdTokenResult();
-
-                            // You may need to get these fields from user or prompt the user for missing info
-                            // final email = user?.email ?? '';
-                            // final fullname = user?.displayName ?? '';
-                            // final username = user?.displayName?.replaceAll(' ', '').toLowerCase() ?? '';
-                            // final phone = user?.phoneNumber ?? '';
-                            // final image = user?.photoURL ?? '';
-                            // final gender = ''; // You may need to prompt the user for this
-
-                            final success = await authProvider.oAuthLoginWithGoogle(
-                              idToken: accessToken?.token ?? '',
-                              // email: email,
-                              // fullname: fullname,
-                              // username: username,
-                              // phone: phone,
-                              // image: image,
-                              // gender: gender,
-                            );
-
-                            if (success) {
-                              Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('OAuth login failed'))),
-                              );
-                            }
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Google sign-in failed'))),
-                            );
-                          }
-                        },
-                      ),
-                      SizedBox(height: 20.h),
-                      IconButtonWidget(
                         text: 'Sign in with Apple',
                         imagePath: Theme.of(context).brightness == Brightness.dark
                             ? 'assets/apple_logo_white.png'
@@ -307,6 +260,33 @@ class _SignupPageState extends State<SignupPage> {
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Apple sign-in failed'))),
+                            );
+                          }
+                        },
+                      ),
+                      SizedBox(height: 20.h),
+                      IconButtonWidget(
+                        text: 'Sign in with Google',
+                        imagePath: 'assets/google_logo.png',
+                        onPressed: () async {
+                          final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                          final userCredential = await authProvider.signInWithGoogleManual();
+                          if (userCredential != null) {
+                            final user = userCredential.user;
+                            final accessToken = await userCredential.user?.getIdTokenResult();
+                            final success = await authProvider.oAuthLoginWithGoogle(
+                              idToken: accessToken?.token ?? '',
+                            );
+                            if (success) {
+                              Navigator.pushReplacementNamed(context, AppRoutes.mainApp);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('OAuth login failed'))),
+                              );
+                            }
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Google sign-in failed'))),
                             );
                           }
                         },

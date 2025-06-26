@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 
 class ProfileEventCard extends StatelessWidget {
   final Map<String, dynamic> event;
@@ -11,6 +12,29 @@ class ProfileEventCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final bannerUrl = event['bannerImageUrl'] ?? '';
     final eventName = event['title'] ?? '';
+    final startDateStr = event['startDate'] ?? event['start_date'] ?? '';
+    final endDateStr = event['endDate'] ?? event['end_date'] ?? '';
+    DateTime? startDate;
+    DateTime? endDate;
+    try {
+      if (startDateStr.isNotEmpty) {
+        startDate = DateTime.parse(startDateStr);
+      }
+      if (endDateStr.isNotEmpty) {
+        endDate = DateTime.parse(endDateStr);
+      }
+    } catch (_) {}
+    final now = DateTime.now();
+    String status = 'Upcoming';
+    if (startDate != null && endDate != null) {
+      if (now.isBefore(startDate)) {
+        status = 'Upcoming';
+      } else if (now.isAfter(endDate)) {
+        status = 'Concluded';
+      } else {
+        status = 'Live';
+      }
+    }
 
     return Card(
       elevation: 0,
@@ -90,11 +114,15 @@ class ProfileEventCard extends StatelessWidget {
                     ),
                     SizedBox(width: 4.w),
                     Text(
-                      'Upcoming',
+                      status,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         fontSize: 12.sp,
                         fontFamily: 'Metropolis-Medium',
-                        color: Theme.of(context).hintColor?.withOpacity(0.3),
+                        color: status == 'Live'
+                            ? Colors.green
+                            : status == 'Concluded'
+                                ? Colors.red
+                                : Theme.of(context).hintColor?.withOpacity(0.3),
                         letterSpacing: -0.5,
                       ),
                     ),

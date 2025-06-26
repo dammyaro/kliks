@@ -6,6 +6,7 @@ import 'package:kliks/features/main_app/marketplace/marketplace_page.dart';
 import 'package:kliks/features/main_app/wallet/wallet_page.dart';
 import 'package:kliks/features/main_app/map/map_page.dart';
 import 'package:kliks/shared/widgets/create_event_bottomsheet.dart';
+import 'package:kliks/core/routes.dart';
 
 class MainAppPage extends StatefulWidget {
   const MainAppPage({super.key});
@@ -51,7 +52,7 @@ class _MainAppPageState extends State<MainAppPage> with TickerProviderStateMixin
 
   void _onNavTap(int index) async {
     if (index == 2) {
-      print('Map button clicked');
+      Navigator.pushNamed(context, AppRoutes.eventLocator);
       return;
     }
     setState(() => _tappedIndex = index);
@@ -136,7 +137,7 @@ class _MainAppPageState extends State<MainAppPage> with TickerProviderStateMixin
                       BottomNavigationBarItem(
                         icon: GestureDetector(
                           onTap: () {
-                            print('Map button clicked');
+                            _onNavTap(2);
                           },
                           child: Padding(
                             padding: EdgeInsets.only(bottom: 0.h),

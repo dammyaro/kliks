@@ -9,8 +9,34 @@ import 'package:kliks/shared/widgets/custom_navbar.dart';
 import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/auth_provider.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  String _userLocation = 'Ontario, Canada';
+
+  @override
+  void initState() {
+    super.initState();
+    // Load user location from profile or default
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final profile = Provider.of<AuthProvider>(context, listen: false).profile;
+      print(profile);
+      if (profile != null && profile['location'] != null && profile['location'].toString().isNotEmpty) {
+        setState(() {
+          _userLocation = profile['location'];
+        });
+      } else {
+        setState(() {
+          _userLocation = '';
+        });
+      }
+    });
+  }
 
   Widget _settingsTile({
     required IconData icon,
@@ -65,6 +91,8 @@ class SettingsPage extends StatelessWidget {
                           fontFamily: 'Metropolis-Regular',
                           color: subLabelColor ?? theme.hintColor,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                 ],
@@ -495,10 +523,15 @@ class SettingsPage extends StatelessWidget {
               _settingsTile(
                 icon: Icons.location_on_outlined,
                 label: 'My Location',
-                subLabel: 'Ontario, Canada',
+                subLabel: _userLocation,
                 subLabelColor: theme.hintColor,
-                onTap: () {
-                  Navigator.pushNamed(context, '/update-location');
+                onTap: () async {
+                  final result = await Navigator.pushNamed(context, '/update-location');
+                  if (result != null && result is Map<String, dynamic>) {
+                    setState(() {
+                      _userLocation = result['location'] ?? 'Ontario, Canada';
+                    });
+                  }
                 },
                 context: context,
               ),

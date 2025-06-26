@@ -188,7 +188,7 @@ class _LoginPageState extends State<LoginPage> {
                 imagePath: 'assets/google_logo.png', 
                 onPressed: () async {
                   final authProvider = Provider.of<AuthProvider>(context, listen: false);
-                  final userCredential = await authProvider.signInWithGoogle();
+                  final userCredential = await authProvider.signInWithGoogleManual();
                   if (userCredential != null) {
                     final idToken = await userCredential.user?.getIdToken();
                     final accessToken = await userCredential.user?.getIdTokenResult();

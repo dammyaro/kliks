@@ -42,11 +42,8 @@ import 'package:kliks/features/main_app/events/organizer_event_detail_page.dart'
 import 'package:kliks/features/main_app/events/invite_guests/organizer_invite_guests_page.dart';
 import 'package:kliks/features/main_app/announcements/announcement_page.dart';
 import 'package:kliks/features/main_app/announcements/announcement_location_page.dart';
-
-
-
-
-
+import 'package:kliks/features/main_app/profile/settings/my_location_page.dart';
+import 'package:kliks/features/main_app/events/location/event_locator_page.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -92,6 +89,8 @@ class AppRoutes {
   static const String organizerInviteGuests = '/organizer-invite-guests';
   static const String announcement = '/announcement';
   static const String announcementLocation = '/announcement-location';
+  static const String myLocation = '/my-location';
+  static const String eventLocator = '/event-locator';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -184,6 +183,10 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => AnnouncementPage(eventId: settings.arguments as String));
       case announcementLocation:
         return MaterialPageRoute(builder: (_) => const AnnouncementLocationPage());
+      case myLocation:
+        return MaterialPageRoute(builder: (_) => const MyLocationPage());
+      case eventLocator:
+        return MaterialPageRoute(builder: (_) => const EventLocatorPage());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

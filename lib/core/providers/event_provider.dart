@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kliks/core/services/api_service.dart';
 import 'package:kliks/core/di/service_locator.dart';
 import 'package:kliks/core/utils/print_wrapped.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 class EventProvider with ChangeNotifier {
   final ApiService _apiService;
@@ -153,6 +155,21 @@ class EventProvider with ChangeNotifier {
       return response.statusCode == 200 || response.statusCode == 201;
     } catch (e) {
       // print('attendEvent error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> cancelAttend(String eventId) async {
+    try {
+      final response = await _apiService.post(
+        '/event/attendEventCancel',
+        data: {'eventId': eventId},
+      );
+      if (response.statusCode == 200 || response.statusCode == 201)
+        notifyListeners();
+      return response.statusCode == 200 || response.statusCode == 201;
+    } catch (e) {
+      // print('cancelAttend error: $e');
       return false;
     }
   }
@@ -347,6 +364,95 @@ class EventProvider with ChangeNotifier {
       return response.statusCode == 200 || response.statusCode == 201;
     } catch (e) {
       print('reportEvent error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> checkIn({
+    required String eventId,
+  }) async {
+    try {
+      // Get current location
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      String location = 'Unknown';
+      try {
+        List<Placemark> placemarks = await placemarkFromCoordinates(
+          position.latitude,
+          position.longitude,
+        );
+        if (placemarks.isNotEmpty) {
+          final p = placemarks.first;
+          location = '${p.locality}, ${p.administrativeArea}, ${p.country}';
+        }
+      } catch (e) {
+        // Handle geocoding error
+      }
+
+      final data = {
+        'eventId': eventId,
+        // 'checkInLat': position.latitude,
+        // 'checkInLng': position.longitude,
+        'checkInLat': 6.57305069013410, // sample lat for testing
+        'checkInLng': 3.255696922615639, // sample lng for testing
+        'checkInLocation': location,
+      };
+
+      print('Checking in with data: $data');
+
+      final response = await _apiService.post(
+        '/event/checkInEvent',
+        data: data,
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) notifyListeners();
+      return response.statusCode == 200 || response.statusCode == 201;
+    } catch (e) {
+      print('checkIn error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> checkOut({
+    required String eventId,
+  }) async {
+    try {
+      // Get current location
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      String location = 'Unknown';
+      try {
+        List<Placemark> placemarks = await placemarkFromCoordinates(
+          position.latitude,
+          position.longitude,
+        );
+        if (placemarks.isNotEmpty) {
+          final p = placemarks.first;
+          location = '${p.locality}, ${p.administrativeArea}, ${p.country}';
+        }
+      } catch (e) {
+        // Handle geocoding error
+      }
+
+      final data = {
+        'eventId': eventId,
+        // 'checkOutLat': position.latitude,
+        // 'checkOutLng': position.longitude,
+        'checkOutLat': 6.57305069013410, // sample lat for testing
+        'checkOutLng': 3.255696922615639, // sample lng for testing
+        'checkOutLocation': location,
+      };
+      print('Checking out with data: $data');
+
+      final response = await _apiService.post(
+        '/event/checkOutEvent',
+        data: data,
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) notifyListeners();
+      return response.statusCode == 200 || response.statusCode == 201;
+    } catch (e) {
+      // print('checkOut error: $e');
       return false;
     }
   }

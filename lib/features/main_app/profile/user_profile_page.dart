@@ -168,8 +168,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       // Optionally allow viewing avatar fullscreen or similar
                     },
                     child: SizedBox(
-                    width: 100.r,
-                    height: 100.r,
+                    width: 70.r,
+                    height: 70.r,
                     child: ProfilePicture(
                       fileName: profilePictureFileName,
                       folderName: 'profile_pictures',
@@ -261,8 +261,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 ],
               ),
             ),
-            SizedBox(height: 8.h),
-            Divider(height: 32.h, thickness: 1),
+            // SizedBox(height: 8.h),
+            // Divider(height: 32.h, thickness: 1, indent: 0, endIndent: 0),
             SizedBox(height: 24.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -287,17 +287,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                               ),
                             );
                           } else if (_requestStatus == RequestStatus.following) {
-                            return CustomButton(
-                              text: 'Following',
-                              onPressed: null,
-                              isLoading: _isLoading,
-                              backgroundColor: Colors.grey.shade600,
-                              textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                fontSize: 12.sp,
-                                fontFamily: 'Metropolis-Bold',
-                                color: Colors.black,
-                              ),
-                            );
+                            return const SizedBox.shrink();
                           } else {
                             return CustomButton(
                               text: 'Request',
@@ -313,17 +303,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                           } 
                         } else {
                           if (_requestStatus == RequestStatus.following) {
-                            return CustomButton(
-                              text: 'Following',
-                              onPressed: null,
-                              isLoading: _isLoading,
-                              backgroundColor: Colors.grey.shade600,
-                              textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                fontSize: 12.sp,
-                                fontFamily: 'Metropolis-Bold',
-                                color: Colors.black,
-                              ),
-                            );
+                            return const SizedBox.shrink();
                           } else {
                             return CustomButton(
                               text: 'Follow',
@@ -343,7 +323,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 ],
               ),
             ),
-            SizedBox(height: 24.h),
+            if (
+              allowFollowing && (
+                (isPrivateAccount && _requestStatus != RequestStatus.following)
+                || (!isPrivateAccount && _requestStatus != RequestStatus.following)
+              )
+            )
+              SizedBox(height: 24.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: Row(
@@ -455,7 +441,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 Text(
                   'Interests',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontSize: 20.sp,
+                    fontSize: 18.sp,
                     fontFamily: 'Metropolis-SemiBold',
                     letterSpacing: 0,
                   ),
@@ -475,7 +461,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     label: Text(
                       interest,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 15.sp,
+                        fontSize: 13.sp,
                         fontFamily: 'Metropolis-SemiBold',
                         letterSpacing: 0,
                       ),

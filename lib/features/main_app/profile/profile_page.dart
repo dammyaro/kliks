@@ -26,10 +26,15 @@ class _ProfilePageState extends State<ProfilePage> {
   List<dynamic> _myEvents = [];
   bool _isLoadingEvents = true;
 
+  // Add state for categories
+  List<String> _allCategories = [];
+  bool _isLoadingCategories = true;
+
   @override
   void initState() {
     super.initState();
     _loadMyEvents();
+    _fetchCategories();
   }
 
   Future<void> _loadMyEvents() async {
@@ -40,6 +45,20 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       _myEvents = events;
       _isLoadingEvents = false;
+    });
+  }
+
+  Future<void> _fetchCategories() async {
+    setState(() => _isLoadingCategories = true);
+    final eventProvider = Provider.of<EventProvider>(context, listen: false);
+    final cats = await eventProvider.getAllCategory();
+    setState(() {
+      _allCategories = cats.map<String>((cat) {
+        if (cat is String) return cat;
+        if (cat is Map && cat['category'] != null) return cat['category'].toString();
+        return '';
+      }).where((cat) => cat.isNotEmpty).toList();
+      _isLoadingCategories = false;
     });
   }
 
@@ -54,7 +73,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final userId = profile?['id'] ?? '';
     final interests = profile?['categories'];
     final profilePictureFileName = profile?['image'];
-    final followerCount = profile?['followersCount'] ?? 0;
+    final followerCount = profile?['followerCount'] ?? 0;
     final followingCount = profile?['followingCount'] ?? 0;
     // final location = profile?['location'] ?? 'Ontario, Canada';
 
@@ -172,81 +191,16 @@ class _ProfilePageState extends State<ProfilePage> {
                                 // ),
                                 const HandleBar(),
                                 // SizedBox(height: 16.h),
-                                InkWell(
+                                _buildSheetOption(
+                                  context,
+                                  icon: Icons.person_add_outlined,
+                                  text: 'Follow requests',
                                   onTap: () {
-                                    // Navigator.pop(context);
                                     Navigator.pushNamed(
                                       context,
                                       '/follow-requests',
                                     );
                                   },
-                                  borderRadius: BorderRadius.circular(12.r),
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: 12.h,
-                                      horizontal: 25.w,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.person_add_outlined,
-                                          size: 18.sp,
-                                          color:
-                                              Theme.of(context).iconTheme.color,
-                                        ),
-                                        SizedBox(width: 16.w),
-                                        Expanded(
-                                          child: RichText(
-                                            text: TextSpan(
-                                              style: Theme.of(
-                                                context,
-                                              ).textTheme.bodyLarge?.copyWith(
-                                                fontSize: 14.sp,
-                                                fontFamily:
-                                                    'Metropolis-SemiBold',
-                                                letterSpacing: 0,
-                                                color:
-                                                    Theme.of(context)
-                                                        .textTheme
-                                                        .bodyLarge
-                                                        ?.color,
-                                              ),
-                                              children: [
-                                                TextSpan(
-                                                  text: 'Follow requests ',
-                                                  style: Theme.of(
-                                                    context,
-                                                  ).textTheme.bodyLarge?.copyWith(
-                                                    fontSize: 14.sp,
-                                                    color:
-                                                        Theme.of(context)
-                                                            .textTheme
-                                                            .bodyLarge
-                                                            ?.color,
-                                                    fontFamily:
-                                                        'Metropolis-SemiBold',
-                                                    letterSpacing: 0,
-                                                  ),
-                                                ),
-                                                TextSpan(
-                                                  text: '+2',
-                                                  style: TextStyle(
-                                                    color: Colors.green,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        Icon(
-                                          Icons.arrow_forward_ios,
-                                          size: 14.sp,
-                                          color:
-                                              Theme.of(context).iconTheme.color,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
                                 ),
                                 SizedBox(height: 8.h),
                                 _buildSheetOption(
@@ -646,26 +600,6 @@ class _ProfilePageState extends State<ProfilePage> {
         interests != null && interests is List
             ? List<String>.from(interests)
             : [];
-    final allInterests = [
-      'Social & Networking',
-      'Health & Wellness',
-      'Education & Learning',
-      'Sports & Fitness',
-      'Environment & Nature',
-      'Fashion & Beauty',
-      'Technology & Science',
-      'Arts & Culture',
-      'Travel & Adventure',
-      // 'Food & Drinks',
-      // 'Games & Hobbies',
-      // 'Tech & Startups',
-      // 'Music & Concerts',
-      // 'Business & Finance',
-      // 'Photography',
-      // 'Movies & Entertainment',
-      // 'Volunteering',
-      // 'Other',
-    ];
 
     void showInterestSheet() {
       showModalBottomSheet(
@@ -676,7 +610,6 @@ class _ProfilePageState extends State<ProfilePage> {
           borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
         ),
         builder: (context) {
-          // Use StatefulBuilder to manage selection state inside the bottom sheet
           List<String> tempSelected = List<String>.from(interestsList);
           bool isLoading = false;
           return StatefulBuilder(
@@ -727,85 +660,86 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     SizedBox(height: 18.h),
                     Expanded(
-                      child: SingleChildScrollView(
-                        child: Wrap(
-                          spacing: 10.w,
-                          runSpacing: 10.h,
-                          alignment: WrapAlignment.start,
-                          children: [
-                            for (var interest in allInterests)
-                              GestureDetector(
-                                onTap: () {
-                                  setModalState(() {
-                                    if (tempSelected.contains(interest)) {
-                                      tempSelected.remove(interest);
-                                    } else {
-                                      tempSelected.add(interest);
-                                    }
-                                  });
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 15.w,
-                                    vertical: 10.h,
+                      child: _isLoadingCategories
+                          ? Center(
+                              child: CircularProgressIndicator(
+                                color: const Color(0xffbbd953),
+                              ),
+                            )
+                          : _allCategories.isEmpty
+                              ? Center(
+                                  child: Text(
+                                    'No categories found',
+                                    style: Theme.of(context).textTheme.bodyMedium,
                                   ),
-                                  decoration: BoxDecoration(
-                                    color:
-                                        tempSelected.contains(interest)
-                                            ? (Theme.of(context).brightness ==
-                                                    Brightness.light
-                                                ? Colors.grey[800]
-                                                : Colors.white)
-                                            : (Theme.of(context).brightness ==
-                                                    Brightness.light
-                                                ? Colors.grey[300]
-                                                : Colors.grey[800]),
-                                    borderRadius: BorderRadius.circular(20.r),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
+                                )
+                              : SingleChildScrollView(
+                                  child: Wrap(
+                                    spacing: 10.w,
+                                    runSpacing: 10.h,
+                                    alignment: WrapAlignment.start,
                                     children: [
-                                      Text(
-                                        interest,
-                                        style: TextStyle(
-                                          fontSize: 12.sp,
-                                          letterSpacing: 0,
-                                          color:
-                                              tempSelected.contains(interest)
-                                                  ? (Theme.of(
-                                                            context,
-                                                          ).brightness ==
-                                                          Brightness.light
-                                                      ? Colors.white
-                                                      : Colors.black)
-                                                  : (Theme.of(
-                                                            context,
-                                                          ).brightness ==
-                                                          Brightness.light
-                                                      ? Colors.black
-                                                      : Colors.white),
+                                      for (var interest in _allCategories)
+                                        GestureDetector(
+                                          onTap: () {
+                                            setModalState(() {
+                                              if (tempSelected.contains(interest)) {
+                                                tempSelected.remove(interest);
+                                              } else {
+                                                tempSelected.add(interest);
+                                              }
+                                            });
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 15.w,
+                                              vertical: 10.h,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: tempSelected.contains(interest)
+                                                  ? (Theme.of(context).brightness == Brightness.light
+                                                      ? Colors.grey[800]
+                                                      : Colors.white)
+                                                  : (Theme.of(context).brightness == Brightness.light
+                                                      ? Colors.grey[300]
+                                                      : Colors.grey[800]),
+                                              borderRadius: BorderRadius.circular(20.r),
+                                            ),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                  interest,
+                                                  style: TextStyle(
+                                                    fontSize: 12.sp,
+                                                    letterSpacing: 0,
+                                                    color: tempSelected.contains(interest)
+                                                        ? (Theme.of(context).brightness == Brightness.light
+                                                            ? Colors.white
+                                                            : Colors.black)
+                                                        : (Theme.of(context).brightness == Brightness.light
+                                                            ? Colors.black
+                                                            : Colors.white),
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                                if (tempSelected.contains(interest)) ...[
+                                                  SizedBox(width: 6.w),
+                                                  Icon(
+                                                    Icons.close,
+                                                    size: 13.sp,
+                                                    color: Theme.of(context).brightness == Brightness.light
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                  ),
+                                                ],
+                                              ],
+                                            ),
+                                          ),
                                         ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      if (tempSelected.contains(interest)) ...[
-                                        SizedBox(width: 6.w),
-                                        Icon(
-                                          Icons.close,
-                                          size: 13.sp,
-                                          color:
-                                              Theme.of(context).brightness ==
-                                                      Brightness.light
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                        ),
-                                      ],
                                     ],
                                   ),
                                 ),
-                              ),
-                          ],
-                        ),
-                      ),
                     ),
                     SizedBox(height: 24.h),
                     SizedBox(
@@ -964,13 +898,13 @@ class _ProfilePageState extends State<ProfilePage> {
                   labelStyle: const TextStyle(fontFamily: 'Metropolis-Medium'),
                   tabs: const [
                     Tab(text: 'My Events'),
-                    Tab(text: 'Blocked'),
+                    Tab(text: 'Booked'),
                     Tab(text: 'Invitations'),
                     Tab(text: 'Saved'),
                   ],
                 ),
                 SizedBox(
-                  height: 600.h, // Increased from 400.h by 100.h
+                  height: 400.h, // Increased from 400.h by 100.h
                   child: TabBarView(
                     children: [
                       // My Events Tab
@@ -989,14 +923,14 @@ class _ProfilePageState extends State<ProfilePage> {
                       Builder(
                         builder: (context) {
                           // Replace with actual blocked events list and loading state if available
-                          final List<dynamic> blockedEvents = [];
-                          final bool isLoadingBlocked = false;
+                          final List<dynamic> bookedEvents = [];
+                          final bool isLoadingBooked = false;
                           return _PaginatedEventsTab(
-                            events: blockedEvents,
-                            isLoading: isLoadingBlocked,
-                            emptyText: 'No blocked events',
+                            events: bookedEvents,
+                            isLoading: isLoadingBooked,
+                            emptyText: 'No booked events',
                             emptySubText:
-                                'Events you have blocked will appear here',
+                                'Events you have booked will appear here',
                           );
                         },
                       ),
@@ -1117,14 +1051,17 @@ class _ProfilePageState extends State<ProfilePage> {
             Icon(icon, size: 18.sp, color: Theme.of(context).iconTheme.color),
             SizedBox(width: 16.w),
             Expanded(
-              child: Text(
-                text,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontSize: 14.sp,
-                  color:
-                      textColor ?? Theme.of(context).textTheme.bodyLarge?.color,
-                  fontFamily: 'Metropolis-SemiBold',
-                  letterSpacing: 0,
+              child: RichText(
+                text: TextSpan(
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontSize: 14.sp,
+                    fontFamily: 'Metropolis-SemiBold',
+                    letterSpacing: 0,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
+                  ),
+                  children: [
+                    TextSpan(text: text),
+                  ],
                 ),
               ),
             ),

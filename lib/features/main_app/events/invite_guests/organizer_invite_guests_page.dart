@@ -172,7 +172,7 @@ class _OrganizerInviteGuestsPageState extends State<OrganizerInviteGuestsPage> {
                       : TextButton(
                           onPressed: _selectedUsers.isNotEmpty && !_isInviting ? _inviteSelectedUsers : null,
                           child: Text('Done', style: theme.textTheme.bodyMedium?.copyWith(
-                            color: _selectedUsers.isNotEmpty ? Colors.black : Colors.grey,
+                            color: _selectedUsers.isNotEmpty ? theme.textTheme.bodyMedium?.color : Colors.grey,
                             fontSize: 15.sp,
                             fontFamily: 'Metropolis-SemiBold',
                           )),

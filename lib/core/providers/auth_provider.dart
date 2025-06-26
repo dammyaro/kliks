@@ -6,11 +6,15 @@ import 'dart:io';
 import 'package:geolocator/geolocator.dart';
 import 'package:kliks/core/services/media_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:kliks/core/services/fcm_token_service.dart';
 
 class AuthProvider with ChangeNotifier {
   final ApiService _apiService;
+  final FcmTokenService _fcmTokenService = FcmTokenService();
   bool _isAuthenticated = false;
   // bool _isVerified = false;
   String? currentEmail;
@@ -107,6 +111,7 @@ class AuthProvider with ChangeNotifier {
       if (user != null) {
         setCurrentEmail(email);
         await updateDeviceInfo(); // Update device info after successful register
+        // await _fcmTokenService.registerTokenWithBackend(); // Moved to after verifyEmail
         notifyListeners();
         return true;
       }
@@ -142,6 +147,7 @@ class AuthProvider with ChangeNotifier {
         setCurrentEmail(email);
         loadProfile(); // Load profile after successful login
         await updateDeviceInfo(); // Update device info after successful login
+        await _fcmTokenService.registerTokenWithBackend();
         notifyListeners();
         return true;
       }
@@ -163,6 +169,7 @@ class AuthProvider with ChangeNotifier {
     _isAuthenticated = false;
     // _isVerified = false;
     currentEmail = null;
+    await _fcmTokenService.removeTokenFromBackend();
     notifyListeners();
   }
 
@@ -191,6 +198,7 @@ class AuthProvider with ChangeNotifier {
         loadProfile(); // Load profile after successful verification
         // await _apiService.saveIsVerified(true);
         // _isVerified = true;
+        await _fcmTokenService.registerTokenWithBackend();
         notifyListeners();
         return true;
       }
@@ -235,6 +243,34 @@ class AuthProvider with ChangeNotifier {
       return false;
     } catch (e) {
       print('Update profile error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> updateLocation({
+    required double lat,
+    required double lng,
+    required String location,
+  }) async {
+    try {
+      final response = await _apiService.post(
+        '/auth/updateLocation',
+        data: {
+          'lat': lat,
+          'lng': lng,
+          'location': location,
+        },
+      );
+      print('Update location response: ${response.data}');
+      await loadProfile();
+      await checkProfileSetupComplete();
+      notifyListeners();
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print('Update location error: $e');
       return false;
     }
   }
@@ -384,38 +420,6 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  /// Sign in with Google using Firebase Auth
-  Future<UserCredential?> signInWithGoogle() async {
-    try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) {
-        // User cancelled the sign-in
-        return null;
-      }
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      final userCredential = await _firebaseAuth.signInWithCredential(credential);
-      // print('Google sign-in success: ${userCredential.user?.email}');
-      // print('UserCredential:');
-      // printWrapped('  user: ${userCredential.user}');
-      // printWrapped('  additionalUserInfo: ${userCredential.additionalUserInfo}');
-      // printWrapped('  credential: ${userCredential.credential}');
-      // final idToken = await userCredential.user?.getIdToken();
-      // printWrapped('Firebase ID Token: $idToken');
-      // final accessToken = await userCredential.user?.getIdTokenResult();
-      // printWrapped('Firebase Access Token: $accessToken');
-      _isAuthenticated = true;
-      notifyListeners();
-      return userCredential;
-    } catch (e) {
-      print('Google sign-in error: $e');
-      return null;
-    }
-  }
-
   /// Sign in with Apple using Firebase Auth
   Future<UserCredential?> signInWithApple() async {
     try {
@@ -434,6 +438,7 @@ class AuthProvider with ChangeNotifier {
       );
       final userCredential = await _firebaseAuth.signInWithCredential(oauthCredential);
       _isAuthenticated = true;
+      await _fcmTokenService.registerTokenWithBackend();
       notifyListeners();
       return userCredential;
     } catch (e) {
@@ -536,6 +541,62 @@ class AuthProvider with ChangeNotifier {
     } catch (e) {
       print('getSearchHistory error: $e');
       return [];
+    }
+  }
+
+  /// Manual Google OAuth sign-in using flutter_web_auth_2
+  Future<UserCredential?> signInWithGoogleManual() async {
+    print("manual oauth logging in");
+    try {
+      // Get client ID and redirect URI from Firebase config
+      final clientId = '768960251163-li2pr1fq362kot2cl3i2f337daiio7us.apps.googleusercontent.com';
+      final redirectUri = 'com.app.kliks:/';
+      final url =
+          'https://accounts.google.com/o/oauth2/v2/auth'
+          '?client_id=$clientId'
+          '&redirect_uri=$redirectUri'
+          '&response_type=code'
+          '&scope=openid%20email%20profile';
+
+      // Start the authentication flow
+      final result = await FlutterWebAuth2.authenticate(
+        url: url,
+        callbackUrlScheme: 'com.app.kliks',
+      );
+
+      // Extract the code from the resulting url
+      final code = Uri.parse(result).queryParameters['code'];
+      if (code == null) throw Exception('No code returned from Google OAuth');
+
+      // Exchange the code for tokens
+      final response = await http.post(
+        Uri.parse('https://oauth2.googleapis.com/token'),
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: {
+          'client_id': clientId,
+          'redirect_uri': redirectUri,
+          'grant_type': 'authorization_code',
+          'code': code,
+        },
+      );
+      final body = json.decode(response.body);
+      final idToken = body['id_token'];
+      final accessToken = body['access_token'];
+      if (idToken == null || accessToken == null) throw Exception('Failed to get tokens from Google');
+
+      // Sign in to Firebase with the Google credentials
+      final credential = GoogleAuthProvider.credential(
+        idToken: idToken,
+        accessToken: accessToken,
+      );
+      final userCredential = await _firebaseAuth.signInWithCredential(credential);
+      _isAuthenticated = true;
+      await _fcmTokenService.registerTokenWithBackend();
+      notifyListeners();
+      return userCredential;
+    } catch (e) {
+      print('Manual Google sign-in error: $e');
+      return null;
     }
   }
 }

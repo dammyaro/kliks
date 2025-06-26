@@ -455,16 +455,103 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
               // Event banner
               if (eventBanner.isNotEmpty)
                 Center(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    height: 200.h,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14.r),
-                      image: DecorationImage(
-                        image: NetworkImage(eventBanner),
-                        fit: BoxFit.cover,
+                  child: Stack(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          final allImages = [eventBanner, ...otherImages].cast<String>();
+                          Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder: (context, animation, secondaryAnimation) => _GalleryView(
+                                images: allImages,
+                                initialIndex: 0,
+                              ),
+                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: ScaleTransition(
+                                    scale: Tween<double>(begin: 0.9, end: 1.0).animate(
+                                      CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+                                    ),
+                                    child: child,
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(24.r),
+                          child: Image.network(
+                            eventBanner,
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            height: 300.h,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
-                    ),
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.vertical(
+                            bottom: Radius.circular(24.r),
+                          ),
+                          child: Container(
+                            height: 90.h,
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.transparent,
+                                  Colors.black.withOpacity(0.7),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        left: 20.w,
+                        bottom: 20.h,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Reward points',
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: Colors.white,
+                                fontSize: 12.sp,
+                                fontFamily: 'Metropolis-SemiBold',
+                              ),
+                            ),
+                            SizedBox(height: 4.h),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16.w,
+                                vertical: 6.h,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFFBF00),
+                                borderRadius: BorderRadius.circular(8.r),
+                              ),
+                              child: Text(
+                                '${event?['eventDocument']?['rewardEventPoint'] ?? ''} points',
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: Colors.black,
+                                  fontSize: 13.sp,
+                                  fontFamily: 'Metropolis-Bold',
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               SizedBox(height: 20.h),
@@ -807,8 +894,22 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
                                     .toList();
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (_) => _GalleryView(images: allImages, initialIndex: idx + 1),
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation, secondaryAnimation) => _GalleryView(
+                                      images: allImages,
+                                      initialIndex: idx + 1,
+                                    ),
+                                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: ScaleTransition(
+                                          scale: Tween<double>(begin: 0.9, end: 1.0).animate(
+                                            CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+                                          ),
+                                          child: child,
+                                        ),
+                                      );
+                                    },
                                   ),
                                 );
                               }

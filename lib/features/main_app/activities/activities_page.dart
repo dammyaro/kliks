@@ -18,60 +18,15 @@ class ActivitiesPage extends StatefulWidget {
 }
 
 class _ActivitiesPageState extends State<ActivitiesPage> {
-  List<dynamic> _notifications = [];
-  // Cache for fetched user profiles for Following notifications
   final Map<String, Map<String, dynamic>> _followerProfiles = {};
-  bool _loading = true;
-  final Map<String, Map<String, dynamic>> _inviteEventCache =
-      {}; // Cache for InviteEvent event details
+  final Map<String, Map<String, dynamic>> _inviteEventCache = {};
 
   @override
   void initState() {
     super.initState();
-    _fetchNotifications();
-  }
-
-  Future<void> _fetchNotifications({bool forceReload = false}) async {
-    final provider = Provider.of<NotificationsProvider>(context, listen: false);
-    await provider.fetchMyNotifications(limit: 50, forceReload: forceReload);
-    final notifications = provider.notifications;
-
-    // Remove 'CheckProfile' notifications where the viewer is the current user
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final myProfile = authProvider.profile;
-    final myId = myProfile?['id']?.toString();
-    final filteredNotifications =
-        notifications.where((notification) {
-          if (notification['notificationType'] == 'CheckProfile') {
-            final viewerId =
-                notification['eventId']?.toString() ??
-                notification['data']?['userId']?.toString();
-            if (viewerId != null && myId != null && viewerId == myId) {
-              return false;
-            }
-          }
-          return true;
-        }).toList();
-
-    // Cache event details for InviteEvent notifications
-    final eventProvider = Provider.of<EventProvider>(context, listen: false);
-    for (var notification in filteredNotifications) {
-      if (notification['notificationType'] == 'InviteEvent') {
-        final eventId =
-            notification['data']?['eventId']?.toString() ??
-            notification['eventId']?.toString();
-        if (eventId != null && eventId.isNotEmpty) {
-          final event = await eventProvider.getEventDetailById(eventId);
-          if (event != null) {
-            _inviteEventCache[eventId] = event;
-          }
-        }
-      }
-    }
-
-    setState(() {
-      _notifications = filteredNotifications;
-      _loading = false;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final provider = Provider.of<NotificationsProvider>(context, listen: false);
+      provider.fetchMyNotifications(limit: 50);
     });
   }
 
@@ -579,23 +534,38 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
         break;
 
       case 'CheckProfile':
-        title = 'Profile Views';
-        String? viewerUserId =
-            notification['eventId']?.toString() ?? data['userId']?.toString();
-        if (notification['bold'] != null &&
-            notification['bold'] is List &&
-            notification['bold'].isNotEmpty) {
-          final names = (notification['bold'] as List).join(', ');
-          subtitle = '$names viewed your profile.';
-        } else {
-          subtitle = 'Someone viewed your profile.';
-        }
-        icon = CupertinoIcons.smiley;
-        iconColor = Colors.white;
-        bgColor = Colors.grey[600]!;
-        if (viewerUserId != null && viewerUserId.isNotEmpty) {
-          isTappable = true;
-          tapUserData = {'id': viewerUserId}; // Will fetch full profile on tap
+        {
+          if (notification['isGrouped'] == true) {
+            final viewCount = notification['viewCount'] ?? 0;
+            title = 'Profile Views';
+            if (notification['bold'] != null &&
+                notification['bold'] is List &&
+                notification['bold'].isNotEmpty) {
+              final names = (notification['bold'] as List).first;
+              subtitle = '$names viewed your profile $viewCount times';
+            } else {
+              subtitle = 'Someone viewed your profile $viewCount times';
+            }
+          } else {
+            title = 'Profile Views';
+            if (notification['bold'] != null &&
+                notification['bold'] is List &&
+                notification['bold'].isNotEmpty) {
+              final names = (notification['bold'] as List).join(', ');
+              subtitle = '$names viewed your profile.';
+            } else {
+              subtitle = 'Someone viewed your profile.';
+            }
+          }
+          icon = CupertinoIcons.smiley;
+          iconColor = Colors.white;
+          bgColor = Colors.grey[600]!;
+
+          final viewerUserId = notification['eventId']?.toString() ?? data['userId']?.toString();
+          if (viewerUserId != null && viewerUserId.isNotEmpty) {
+            isTappable = true;
+            tapUserData = {'id': viewerUserId};
+          }
         }
         break;
 
@@ -845,63 +815,110 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
           Expanded(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child:
-                  _loading
-                      ? Center(
-                        child: SizedBox(
-                          width: 20.w,
-                          height: 20.w,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 3,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Color(0xffbbd953),
-                            ),
-                          ),
+              child: Consumer<NotificationsProvider>(
+                builder: (context, provider, _) {
+                  final notifications = provider.notifications;
+                  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                  final myId = authProvider.profile?['id']?.toString();
+                  var filteredNotifications = notifications.where((notification) {
+                    if (notification['notificationType'] == 'CheckProfile') {
+                      final viewerId = notification['eventId']?.toString() ?? notification['data']?['userId']?.toString();
+                      if (viewerId != null && myId != null && viewerId == myId) {
+                        return false;
+                      }
+                    }
+                    return true;
+                  }).toList();
+
+                  if (!provider.notificationsLoaded) {
+                    return Center(
+                      child: SizedBox(
+                        width: 20.w,
+                        height: 20.w,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 3,
+                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xffbbd953)),
                         ),
-                      )
-                      : RefreshIndicator(
-                        color: Color(0xffbbd953),
-                        onRefresh: () => _fetchNotifications(forceReload: true),
-                        child:
-                            _notifications.isEmpty
-                                ? Center(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        "No activity",
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.bodyLarge?.copyWith(
-                                          fontSize: 20.sp,
-                                          color: Colors.grey[300],
-                                          fontFamily: 'Metropolis-SemiBold',
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      Text(
-                                        "Start using the app to see activities",
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.bodySmall?.copyWith(
-                                          fontSize: 12.sp,
-                                          color: Colors.grey[700],
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
-                                  ),
-                                )
-                                : ListView.builder(
-                                  padding: EdgeInsets.only(top: 8.h),
-                                  itemCount: _notifications.length,
-                                  itemBuilder:
-                                      (context, index) =>
-                                          _buildNotificationItem(
-                                            _notifications[index],
-                                          ),
-                                ),
                       ),
+                    );
+                  }
+
+                  return RefreshIndicator(
+                    color: Color(0xffbbd953),
+                    onRefresh: () => provider.fetchMyNotifications(limit: 50, forceReload: true),
+                    child: filteredNotifications.isEmpty
+                        ? Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "No activity",
+                                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    fontSize: 20.sp,
+                                    color: Colors.grey[300],
+                                    fontFamily: 'Metropolis-SemiBold',
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                Text(
+                                  "Start using the app to see activities",
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontSize: 12.sp,
+                                    color: Colors.grey[700],
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          )
+                        : ListView.builder(
+                            padding: EdgeInsets.only(top: 8.h),
+                            itemCount: filteredNotifications.length,
+                            itemBuilder: (context, index) {
+                              final notification = filteredNotifications[index];
+                              if (notification['notificationType'] == 'CheckProfile') {
+                                final now = DateTime.now();
+                                final createdAt = notification['createdAt'] ?? '';
+                                try {
+                                  final notificationDate = DateTime.parse(createdAt);
+                                  if (now.difference(notificationDate).inHours < 1) {
+                                    final viewerId = notification['eventId']?.toString() ?? notification['data']?['userId']?.toString();
+                                    final similarNotifications = filteredNotifications.where((n) {
+                                      final otherType = n['notificationType'] ?? '';
+                                      final otherCreatedAt = n['createdAt'] ?? '';
+                                      final otherViewerId = n['eventId']?.toString() ?? n['data']?['userId']?.toString();
+                                      if (otherType == 'CheckProfile' && viewerId == otherViewerId) {
+                                        try {
+                                          final otherDate = DateTime.parse(otherCreatedAt);
+                                          return now.difference(otherDate).inHours < 1;
+                                        } catch (e) {
+                                          return false;
+                                        }
+                                      }
+                                      return false;
+                                    }).toList();
+
+                                    if (similarNotifications.length > 1 && similarNotifications.first == notification) {
+                                      final combinedNotification = Map<String, dynamic>.from(notification);
+                                      combinedNotification['viewCount'] = similarNotifications.length;
+                                      combinedNotification['isGrouped'] = true;
+                                      return _buildNotificationItem(combinedNotification);
+                                    } else if (similarNotifications.length == 1) {
+                                      return _buildNotificationItem(notification);
+                                    } else if (similarNotifications.length > 1 && similarNotifications.first != notification) {
+                                      return Container();
+                                    }
+                                  }
+                                } catch (e) {
+                                  return _buildNotificationItem(notification);
+                                }
+                              }
+                              return _buildNotificationItem(notification);
+                            },
+                          ),
+                  );
+                },
+              ),
             ),
           ),
         ],

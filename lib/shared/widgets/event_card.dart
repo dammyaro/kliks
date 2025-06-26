@@ -6,69 +6,31 @@ import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/auth_provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class EventCard extends StatefulWidget {
+class EventCard extends StatelessWidget {
   final Map<String, dynamic> event;
 
   const EventCard({super.key, required this.event});
 
   @override
-  State<EventCard> createState() => _EventCardState();
-}
-
-class _EventCardState extends State<EventCard> {
-  static final Map<String, Map<String, dynamic>> _profileCache = {};
-  Map<String, dynamic>? _profile;
-  bool _loading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchProfile();
-  }
-
-  Future<void> _fetchProfile() async {
-    final userId = widget.event['userId']?.toString();
-    if (userId != null && userId.isNotEmpty) {
-      if (_profileCache.containsKey(userId)) {
-        setState(() {
-          _profile = _profileCache[userId] ?? {};
-          _loading = false;
-        });
-      } else {
-        final authProvider = Provider.of<AuthProvider>(context, listen: false);
-        final profile = await authProvider.getUserById(userId);
-        print('Profile: $profile');
-        _profileCache[userId] = profile ?? <String, dynamic>{};
-        setState(() {
-          _profile = profile ?? <String, dynamic>{};
-          _loading = false;
-        });
-      }
-    } else {
-      setState(() {
-        _loading = false;
-      });
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final profilePic = _profile?['image'] ?? '';
-    final fullName = _profile?['fullname'] ?? '';
-    final username = _profile?['username'] ?? '';
-    final userId = widget.event['userId']?.toString() ?? '';
-    final bannerUrl = widget.event['bannerImageUrl'] ?? '';
-    final eventName = widget.event['title'] ?? '';
-    final eventLocation = widget.event['location'] ?? '';
-    final attendees = widget.event['eventAttendCount'] ?? 0;
-    final startDate = widget.event['startDate'] ?? '';
-    final categories =
-        widget.event['category'] is List
-            ? widget.event['category']
-            : widget.event['category'] != null &&
-                widget.event['category'] is Map &&
-                widget.event['category']['category'] != null
-            ? [widget.event['category']['category']]
+    final ownerDocument = event['ownerDocument'] as Map<String, dynamic>? ?? {};
+    final profilePic = ownerDocument['image'] ?? '';
+    final fullName = ownerDocument['fullname'] ?? '';
+    final username = ownerDocument['username'] ?? '';
+    final userId = ownerDocument['id']?.toString() ?? '';
+
+    final eventDocument = event['eventDocument'] as Map<String, dynamic>? ?? {};
+    final bannerUrl = eventDocument['bannerImageUrl'] ?? '';
+    final eventName = eventDocument['title'] ?? '';
+    final eventLocation = eventDocument['location'] ?? '';
+    final attendees = eventDocument['eventAttendCount'] ?? 0;
+    final startDate = eventDocument['startDate'] ?? '';
+    final categories = eventDocument['category'] is List
+        ? eventDocument['category']
+        : eventDocument['category'] != null &&
+                eventDocument['category'] is Map &&
+                eventDocument['category']['category'] != null
+            ? [eventDocument['category']['category']]
             : [];
     String formattedDate = '';
     try {
@@ -82,18 +44,6 @@ class _EventCardState extends State<EventCard> {
     final parts = eventLocation.split(',').map((s) => s.trim()).toList();
     if (parts.length >= 2) {
       cityState = parts[parts.length - 2] + ', ' + parts.last;
-    }
-
-    final skeletonColor =
-        Theme.of(context).brightness == Brightness.dark
-            ? const Color(0xFF232323)
-            : const Color(0xFFE0E0E0);
-
-    if (_loading) {
-      return Skeletonizer(
-        enabled: true,
-        child: EventCardSkeleton(skeletonColor: skeletonColor),
-      );
     }
 
     return Card(
@@ -111,11 +61,11 @@ class _EventCardState extends State<EventCard> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    if (_profile != null && _profile!.isNotEmpty) {
+                    if (ownerDocument.isNotEmpty) {
                       Navigator.pushNamed(
                         context,
                         '/user-profile',
-                        arguments: _profile,
+                        arguments: ownerDocument,
                       );
                     }
                   },
@@ -178,14 +128,14 @@ class _EventCardState extends State<EventCard> {
               children: [
                 GestureDetector(
                   onTap: () async {
-                    final eventId = widget.event['id'];
+                    final eventId = event['id'];
                     if (eventId != null) {
                       final authProvider = Provider.of<AuthProvider>(
                         context,
                         listen: false,
                       );
                       final currentUserId = await authProvider.getUserId();
-                      final ownerId = widget.event['userId']?.toString();
+                      final ownerId = ownerDocument['id']?.toString();
 
                       Navigator.pushNamed(
                         context,

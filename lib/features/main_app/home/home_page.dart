@@ -10,6 +10,9 @@ import 'package:kliks/core/providers/event_provider.dart';
 import 'package:kliks/shared/widgets/event_card.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:kliks/core/providers/follow_provider.dart';
+import 'package:kliks/core/providers/checked_in_events_provider.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:kliks/main.dart' show flutterLocalNotificationsPlugin;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -42,19 +45,31 @@ class _HomePageState extends State<HomePage>
     final events = await eventProvider.getEvents();
     final categories = await eventProvider.getAllCategory();
     final userId = await authProvider.getUserId();
-    Map<String, bool> followingMap = {};
+
+    final List<dynamic> detailedEvents = [];
     for (var event in events) {
-      final userId = event['userId']?.toString();
-      if (userId != null && userId.isNotEmpty) {
+      final eventId = event['id']?.toString();
+      if (eventId != null) {
+        final detail = await eventProvider.getEventDetailById(eventId);
+        if (detail != null) {
+          detailedEvents.add(detail);
+        }
+      }
+    }
+
+    Map<String, bool> followingMap = {};
+    for (var event in detailedEvents) {
+      final ownerId = event['ownerDocument']?['id']?.toString();
+      if (ownerId != null && ownerId.isNotEmpty) {
         final isFollowing = await followProvider.isFollowingUser(
           context: context,
-          targetUserId: userId,
+          targetUserId: ownerId,
         );
-        followingMap[userId] = isFollowing;
+        followingMap[ownerId] = isFollowing;
       }
     }
     setState(() {
-      _events = events;
+      _events = detailedEvents;
       _categories = categories;
       _isFollowingMap = followingMap;
       _isLoading = false;
@@ -187,12 +202,102 @@ class _HomePageState extends State<HomePage>
                             Column(
                               children: [
                                 SizedBox(height: 20.h),
+                                // Debug button for local notification
+                                /*
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 4.h),
+                                    child: SizedBox(
+                                      height: 32,
+                                      width: 32,
+                                      child: IconButton(
+                                        padding: EdgeInsets.zero,
+                                        icon: Icon(Icons.notifications_active, color: Colors.red, size: 22),
+                                        tooltip: 'Test Local Notification',
+                                        onPressed: () async {
+                                          await flutterLocalNotificationsPlugin.show(
+                                            0,
+                                            'Test Local Notification',
+                                            'This is a test notification from the debug button.',
+                                            NotificationDetails(
+                                              android: AndroidNotificationDetails(
+                                                'default_channel_id',
+                                                'General',
+                                                channelDescription: 'General notifications',
+                                                importance: Importance.max,
+                                                priority: Priority.high,
+                                                icon: '@mipmap/ic_launcher',
+                                              ),
+                                              iOS: DarwinNotificationDetails(),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                */
                                 if (!isProfileSetupComplete)
                                   OnboardingPrompt(
                                     onContinue: () {
                                       print('Onboarding continued');
                                     },
                                   ),
+                                Consumer2<CheckedInEventsProvider, EventProvider>(
+                                  builder: (context, checkedInProvider, eventProvider, child) {
+                                    final checkedInIds = checkedInProvider.getCheckedInEventIds();
+                                    if (checkedInIds.isEmpty) return SizedBox.shrink();
+                                    return Column(
+                                      children: checkedInIds.map((eventId) {
+                                        final eventDetail = _eventDetailsCache[eventId] ?? _events.firstWhere(
+                                          (e) => e['id']?.toString() == eventId || e['eventDocument']?['id']?.toString() == eventId,
+                                          orElse: () => null,
+                                        );
+                                        if (eventDetail == null) return SizedBox.shrink();
+                                        final eventName = eventDetail['eventDocument']?['title'] ?? eventDetail['title'] ?? '';
+                                        final checkedInCount = (eventDetail['checkedInUserDocuments'] as List?)?.length ?? 0;
+                                        return Container(
+                                          width: double.infinity,
+                                          margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
+                                          padding: EdgeInsets.symmetric(horizontal: 18.w),
+                                          height: 40.h,
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xffbbd953),
+                                            borderRadius: BorderRadius.circular(14.r),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  eventName,
+                                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                                    fontSize: 10.sp,
+                                                    fontFamily: 'Metropolis-SemiBold',
+                                                    color: Colors.black,
+                                                  ),
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Icon(Icons.people, size: 15.sp, color: Colors.black),
+                                                  SizedBox(width: 6.w),
+                                                  Text('$checkedInCount', style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                    fontSize: 12.sp,
+                                                    fontFamily: 'Metropolis-Medium',
+                                                    color: Colors.black,
+                                                  )),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      }).toList(),
+                                    );
+                                  },
+                                ),
                                 Expanded(
                                   child:
                                       _isLoading

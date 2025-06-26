@@ -11,6 +11,10 @@ import 'package:photo_view/photo_view_gallery.dart';
 import 'package:flutter/services.dart';
 import 'package:kliks/core/providers/saved_events_provider.dart';
 import 'package:add_2_calendar/add_2_calendar.dart';
+import 'package:kliks/core/routes.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:kliks/shared/widgets/handle_bar.dart';
+import 'package:kliks/core/providers/checked_in_events_provider.dart';
 
 class EventDetailPage extends StatefulWidget {
   final String? eventId;
@@ -33,9 +37,11 @@ class _EventDetailPageState extends State<EventDetailPage> {
 
   Future<void> _loadEvent() async {
     final eventId = widget.eventId;
+    print(eventId);
     if (eventId != null) {
       final eventProvider = Provider.of<EventProvider>(context, listen: false);
       final detail = await eventProvider.getEventDetailById(eventId);
+      // print(detail);
       setState(() {
         event = detail;
         _isLoading = false;
@@ -57,6 +63,37 @@ class _EventDetailPageState extends State<EventDetailPage> {
     final isUserAttending =
         currentUserId != null &&
         attendingList.any((u) => u['id']?.toString() == currentUserId);
+
+    // Event live logic
+    final startDateRaw = event?['eventDocument']?['startDate'] ?? '';
+    final endDateRaw = event?['eventDocument']?['endDate'] ?? '';
+    DateTime? startDateTime;
+    DateTime? endDateTime;
+    try {
+      if (startDateRaw.isNotEmpty) startDateTime = DateTime.parse(startDateRaw);
+      if (endDateRaw.isNotEmpty) endDateTime = DateTime.parse(endDateRaw);
+    } catch (_) {}
+    final now = DateTime.now();
+    final isLive = startDateTime != null && endDateTime != null && now.isAfter(startDateTime) && now.isBefore(endDateTime);
+
+    String eventStatus;
+    Color statusColor;
+    if (startDateTime != null && now.isBefore(startDateTime)) {
+      eventStatus = 'Upcoming';
+      statusColor = Colors.orange;
+    } else if (isLive) {
+      eventStatus = 'Live';
+      statusColor = Colors.green;
+    } else if (endDateTime != null && now.isAfter(endDateTime)) {
+      eventStatus = 'Concluded';
+      statusColor = Colors.red;
+    } else {
+      eventStatus = 'Not available';
+      statusColor = Colors.grey;
+    }
+
+    final checkedInProvider = Provider.of<CheckedInEventsProvider>(context);
+
     if (_isLoading) {
       final skeletonColor =
           Theme.of(context).brightness == Brightness.dark
@@ -435,8 +472,6 @@ class _EventDetailPageState extends State<EventDetailPage> {
       eventBanner = event?['eventDocument']['bannerImageUrl'] as String;
     }
     final eventLocation = event?['eventDocument']?['location'] ?? '';
-    final startDateRaw = event?['eventDocument']?['startDate'] ?? '';
-    final endDateRaw = event?['eventDocument']?['endDate'] ?? '';
     String formatDate(String dateStr) {
       if (dateStr.isEmpty) return '';
       try {
@@ -514,12 +549,22 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                 final allImages = [eventBanner, ...otherImages];
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (_) => _GalleryView(
-                                          images: allImages,
-                                          initialIndex: 0,
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation, secondaryAnimation) => _GalleryView(
+                                      images: allImages,
+                                      initialIndex: 0,
+                                    ),
+                                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: ScaleTransition(
+                                          scale: Tween<double>(begin: 0.9, end: 1.0).animate(
+                                            CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+                                          ),
+                                          child: child,
                                         ),
+                                      );
+                                    },
                                   ),
                                 );
                               }
@@ -643,6 +688,29 @@ class _EventDetailPageState extends State<EventDetailPage> {
                         fontSize: 10.sp,
                         color: Theme.of(context).hintColor,
                         fontFamily: 'Metropolis-Regular',
+                      ),
+                    ),
+                    SizedBox(height: 10.h),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12.w,
+                        vertical: 6.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: statusColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(16.r),
+                        border: Border.all(
+                          color: statusColor,
+                          width: 1,
+                        ),
+                      ),
+                      child: Text(
+                        eventStatus,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: statusColor,
+                          fontSize: 10.sp,
+                          fontFamily: 'Metropolis-Bold',
+                        ),
                       ),
                     ),
                     SizedBox(height: 10.h),
@@ -1184,12 +1252,22 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                     ];
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(
-                                        builder:
-                                            (_) => _GalleryView(
-                                              images: allImages,
-                                              initialIndex: idx + 1,
+                                      PageRouteBuilder(
+                                        pageBuilder: (context, animation, secondaryAnimation) => _GalleryView(
+                                          images: allImages,
+                                          initialIndex: idx + 1,
+                                        ),
+                                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                          return FadeTransition(
+                                            opacity: animation,
+                                            child: ScaleTransition(
+                                              scale: Tween<double>(begin: 0.9, end: 1.0).animate(
+                                                CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+                                              ),
+                                              child: child,
                                             ),
+                                          );
+                                        },
                                       ),
                                     );
                                   }
@@ -1228,24 +1306,129 @@ class _EventDetailPageState extends State<EventDetailPage> {
         ),
       ),
       bottomNavigationBar:
-          !isUserAttending
-              ? Padding(
-                padding: EdgeInsets.only(
-                  left: 20.w,
-                  right: 20.w,
-                  bottom: 20.h + MediaQuery.of(context).viewPadding.bottom,
-                  top: 10.h,
+        isUserAttending && isLive
+          ? Padding(
+              padding: EdgeInsets.only(
+                left: 20.w,
+                right: 20.w,
+                bottom: 20.h + MediaQuery.of(context).viewPadding.bottom,
+                top: 10.h,
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                height: 40.h,
+                child: CustomButton(
+                  text: 'Check In',
+                  isLoading: _isAttendingLoading,
+                  backgroundColor: const Color(0xffbbd953),
+                  textColor: Colors.black,
+                  textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontSize: 10.sp,
+                    fontFamily: 'Metropolis-Medium',
+                    color: Colors.black,
+                  ),
+                  onPressed: _isAttendingLoading
+                      ? null
+                      : () async {
+                          String? eventId = event?['id']?.toString();
+                          eventId ??= event?['eventDocument']?['id']?.toString();
+                          final isCheckedIn = eventId != null && checkedInProvider.isCheckedIn(eventId);
+                          if (isCheckedIn) {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (context) => _CheckInModal(
+                                event: event!,
+                                onCheckOut: () {
+                                  _loadEvent();
+                                },
+                                forceCheckedIn: true,
+                              ),
+                            );
+                          } else {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (context) => _CheckInModal(
+                                event: event!,
+                                onCheckOut: () {
+                                  _loadEvent();
+                                },
+                              ),
+                            );
+                          }
+                        },
                 ),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 40.h,
-                  child: CustomButton(
-                    text: 'Attend Event for Free',
-                    isLoading: _isAttendingLoading,
-                    onPressed:
-                        _isAttendingLoading
-                            ? null
-                            : () async {
+              ),
+            )
+          : (!isUserAttending
+              ? Padding(
+                  padding: EdgeInsets.only(
+                    left: 20.w,
+                    right: 20.w,
+                    bottom: 20.h + MediaQuery.of(context).viewPadding.bottom,
+                    top: 10.h,
+                  ),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 40.h,
+                    child: CustomButton(
+                      text: 'Attend Event for Free',
+                      isLoading: _isAttendingLoading,
+                      onPressed:
+                          _isAttendingLoading
+                              ? null
+                              : () async {
+                                setState(() {
+                                  _isAttendingLoading = true;
+                                });
+                                final eventProvider = Provider.of<EventProvider>(
+                                  context,
+                                  listen: false,
+                                );
+                                final success = await eventProvider.attendEvent(
+                                  widget.eventId ?? '',
+                                );
+                                if (success) {
+                                  await _loadEvent();
+                                }
+                                setState(() {
+                                  _isAttendingLoading = false;
+                                });
+                              },
+                      backgroundColor: const Color(0xffbbd953),
+                      textColor: Colors.black,
+                      textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontSize: 10.sp,
+                        fontFamily: 'Metropolis-Medium',
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                )
+              : Padding(
+                  padding: EdgeInsets.only(
+                    left: 20.w,
+                    right: 20.w,
+                    bottom: 20.h + MediaQuery.of(context).viewPadding.bottom,
+                    top: 10.h,
+                  ),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 40.h,
+                    child: CustomButton(
+                      text: 'Cancel Attendance',
+                      isLoading: _isAttendingLoading,
+                      backgroundColor: Colors.red,
+                      textColor: Colors.white,
+                      textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontSize: 10.sp,
+                        fontFamily: 'Metropolis-Medium',
+                        color: Colors.white,
+                      ),
+                      onPressed: _isAttendingLoading
+                          ? null
+                          : () async {
                               setState(() {
                                 _isAttendingLoading = true;
                               });
@@ -1253,7 +1436,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                 context,
                                 listen: false,
                               );
-                              final success = await eventProvider.attendEvent(
+                              final success = await eventProvider.cancelAttend(
                                 widget.eventId ?? '',
                               );
                               if (success) {
@@ -1263,17 +1446,10 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                 _isAttendingLoading = false;
                               });
                             },
-                    backgroundColor: const Color(0xffbbd953),
-                    textColor: Colors.black,
-                    textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontSize: 10.sp,
-                      fontFamily: 'Metropolis-Medium',
-                      color: Colors.black,
                     ),
                   ),
-                ),
-              )
-              : null,
+                )
+            ),
     );
   }
 
@@ -1704,6 +1880,288 @@ class _ReportEventSheetState extends State<_ReportEventSheet> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _CheckInModal extends StatefulWidget {
+  final Map<String, dynamic> event;
+  final VoidCallback onCheckOut;
+  final bool forceCheckedIn;
+
+  const _CheckInModal({required this.event, required this.onCheckOut, this.forceCheckedIn = false});
+
+  @override
+  State<_CheckInModal> createState() => _CheckInModalState();
+}
+
+class _CheckInModalState extends State<_CheckInModal> {
+  bool _isLocationLoading = true;
+  bool _isWithinRadius = false;
+  bool _hideProfile = false;
+  bool _isCheckingIn = false;
+  bool _isCheckingOut = false;
+  bool _isCheckedIn = false;
+  late Map<String, dynamic> _currentEventState;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentEventState = widget.event;
+    if (widget.forceCheckedIn) {
+      _isCheckedIn = true;
+    }
+    _checkLocationAndStatus();
+  }
+
+  Future<void> _checkLocationAndStatus() async {
+    setState(() {
+      _isLocationLoading = true;
+    });
+
+    try {
+      final Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      final eventLat = _currentEventState['eventDocument']?['lat'] as double?;
+      final eventLng = _currentEventState['eventDocument']?['lng'] as double?;
+
+      if (eventLat != null && eventLng != null) {
+        final distance = Geolocator.distanceBetween(
+          // position.latitude,
+          // position.longitude,
+          6.57305069013410,
+          3.255696922615639,
+          eventLat,
+          eventLng,
+        );
+        if (mounted) {
+          setState(() {
+            _isWithinRadius = distance <= 500; // 500 meters radius
+          });
+        }
+      }
+    } catch (e) {
+      // Could not get location
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLocationLoading = false;
+          final authProvider = Provider.of<AuthProvider>(context, listen: false);
+          final currentUserId = authProvider.profile?['id']?.toString();
+          final checkedInUsers = (_currentEventState['checkedInUserDocuments'] as List?) ?? [];
+          _isCheckedIn = checkedInUsers.any((u) => u['id']?.toString() == currentUserId);
+        });
+      }
+    }
+  }
+  
+  Future<void> _handleCheckIn() async {
+    setState(() => _isCheckingIn = true);
+    final eventProvider = Provider.of<EventProvider>(context, listen: false);
+    final checkedInProvider = Provider.of<CheckedInEventsProvider>(context, listen: false);
+    // Try to get the event ID from multiple possible locations
+    String? eventId = widget.event['id']?.toString();
+    eventId ??= widget.event['eventDocument']?['id']?.toString();
+    if (eventId == null || eventId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Event ID is missing. Cannot check in.')),
+      );
+      setState(() => _isCheckingIn = false);
+      return;
+    }
+    final success = await eventProvider.checkIn(
+      eventId: eventId,
+    );
+
+    if (success) {
+      await checkedInProvider.addCheckedInEvent(eventId);
+      final updatedEvent = await eventProvider.getEventDetailById(eventId);
+      if(mounted) {
+        setState(() {
+          if(updatedEvent != null) {
+            _currentEventState = updatedEvent;
+          }
+          _isCheckedIn = true;
+          _isCheckingIn = false;
+        });
+      }
+    } else {
+      if(mounted){
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to check in.')),
+        );
+        setState(() => _isCheckingIn = false);
+      }
+    }
+  }
+  
+  Future<void> _handleCheckOut() async {
+    setState(() => _isCheckingOut = true);
+    final eventProvider = Provider.of<EventProvider>(context, listen: false);
+    final checkedInProvider = Provider.of<CheckedInEventsProvider>(context, listen: false);
+    String? eventId = widget.event['id']?.toString();
+    eventId ??= widget.event['eventDocument']?['id']?.toString();
+    if (eventId == null || eventId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Event ID is missing. Cannot check out.')),
+      );
+      setState(() => _isCheckingOut = false);
+      return;
+    }
+    final success = await eventProvider.checkOut(eventId: eventId);
+
+    if(mounted) {
+      if (success) {
+        await checkedInProvider.removeCheckedInEvent(eventId!);
+        Navigator.pop(context);
+        widget.onCheckOut();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to check out.')),
+        );
+      }
+      setState(() => _isCheckingOut = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final checkedInProvider = Provider.of<CheckedInEventsProvider>(context);
+    String? eventId = widget.event['id']?.toString();
+    eventId ??= widget.event['eventDocument']?['id']?.toString();
+    final isCheckedInLocal = eventId != null && checkedInProvider.isCheckedIn(eventId);
+    final showCheckedIn = _isCheckedIn || widget.forceCheckedIn || isCheckedInLocal;
+    return showCheckedIn ? _buildCheckedInView() : _buildCheckInView();
+  }
+
+  Widget _buildCheckInView() {
+    final theme = Theme.of(context);
+    const primaryColor = Color(0xffbbd953);
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 30.h + MediaQuery.of(context).viewPadding.bottom),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const HandleBar(),
+          Text(
+            _currentEventState['eventDocument']?['title'] ?? 'Check In',
+            style: theme.textTheme.bodyLarge?.copyWith(fontSize: 15.sp),
+          ),
+          SizedBox(height: 8.h),
+          if (_isLocationLoading)
+            Text('Checking location...', style: theme.textTheme.bodySmall)
+          else
+            Text(
+              _isWithinRadius
+                  ? 'You are at the location, join others by checking in'
+                  : 'You cannot check in, please move towards the location.',
+              style: theme.textTheme.bodySmall?.copyWith(fontSize: 10.sp),
+            ),
+          SizedBox(height: 20.h),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              borderRadius: BorderRadius.circular(12.r),
+              border: Border.all(color: theme.dividerColor)
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Hide my profile', style: theme.textTheme.bodyMedium?.copyWith(fontSize: 14.sp)),
+                      SizedBox(height: 4.h),
+                      Text(
+                        'If toggled on, you will not be able to see other guests profile as well',
+                        style: theme.textTheme.bodySmall?.copyWith(fontSize: 11.sp),
+                      ),
+                    ],
+                  ),
+                ),
+                Switch(
+                  value: _hideProfile,
+                  onChanged: (value) {
+                    setState(() {
+                      _hideProfile = value;
+                    });
+                  },
+                  activeColor: primaryColor,
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 30.h),
+          Row(
+            children: [
+              Expanded(
+                child: CustomButton(
+                  text: 'Cancel',
+                  onPressed: () => Navigator.pop(context),
+                  backgroundColor: Colors.transparent,
+                  textColor: theme.textTheme.bodyLarge?.color,
+                  hasBorder: true,
+                  height: 45.h,
+                  textStyle: theme.textTheme.bodySmall?.copyWith(fontSize: 13.sp),
+                ),
+              ),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: CustomButton(
+                  text: 'Check in to event',
+                  onPressed: _isWithinRadius && !_isCheckingIn ? _handleCheckIn : null,
+                  isLoading: _isCheckingIn,
+                  height: 45.h,
+                  backgroundColor: _isWithinRadius ? primaryColor : theme.disabledColor,
+                  textColor: Colors.black,
+                  textStyle: theme.textTheme.bodySmall?.copyWith(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Colors.black),
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCheckedInView() {
+    final theme = Theme.of(context);
+    final checkedInCount = (_currentEventState['checkedInUserDocuments'] as List?)?.length ?? 0;
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 30.h + MediaQuery.of(context).viewPadding.bottom),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const HandleBar(),
+          Text(
+            _currentEventState['eventDocument']?['title'] ?? 'Checked In',
+            style: theme.textTheme.bodyLarge?.copyWith(fontSize: 18.sp),
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            '$checkedInCount guest${checkedInCount == 1 ? '' : 's'} checked in',
+            style: theme.textTheme.bodySmall?.copyWith(fontSize: 12.sp),
+          ),
+          SizedBox(height: 20.h),
+          SizedBox(
+            width: double.infinity,
+            child: CustomButton(
+              text: 'Check out of event',
+              isLoading: _isCheckingOut,
+              onPressed: _isCheckingOut ? null : _handleCheckOut,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              height: 45.h,
+              textStyle: theme.textTheme.bodySmall?.copyWith(fontSize: 13.sp, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
