@@ -770,30 +770,11 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
       return InkWell(
         onTap: () async {
           if (type == 'CheckProfile' && tapUserData?['id'] != null) {
-            showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (context) => Center(child: CircularProgressIndicator()),
-            );
-            final authProvider = Provider.of<AuthProvider>(
+            Navigator.pushNamed(
               context,
-              listen: false,
+              '/user-profile',
+              arguments: tapUserData,
             );
-            final userProfile = await authProvider.getUserById(
-              tapUserData!['id'],
-            );
-            Navigator.of(context).pop(); // Remove loading dialog
-            if (userProfile != null) {
-              Navigator.pushNamed(
-                context,
-                '/user-profile',
-                arguments: userProfile,
-              );
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Could not load user profile.')),
-              );
-            }
           } else if (type == 'Following' && tapUserData?['id'] != null) {
             // If not cached, fetch profile
             final followerId = tapUserData!['id'];

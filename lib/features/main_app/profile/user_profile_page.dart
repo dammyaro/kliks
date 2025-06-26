@@ -138,7 +138,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     final userId = widget.userData['id'] ?? '';
     final interests = _extraUserData?['categories'] ?? widget.userData['categories'];
     final profilePictureFileName = _extraUserData?['image'] ?? widget.userData['image'];
-    final followerCount = _extraUserData?['followersCount'] ?? widget.userData['followersCount'] ?? 0;
+    final followerCount = _extraUserData?['followerCount'] ?? widget.userData['followersCount'] ?? 0;
     final followingCount = _extraUserData?['followingCount'] ?? widget.userData['followingCount'] ?? 0;
     final isPrivateAccount = _extraUserData?['isPrivateAccount'] ?? widget.userData['isPrivateAccount'] ?? false;
     final allowFollowing = _extraUserData?['allowFollowing'] ?? widget.userData['allowFollowing'] ?? true;
