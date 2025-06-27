@@ -46,10 +46,15 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
   }
 
   Widget _actionCircle(BuildContext context, IconData icon, String label,
-      {Color? bg, double size = 50, double iconSize = 24, BoxBorder? border, VoidCallback? onTap}) {
+      {Color? bg, double size = 50, double iconSize = 24, BoxBorder? border, VoidCallback? onTap, Color? iconColor}) {
     final theme = Theme.of(context);
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        if (onTap != null) {
+          HapticFeedback.mediumImpact();
+          onTap();
+        }
+      },
       child: Column(
         children: [
           Container(
@@ -63,9 +68,9 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
             child: Icon(
               icon,
               size: iconSize,
-              color: (bg == null || bg == Colors.transparent)
+              color: iconColor ?? ((bg == null || bg == Colors.transparent)
                   ? theme.iconTheme.color
-                  : Colors.white,
+                  : Colors.white),
             ),
           ),
           SizedBox(height: 8.h),
@@ -646,6 +651,7 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
                       bg: const Color(0xffbbd953),
                       size: 50.sp,
                       iconSize: 20.sp,
+                      iconColor: Colors.black,
                       onTap: () {
                         if (widget.eventId != null) {
                           Navigator.pushNamed(
@@ -663,6 +669,7 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
                       bg: const Color(0xffbbd953),
                       size: 50.sp,
                       iconSize: 20.sp,
+                      iconColor: Colors.black,
                       onTap: () {
                         Navigator.pushNamed(context, AppRoutes.announcement, arguments: widget.eventId);
                       },

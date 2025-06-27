@@ -925,6 +925,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                           size: 50.sp,
                           iconSize: 20.sp,
                           bg: const Color(0xffbbd953),
+                          iconColor: Colors.black,
                           onTap: () {
                             if (eventName.isNotEmpty &&
                                 startDateRaw.isNotEmpty &&
@@ -1462,12 +1463,18 @@ class _EventDetailPageState extends State<EventDetailPage> {
     double iconSize = 24,
     BoxBorder? border,
     VoidCallback? onTap,
+    Color? iconColor,
   }) {
     final theme = Theme.of(context);
     return Column(
       children: [
         GestureDetector(
-          onTap: onTap,
+          onTap: () {
+            if (onTap != null) {
+              HapticFeedback.mediumImpact();
+              onTap();
+            }
+          },
           child: Container(
             width: size,
             height: size,
@@ -1480,10 +1487,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
             ),
             child: Icon(
               icon,
-              color:
-                  bg != null && bg != Colors.transparent
+              color: iconColor ?? (bg != null && bg != Colors.transparent
                       ? Colors.white
-                      : theme.iconTheme.color,
+                      : theme.iconTheme.color),
               size: iconSize,
             ),
           ),
