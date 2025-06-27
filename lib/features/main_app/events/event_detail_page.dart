@@ -745,6 +745,39 @@ class _EventDetailPageState extends State<EventDetailPage> {
                               )
                               .toList(),
                     ),
+                    if (isUserAttending)
+                      Padding(
+                        padding: EdgeInsets.only(top: 10.h),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12.w,
+                            vertical: 6.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xffbbd953),
+                            borderRadius: BorderRadius.circular(16.r),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.check_circle,
+                                color: Colors.black,
+                                size: 12.sp,
+                              ),
+                              SizedBox(width: 8.w),
+                              Text(
+                                'Spot Reserved',
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  fontSize: 10.sp,
+                                  fontFamily: 'Metropolis-Bold',
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),

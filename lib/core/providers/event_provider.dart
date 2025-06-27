@@ -138,7 +138,7 @@ class EventProvider with ChangeNotifier {
         },
       );
       notifyListeners();
-      // print('Create event response: \\${response.data}');
+      // print('Create event response: \${response.data}');
     } catch (e) {
       // print('createEvent error: $e');
     }
@@ -266,7 +266,7 @@ class EventProvider with ChangeNotifier {
       );
       if (response.statusCode == 200 || response.statusCode == 201)
         notifyListeners();
-      printWrapped('Invite to event response: \\${response.data}');
+      printWrapped('Invite to event response: \${response.data}');
       return response.statusCode == 200 || response.statusCode == 201;
     } catch (e) {
       // print('inviteToEvent error: $e');
@@ -338,7 +338,7 @@ class EventProvider with ChangeNotifier {
       );
       if (response.statusCode == 200 || response.statusCode == 201)
         notifyListeners();
-      printWrapped('Create announcement response: \\${response.data}');
+      printWrapped('Create announcement response: \${response.data}');
       return response.statusCode == 200 || response.statusCode == 201;
     } catch (e) {
       printWrapped('Create announcement error: $e');
@@ -360,7 +360,7 @@ class EventProvider with ChangeNotifier {
           'description': description,
         },
       );
-      printWrapped('Report event response: \\${response.data}');
+      printWrapped('Report event response: \${response.data}');
       return response.statusCode == 200 || response.statusCode == 201;
     } catch (e) {
       print('reportEvent error: $e');
@@ -454,6 +454,39 @@ class EventProvider with ChangeNotifier {
     } catch (e) {
       // print('checkOut error: $e');
       return false;
+    }
+  }
+
+  Future<List<dynamic>> getAttendingEvents({
+    String? otherUserId,
+    String? category,
+    int limit = 10,
+    int offset = 0,
+    bool? isUpcoming,
+    bool? isPastEvent,
+    bool? isOngoing,
+    String? dateMin,
+    String? dateMax,
+  }) async {
+    try {
+      final Map<String, dynamic> params = {
+        if (otherUserId != null) 'otherUserId': otherUserId,
+        if (category != null) 'category': category,
+        'limit': limit.toString(),
+        'offset': offset.toString(),
+        if (isUpcoming != null) 'isUpcoming': isUpcoming.toString(),
+        if (isPastEvent != null) 'isPastEvent': isPastEvent.toString(),
+        if (isOngoing != null) 'isOngoing': isOngoing.toString(),
+        if (dateMin != null) 'dateMin': dateMin,
+        if (dateMax != null) 'dateMax': dateMax,
+      };
+      final uri = Uri(queryParameters: params);
+      final url =
+          '/event/getAttendingEvents${uri.query.isNotEmpty ? '?${uri.query}' : ''}';
+      final response = await _apiService.get(url);
+      return response.data as List<dynamic>? ?? [];
+    } catch (e) {
+      return [];
     }
   }
 }
