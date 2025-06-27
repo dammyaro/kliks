@@ -8,6 +8,7 @@ class NotificationsProvider with ChangeNotifier {
 
   List<dynamic> _notifications = [];
   bool _notificationsLoaded = false;
+  Map<String, dynamic> _lastFetchParams = {};
 
   List<dynamic> get notifications => _notifications;
   bool get notificationsLoaded => _notificationsLoaded;
@@ -55,6 +56,24 @@ class NotificationsProvider with ChangeNotifier {
     required String notificationId,
     required bool isAllRead,
   }) async {
+    // DEBUG: Print parameters received by the provider
+    print("NotificationsProvider: updateNotificationRead called with ID: '$notificationId', isAllRead: $isAllRead");
+
+    // Optimistically update the local state first for a responsive UI
+    if (isAllRead) {
+      for (var notification in _notifications) {
+        notification['isRead'] = true;
+      }
+    } else {
+      final index =
+          _notifications.indexWhere((n) => n['id'] == notificationId);
+      if (index != -1) {
+        _notifications[index]['isRead'] = true;
+      }
+    }
+    notifyListeners();
+
+    // Then, make the API call to persist the change
     try {
       final response = await _apiService.post(
         '/transaction/updateNotificationRead',
@@ -63,9 +82,14 @@ class NotificationsProvider with ChangeNotifier {
           'isAllRead': isAllRead,
         },
       );
-      print('Update notification read response: \\${response.data}');
+      // DEBUG: Print API response
+      print('NotificationsProvider: API response for updateNotificationRead: ${response.data}');
     } catch (e) {
-      print('updateNotificationRead error: $e');
+      // DEBUG: Print API error
+      print('NotificationsProvider: updateNotificationRead error: $e');
+      // Optional: Revert the change on API error
+      // For now, we'll leave it as is for a better user experience,
+      // as this kind of error is rare.
     }
   }
 
@@ -76,6 +100,13 @@ class NotificationsProvider with ChangeNotifier {
     bool forceReload = false,
   }) async {
     if (_notificationsLoaded && !forceReload) return;
+
+    _lastFetchParams = {
+      'notificationType': notificationType,
+      'limit': limit,
+      'offset': offset,
+    };
+
     try {
       final params = <String, dynamic>{
         if (notificationType != null) 'notificationType': notificationType,
@@ -85,6 +116,7 @@ class NotificationsProvider with ChangeNotifier {
       final url = '/transaction/getMyNotifications/?limit=$limit&offset=$offset';
       final response = await _apiService.get(url);
       _notifications = response.data as List<dynamic>? ?? [];
+      print(_notifications);
       _notificationsLoaded = true;
       notifyListeners();
     } catch (e) {

@@ -131,6 +131,11 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
   }
 
   Widget _buildNotificationItem(dynamic notification) {
+    final isRead = notification['isRead'] as bool? ?? false;
+    final textColor = isRead
+        ? Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5)
+        : Theme.of(context).textTheme.bodyMedium?.color;
+
     final type = notification['notificationType'] ?? '';
     final data = notification['data'] ?? {};
     final createdAt = notification['createdAt'] ?? '';
@@ -707,6 +712,7 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
                                     fontSize: 13.sp,
                                     fontFamily: 'Metropolis-Bold',
                                     letterSpacing: -0.5,
+                                    color: textColor,
                                   ),
                                 ),
                                 SizedBox(height: 2.h),
@@ -721,11 +727,7 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
                                           fontSize: 11.sp,
                                           fontFamily: 'Metropolis-Medium',
                                           letterSpacing: -0.5,
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.color
-                                              ?.withOpacity(0.5),
+                                          color: textColor?.withOpacity(0.5),
                                         ),
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -769,6 +771,22 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
     if (isTappable && tapUserData != null) {
       return InkWell(
         onTap: () async {
+          // Mark as read
+          if (!isRead) {
+            final notificationsProvider = Provider.of<NotificationsProvider>(context, listen: false);
+            final notificationId = notification['id']?.toString();
+
+            if (notificationId != null) {
+                notificationsProvider.updateNotificationRead(
+                notificationId: notificationId,
+                isAllRead: false,
+              );
+            } else {
+              print("Error: notificationId is null.");
+            }
+          }
+
+          // Handle tap actions
           if (type == 'CheckProfile' && tapUserData?['id'] != null) {
             Navigator.pushNamed(
               context,
@@ -776,20 +794,16 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
               arguments: tapUserData,
             );
           } else if (type == 'Following' && tapUserData?['id'] != null) {
-            // If not cached, fetch profile
             final followerId = tapUserData!['id'];
             Map<String, dynamic>? userProfile = _followerProfiles[followerId];
             if (userProfile == null) {
               showDialog(
                 context: context,
                 barrierDismissible: false,
-                builder:
-                    (context) => Center(child: CircularProgressIndicator()),
+                builder: (context) =>
+                    const Center(child: CircularProgressIndicator()),
               );
-              final authProvider = Provider.of<AuthProvider>(
-                context,
-                listen: false,
-              );
+              final authProvider = Provider.of<AuthProvider>(context, listen: false);
               userProfile = await authProvider.getUserById(followerId);
               Navigator.of(context).pop(); // Remove loading dialog
             }
@@ -804,7 +818,7 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
                 const SnackBar(content: Text('Could not load user profile.')),
               );
             }
-          } else {
+          } else if (tapUserData != null) {
             Navigator.pushNamed(
               context,
               '/user-profile',
