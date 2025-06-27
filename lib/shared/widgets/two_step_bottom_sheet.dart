@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kliks/core/providers/event_provider.dart';
 import 'package:kliks/shared/widgets/button.dart';
 import 'package:flutter/cupertino.dart'; 
 import 'package:kliks/shared/widgets/handle_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/auth_provider.dart';
+import 'package:kliks/core/providers/event_provider.dart';
 import 'package:geolocator/geolocator.dart';
 
 class TwoStepBottomSheet extends StatefulWidget {
@@ -19,6 +21,36 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
   final List<String> _selectedInterests = [];
   bool _isLoading = false;
   bool _locationAllowed = false;
+  List<dynamic> _interests = [];
+  bool _isFetchingCategories = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCategories();
+  }
+
+  Future<void> _fetchCategories() async {
+    setState(() {
+      _isFetchingCategories = true;
+    });
+    final eventProvider = Provider.of<EventProvider>(context, listen: false);
+    try {
+      final categories = await eventProvider.getAllCategory();
+      setState(() {
+        print(categories);
+        _interests = categories;
+        _isFetchingCategories = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isFetchingCategories = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to fetch interests: $e')),
+      );
+    }
+  }
 
   Future<void> _handleAllowLocation() async {
     setState(() {
@@ -81,47 +113,51 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start, 
                 children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.3, 
-                    height: 3.h,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _currentStep = 0; 
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: (_currentStep == 0 || _currentStep == 1)
-                          ? const Color(0xffbbd953) 
-                          : Colors.grey[300], 
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.r), 
+                  Expanded(
+                    flex: 3,
+                    child: SizedBox(
+                      height: 3.h,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _currentStep = 0; 
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: (_currentStep == 0 || _currentStep == 1)
+                            ? const Color(0xffbbd953) 
+                            : Colors.grey[300], 
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.r), 
+                          ),
+                          padding: EdgeInsets.symmetric(vertical: 3.h), 
                         ),
-                        padding: EdgeInsets.symmetric(vertical: 3.h), 
+                        child: const SizedBox.shrink(), 
                       ),
-                      child: const SizedBox.shrink(), 
                     ),
                   ),
                   SizedBox(width: 30.h), 
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.3, 
-                    height: 3.h,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _currentStep = 1; 
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: _currentStep == 1
-                          ? const Color(0xffbbd953) 
-                          : Colors.grey[300], 
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.r), 
+                  Expanded(
+                    flex: 3,
+                    child: SizedBox(
+                      height: 3.h,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _currentStep = 1; 
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: _currentStep == 1
+                            ? const Color(0xffbbd953) 
+                            : Colors.grey[300], 
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.r), 
+                          ),
+                          padding: EdgeInsets.symmetric(vertical: 3.h),
                         ),
-                        padding: EdgeInsets.symmetric(vertical: 3.h),
+                        child: const SizedBox.shrink(), 
                       ),
-                      child: const SizedBox.shrink(), 
                     ),
                   ),
                   Spacer(), 
@@ -172,7 +208,9 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
                   ],
                 )
               else if (_currentStep == 1)
-                Column(
+                _isFetchingCategories 
+                  ? const Center(child: CircularProgressIndicator())
+                  : Column(
                   mainAxisAlignment: MainAxisAlignment.start, 
                   crossAxisAlignment: CrossAxisAlignment.start, 
                   children: [
@@ -201,41 +239,34 @@ class _TwoStepBottomSheetState extends State<TwoStepBottomSheet> {
                       runSpacing: 10.h, 
                       alignment: WrapAlignment.start, 
                       children: [
-                        for (var interest in [
-                          "Social & Networking",
-                          "Education & Learning",
-                          "Environment & Nature",
-                          "Health & Wellness",
-                          "Technology & Science",
-                          "Sports & Fitness",
-                          "Travel & Adventure",
-                          "Fashion & Beauty",
-                          "Arts & Culture"
-                        ])
+                        for (var interest in _interests)
+                          if (interest['category'] != null)
                           GestureDetector(
                             onTap: () {
                               setState(() {
-                                if (_selectedInterests.contains(interest)) {
-                                  _selectedInterests.remove(interest); 
-                                } else {
-                                  _selectedInterests.add(interest); 
+                                if (interest['category'] != null) {
+                                  if (_selectedInterests.contains(interest['category'])) {
+                                    _selectedInterests.remove(interest['category']); 
+                                  } else {
+                                    _selectedInterests.add(interest['category']); 
+                                  }
                                 }
                               });
                             },
                             child: Container(
                               padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
                               decoration: BoxDecoration(
-                                color: _selectedInterests.contains(interest)
+                                color: _selectedInterests.contains(interest['category'])
                                     ? Colors.grey[800] 
                                     : Colors.white,
                                 borderRadius: BorderRadius.circular(20.r), 
                               ),
                               child: Text(
-                                interest,
+                                interest['category'],
                                 style: TextStyle(
                                   fontSize: 12.sp, 
                                   letterSpacing: 0,
-                                  color: _selectedInterests.contains(interest)
+                                  color: _selectedInterests.contains(interest['category'])
                                       ? Colors.white 
                                       : Colors.black, 
                                 ),
