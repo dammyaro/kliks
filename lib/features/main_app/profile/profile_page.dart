@@ -904,7 +904,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ],
                 ),
                 SizedBox(
-                  height: 400.h, // Increased from 400.h by 100.h
+                  height: 500.h, // Increased from 400.h by 100.h
                   child: TabBarView(
                     children: [
                       // My Events Tab
@@ -919,18 +919,38 @@ class _ProfilePageState extends State<ProfilePage> {
                           );
                         },
                       ),
-                      // Blocked Tab
+                      // Booked Tab
                       Builder(
                         builder: (context) {
-                          // Replace with actual blocked events list and loading state if available
-                          final List<dynamic> bookedEvents = [];
-                          final bool isLoadingBooked = false;
-                          return _PaginatedEventsTab(
-                            events: bookedEvents,
-                            isLoading: isLoadingBooked,
-                            emptyText: 'No booked events',
-                            emptySubText:
-                                'Events you have booked will appear here',
+                          final eventProvider = Provider.of<EventProvider>(
+                            context,
+                            listen: false,
+                          );
+                          return FutureBuilder<List<dynamic>>(
+                            future: eventProvider.getAttendingEvents(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                  child: SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(
+                                      color: const Color(0xffbbd953),
+                                      strokeWidth: 3,
+                                    ),
+                                  ),
+                                );
+                              }
+                              final bookedEvents = snapshot.data ?? [];
+                              return _PaginatedEventsTab(
+                                events: bookedEvents,
+                                isLoading: false,
+                                emptyText: 'No booked events',
+                                emptySubText:
+                                    'Events you have booked will appear here',
+                              );
+                            },
                           );
                         },
                       ),
