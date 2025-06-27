@@ -56,6 +56,10 @@ class NotificationsProvider with ChangeNotifier {
     required String notificationId,
     required bool isAllRead,
   }) async {
+    // TODO: The backend for updating notification read status is not yet implemented.
+    // This needs to be addressed before this feature can be considered complete.
+    // See issue #123 for more details.
+
     // DEBUG: Print parameters received by the provider
     print("NotificationsProvider: updateNotificationRead called with ID: '$notificationId', isAllRead: $isAllRead");
 
