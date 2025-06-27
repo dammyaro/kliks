@@ -15,6 +15,8 @@ import 'package:kliks/core/routes.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:kliks/shared/widgets/handle_bar.dart';
 import 'package:kliks/core/providers/checked_in_events_provider.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 class EventDetailPage extends StatefulWidget {
   final String? eventId;
@@ -513,6 +515,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
         (event?['eventDocument']['otherImageUrl'] as List).isNotEmpty) {
       otherImages = List<String>.from(event?['eventDocument']['otherImageUrl']);
     }
+
+    final eventLat = event?['eventDocument']?['lat'] as double?;
+    final eventLng = event?['eventDocument']?['lng'] as double?;
 
     return Scaffold(
       body: SafeArea(
@@ -1215,33 +1220,46 @@ class _EventDetailPageState extends State<EventDetailPage> {
                 ),
               ),
               SizedBox(height: 15.h),
+            if (eventLat != null && eventLng != null)
               Center(
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  height: 120.h,
-                  decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.surfaceContainerHighest.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(10.r),
-                  ),
-                  child: Center(
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.25,
-                      height: 30.h,
-                      child: CustomButton(
-                        text: 'Open maps',
-                        onPressed: () {},
-                        backgroundColor: Colors.black,
-                        textColor: const Color(0xffbbd953),
-                        textStyle: Theme.of(
-                          context,
-                        ).textTheme.bodySmall?.copyWith(
-                          fontSize: 10.sp,
-                          fontFamily: 'Metropolis-SemiBold',
-                          color: const Color(0xffbbd953),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16.r),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    height: 200.h,
+                    child: Stack(
+                      children: [
+                        FlutterMap(
+                          options: MapOptions(
+                            initialCenter: LatLng(eventLat, eventLng),
+                            initialZoom: 15.0,
+                            interactionOptions: InteractionOptions(flags: InteractiveFlag.none), // Make the map non-interactive
+                          ),
+                          children: [
+                            TileLayer(
+                              urlTemplate:
+                                  'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            ),
+                          ],
                         ),
-                      ),
+                        Center(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: const Color(0xffbbd953), // Text color
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.r), // Reduced border radius
+                              ),
+                            ),
+                            onPressed: () {
+                              // TODO: Implement open maps functionality
+                            },
+                            child: Text(
+                              'Open maps',
+                              style: TextStyle(fontFamily: 'Metropolis-Medium'),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 ),

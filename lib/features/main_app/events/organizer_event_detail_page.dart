@@ -9,6 +9,8 @@ import 'package:photo_view/photo_view_gallery.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:flutter/services.dart';
 import 'package:kliks/core/routes.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 class OrganizerEventDetailPage extends StatefulWidget {
   final String? eventId;
@@ -483,6 +485,9 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
         (startDate.isNotEmpty && endDate.isNotEmpty) ? '$startDate - $endDate' : '';
     final otherImages =
         (event?['eventDocument']?['otherImageUrl'] as List?)?.cast<String>() ?? [];
+
+    final eventLat = event?['eventDocument']?['lat'] as double?;
+    final eventLng = event?['eventDocument']?['lng'] as double?;
 
     // Event live logic
     final theme = Theme.of(context);
@@ -969,37 +974,50 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
               ),
             ),
             SizedBox(height: 15.h),
-            Center(
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.9,
-                height: 120.h,
-                decoration: BoxDecoration(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .surfaceContainerHighest
-                      .withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(10.r),
-                ),
-                child: Center(
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.25,
-                    height: 30.h,
-                    child: CustomButton(
-                      text: 'Open maps',
-                      onPressed: () {},
-                      backgroundColor: Colors.black,
-                      textColor: const Color(0xffbbd953),
-                      textStyle:
-                          Theme.of(context).textTheme.bodySmall?.copyWith(
-                                fontSize: 10.sp,
-                                fontFamily: 'Metropolis-SemiBold',
-                                color: const Color(0xffbbd953),
+            if (eventLat != null && eventLng != null)
+              Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16.r),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    height: 200.h,
+                    child: Stack(
+                      children: [
+                        FlutterMap(
+                          options: MapOptions(
+                            initialCenter: LatLng(eventLat, eventLng),
+                            initialZoom: 15.0,
+                            interactionOptions: InteractionOptions(flags: InteractiveFlag.none), // Make the map non-interactive
+                          ),
+                          children: [
+                            TileLayer(
+                              urlTemplate:
+                                  'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            ),
+                          ],
+                        ),
+                        Center(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: const Color(0xffbbd953), // Text color
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.r), // Reduced border radius
                               ),
+                            ),
+                            onPressed: () {
+                              // TODO: Implement open maps functionality
+                            },
+                            child: Text(
+                              'Open maps',
+                              style: TextStyle(fontFamily: 'Metropolis-Medium'),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 ),
               ),
-            ),
             SizedBox(height: 30.h),
             // Other Images Section
             if (otherImages.isNotEmpty) ...[
