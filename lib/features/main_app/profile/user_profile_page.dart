@@ -8,6 +8,8 @@ import 'package:kliks/shared/widgets/custom_navbar.dart';
 import 'package:kliks/shared/widgets/button.dart';
 import 'package:kliks/shared/widgets/profile_picture.dart';
 import 'package:kliks/core/debug/printWrapped.dart';
+import 'package:kliks/core/providers/event_provider.dart';
+import 'package:kliks/shared/widgets/profile_event_card.dart';
 
 // TODO: Make sure Names are unique 
 
@@ -503,62 +505,82 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 labelStyle: const TextStyle(fontFamily: 'Metropolis-SemiBold'),
                 tabs: const [
                   Tab(text: 'Events'),
-                  Tab(text: 'Blocked'),
+                  Tab(text: 'Booked'),
                 ],
               ),
               SizedBox(
-                height: 200.h,
+                height: 550.h,
                 child: TabBarView(
                   children: [
-                    Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'No events',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              fontSize: 15.sp,
-                              fontFamily: 'Metropolis-SemiBold',
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(height: 2.h),
-                          Text(
-                            'This user has no events yet',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4),
-                              fontSize: 12.sp,
-                              fontFamily: 'Metropolis-Regular',
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
+                    // Events Tab
+                    Builder(
+                      builder: (context) {
+                        final eventProvider = Provider.of<EventProvider>(
+                          context,
+                          listen: false,
+                        );
+                        return FutureBuilder<List<dynamic>>(
+                          future: eventProvider.getEvents(userId: widget.userData['id'] ?? ''),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(
+                                child: SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    color: const Color(0xffbbd953),
+                                    strokeWidth: 3,
+                                  ),
+                                ),
+                              );
+                            }
+                            final events = snapshot.data ?? [];
+                            return _PaginatedEventsTab(
+                              events: events,
+                              isLoading: false,
+                              emptyText: 'No events',
+                              emptySubText:
+                                  'This user has no events yet',
+                            );
+                          },
+                        );
+                      },
                     ),
-                    Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'No blocked users',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              fontSize: 15.sp,
-                              fontFamily: 'Metropolis-SemiBold',
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(height: 2.h),
-                          Text(
-                            'You have not blocked any users yet',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4),
-                              fontSize: 12.sp,
-                              fontFamily: 'Metropolis-Regular',
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
+                    // Booked Tab
+                    Builder(
+                      builder: (context) {
+                        final eventProvider = Provider.of<EventProvider>(
+                          context,
+                          listen: false,
+                        );
+                        return FutureBuilder<List<dynamic>>(
+                          future: eventProvider.getAttendingEvents(otherUserId: widget.userData['id'] ?? ''),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(
+                                child: SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    color: const Color(0xffbbd953),
+                                    strokeWidth: 3,
+                                  ),
+                                ),
+                              );
+                            }
+                            final events = snapshot.data ?? [];
+                            return _PaginatedEventsTab(
+                              events: events,
+                              isLoading: false,
+                              emptyText: 'No booked events',
+                              emptySubText:
+                                  'Events this user has booked will appear here.',
+                            );
+                          },
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -600,6 +622,126 @@ class _UserProfilePageState extends State<UserProfilePage> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _PaginatedEventsTab extends StatefulWidget {
+  final List<dynamic> events;
+  final bool isLoading;
+  final String emptyText;
+  final String emptySubText;
+  const _PaginatedEventsTab({
+    required this.events,
+    required this.isLoading,
+    required this.emptyText,
+    required this.emptySubText,
+  });
+
+  @override
+  State<_PaginatedEventsTab> createState() => _PaginatedEventsTabState();
+}
+
+class _PaginatedEventsTabState extends State<_PaginatedEventsTab> {
+  static const int pageSize = 4;
+  int currentPage = 0;
+
+  void _goToPage(int page) {
+    setState(() {
+      currentPage = page;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final totalPages = (widget.events.length / pageSize).ceil();
+    if (widget.isLoading) {
+      return Center(
+        child: SizedBox(
+          width: 24,
+          height: 24,
+          child: CircularProgressIndicator(
+            color: const Color(0xffbbd953),
+            strokeWidth: 3,
+          ),
+        ),
+      );
+    }
+    if (widget.events.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              widget.emptyText,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                fontSize: 15.sp,
+                fontFamily: 'Metropolis-Medium',
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 2.h),
+            Text(
+              widget.emptySubText,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.color?.withOpacity(0.4),
+                fontSize: 10.sp,
+                fontFamily: 'Metropolis-Regular',
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
+    final start = currentPage * pageSize;
+    final end = (start + pageSize).clamp(0, widget.events.length);
+    final eventsToShow = widget.events.sublist(start, end);
+    return Column(
+      children: [
+        GridView.builder(
+          padding: EdgeInsets.only(top: 16.h),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 12.h,
+            crossAxisSpacing: 12.w,
+            childAspectRatio: 0.7,
+          ),
+          itemCount: eventsToShow.length,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (context, idx) {
+            return ProfileEventCard(event: eventsToShow[idx]);
+          },
+        ),
+        if (totalPages > 1)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(totalPages, (i) {
+                final isSelected = i == currentPage;
+                return GestureDetector(
+                  onTap: () => _goToPage(i),
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    width: isSelected ? 24 : 16,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color:
+                          isSelected
+                              ? const Color(0xffbbd953)
+                              : Colors.grey[300],
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+      ],
     );
   }
 } 
