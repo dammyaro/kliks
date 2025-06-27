@@ -15,7 +15,8 @@ class OrganizerEventDetailPage extends StatefulWidget {
   const OrganizerEventDetailPage({super.key, this.eventId});
 
   @override
-  State<OrganizerEventDetailPage> createState() => _OrganizerEventDetailPageState();
+  State<OrganizerEventDetailPage> createState() =>
+      _OrganizerEventDetailPageState();
 }
 
 class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
@@ -46,7 +47,12 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
   }
 
   Widget _actionCircle(BuildContext context, IconData icon, String label,
-      {Color? bg, double size = 50, double iconSize = 24, BoxBorder? border, VoidCallback? onTap, Color? iconColor}) {
+      {Color? bg,
+      double size = 50,
+      double iconSize = 24,
+      BoxBorder? border,
+      VoidCallback? onTap,
+      Color? iconColor}) {
     final theme = Theme.of(context);
     return GestureDetector(
       onTap: () {
@@ -68,9 +74,10 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
             child: Icon(
               icon,
               size: iconSize,
-              color: iconColor ?? ((bg == null || bg == Colors.transparent)
-                  ? theme.iconTheme.color
-                  : Colors.white),
+              color: iconColor ??
+                  ((bg == null || bg == Colors.transparent)
+                      ? theme.iconTheme.color
+                      : Colors.white),
             ),
           ),
           SizedBox(height: 8.h),
@@ -157,7 +164,8 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
             children: [
               // Back button - Always visible
               Padding(
-                padding: EdgeInsets.only(left: 10.w, top: 18.h, right: 10.w, bottom: 0),
+                padding: EdgeInsets.only(
+                    left: 10.w, top: 18.h, right: 10.w, bottom: 0),
                 child: Row(
                   children: [
                     IconButton(
@@ -177,7 +185,8 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
                       children: [
                         // 1. Custom nav bar skeleton
                         Container(
-                          margin: EdgeInsets.only(top: 20.h, left: 20.w, right: 20.w),
+                          margin: EdgeInsets.only(
+                              top: 20.h, left: 20.w, right: 20.w),
                           width: 120.w,
                           height: 28.h,
                           color: skeletonColor,
@@ -201,24 +210,30 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(width: 180.w, height: 20.h, color: skeletonColor),
+                              Container(
+                                  width: 180.w, height: 20.h, color: skeletonColor),
                               SizedBox(height: 8.h),
-                              Container(width: 120.w, height: 13.h, color: skeletonColor),
+                              Container(
+                                  width: 120.w, height: 13.h, color: skeletonColor),
                               SizedBox(height: 8.h),
-                              Container(width: 100.w, height: 13.h, color: skeletonColor),
+                              Container(
+                                  width: 100.w, height: 13.h, color: skeletonColor),
                               SizedBox(height: 10.h),
                               Row(
-                                children: List.generate(2, (i) => Padding(
-                                  padding: EdgeInsets.only(right: 8.w),
-                                  child: Container(
-                                    width: 60.w,
-                                    height: 20.h,
-                                    decoration: BoxDecoration(
-                                      color: skeletonColor,
-                                      borderRadius: BorderRadius.circular(16.r),
-                                    ),
-                                  ),
-                                )),
+                                children: List.generate(
+                                    2,
+                                    (i) => Padding(
+                                          padding: EdgeInsets.only(right: 8.w),
+                                          child: Container(
+                                            width: 60.w,
+                                            height: 20.h,
+                                            decoration: BoxDecoration(
+                                              color: skeletonColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(16.r),
+                                            ),
+                                          ),
+                                        )),
                               ),
                             ],
                           ),
@@ -229,24 +244,26 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
                           padding: EdgeInsets.symmetric(horizontal: 20.w),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: List.generate(4, (index) => Column(
-                              children: [
-                                Container(
-                                  width: 50.sp,
-                                  height: 50.sp,
-                                  decoration: BoxDecoration(
-                                    color: skeletonColor,
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
-                                SizedBox(height: 8.h),
-                                Container(
-                                  width: 40.w,
-                                  height: 10.h,
-                                  color: skeletonColor,
-                                ),
-                              ],
-                            )),
+                            children: List.generate(
+                                4,
+                                (index) => Column(
+                                      children: [
+                                        Container(
+                                          width: 50.sp,
+                                          height: 50.sp,
+                                          decoration: BoxDecoration(
+                                            color: skeletonColor,
+                                            shape: BoxShape.circle,
+                                          ),
+                                        ),
+                                        SizedBox(height: 8.h),
+                                        Container(
+                                          width: 40.w,
+                                          height: 10.h,
+                                          color: skeletonColor,
+                                        ),
+                                      ],
+                                    )),
                           ),
                         ),
                         SizedBox(height: 18.h),
@@ -256,11 +273,13 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
                           padding: EdgeInsets.symmetric(horizontal: 20.w),
                           child: Row(
                             children: [
-                              Container(width: 100.w, height: 14.h, color: skeletonColor),
+                              Container(
+                                  width: 100.w, height: 14.h, color: skeletonColor),
                               const Spacer(),
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(14.r),
-                                child: Container(width: 28.sp, height: 28.sp, color: skeletonColor),
+                                child: Container(
+                                    width: 28.sp, height: 28.sp, color: skeletonColor),
                               ),
                             ],
                           ),
@@ -270,41 +289,56 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
                         // 6. About Event skeleton
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 20.w),
-                          child: Container(width: 120.w, height: 18.h, color: skeletonColor),
+                          child: Container(
+                              width: 120.w, height: 18.h, color: skeletonColor),
                         ),
                         SizedBox(height: 10.h),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 20.w),
-                          child: Container(width: 80.w, height: 15.h, color: skeletonColor),
+                          child: Container(
+                              width: 80.w, height: 15.h, color: skeletonColor),
                         ),
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
-                          child: Container(width: double.infinity, height: 40.h, color: skeletonColor),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20.w, vertical: 6.h),
+                          child: Container(
+                              width: double.infinity,
+                              height: 40.h,
+                              color: skeletonColor),
                         ),
                         Divider(),
                         // 7. Who can attend skeleton
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 20.w),
-                          child: Container(width: 100.w, height: 15.h, color: skeletonColor),
+                          child: Container(
+                              width: 100.w, height: 15.h, color: skeletonColor),
                         ),
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
-                          child: Container(width: double.infinity, height: 20.h, color: skeletonColor),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20.w, vertical: 6.h),
+                          child: Container(
+                              width: double.infinity,
+                              height: 20.h,
+                              color: skeletonColor),
                         ),
                         Divider(),
                         // 8. Time frame skeleton
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 20.w),
-                          child: Container(width: 80.w, height: 15.h, color: skeletonColor),
+                          child: Container(
+                              width: 80.w, height: 15.h, color: skeletonColor),
                         ),
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20.w, vertical: 6.h),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(width: 120.w, height: 13.h, color: skeletonColor),
+                              Container(
+                                  width: 120.w, height: 13.h, color: skeletonColor),
                               SizedBox(height: 4.h),
-                              Container(width: 120.w, height: 13.h, color: skeletonColor),
+                              Container(
+                                  width: 120.w, height: 13.h, color: skeletonColor),
                             ],
                           ),
                         ),
@@ -312,11 +346,16 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
                         // 9. Location skeleton
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 20.w),
-                          child: Container(width: 80.w, height: 15.h, color: skeletonColor),
+                          child: Container(
+                              width: 80.w, height: 15.h, color: skeletonColor),
                         ),
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
-                          child: Container(width: double.infinity, height: 20.h, color: skeletonColor),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20.w, vertical: 6.h),
+                          child: Container(
+                              width: double.infinity,
+                              height: 20.h,
+                              color: skeletonColor),
                         ),
                         SizedBox(height: 15.h),
                         Center(
@@ -334,10 +373,12 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
                         // 10. Media upload skeleton
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 20.w),
-                          child: Container(width: 100.w, height: 13.h, color: skeletonColor),
+                          child: Container(
+                              width: 100.w, height: 13.h, color: skeletonColor),
                         ),
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20.w, vertical: 10.h),
                           child: GridView.count(
                             crossAxisCount: 2,
                             shrinkWrap: true,
@@ -345,14 +386,16 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
                             crossAxisSpacing: 10.w,
                             physics: const NeverScrollableScrollPhysics(),
                             childAspectRatio: 0.5,
-                            children: List.generate(2, (i) => ClipRRect(
-                              borderRadius: BorderRadius.circular(14.r),
-                              child: Container(
-                                width: double.infinity,
-                                height: 300.h,
-                                color: skeletonColor,
-                              ),
-                            )),
+                            children: List.generate(
+                                2,
+                                (i) => ClipRRect(
+                                      borderRadius: BorderRadius.circular(14.r),
+                                      child: Container(
+                                        width: double.infinity,
+                                        height: 300.h,
+                                        color: skeletonColor,
+                                      ),
+                                    )),
                           ),
                         ),
                         Divider(),
@@ -394,10 +437,10 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
               backgroundColor: Colors.red,
               textColor: Colors.white,
               textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                fontSize: 10.sp,
-                fontFamily: 'Metropolis-Medium',
-                color: Colors.white,
-              ),
+                    fontSize: 10.sp,
+                    fontFamily: 'Metropolis-Medium',
+                    color: Colors.white,
+                  ),
             ),
           ),
         ),
@@ -409,7 +452,7 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
     final eventLocation = event?['eventDocument']?['location'] ?? '';
     final startDateRaw = event?['eventDocument']?['startDate'] ?? '';
     final endDateRaw = event?['eventDocument']?['endDate'] ?? '';
-    
+
     String formatDate(String dateStr) {
       if (dateStr.isEmpty) return '';
       try {
@@ -424,523 +467,621 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
     final startDate = formatDate(startDateRaw);
     final endDate = formatDate(endDateRaw);
     final eventCategoryValue = event?['eventDocument']?['category'];
-    final eventCategories = eventCategoryValue != null && eventCategoryValue is String && eventCategoryValue.isNotEmpty
-        ? [eventCategoryValue]
-        : [''];
+    final eventCategories =
+        eventCategoryValue != null && eventCategoryValue is String && eventCategoryValue.isNotEmpty
+            ? [eventCategoryValue]
+            : [''];
     final organizer = event?['ownerDocument'] ?? {};
     final organizerName = organizer['fullname'] ?? '';
     final organizerUsername = organizer['username'] ?? '';
-    final organizerProfilePic = organizer['image'] != null ? organizer['image'].toString() : '';
+    final organizerProfilePic =
+        organizer['image'] != null ? organizer['image'].toString() : '';
     final organizerId = organizer['id'] != null ? organizer['id'].toString() : '';
     final eventDescription = event?['eventDocument']?['description'] ?? '';
     final whoCanAttend = event?['eventDocument']?['whoCanAttend'] ?? '';
-    final timeFrame = (startDate.isNotEmpty && endDate.isNotEmpty)
-        ? '$startDate - $endDate'
-        : '';
-    final otherImages = (event?['eventDocument']?['otherImageUrl'] as List?)?.cast<String>() ?? [];
+    final timeFrame =
+        (startDate.isNotEmpty && endDate.isNotEmpty) ? '$startDate - $endDate' : '';
+    final otherImages =
+        (event?['eventDocument']?['otherImageUrl'] as List?)?.cast<String>() ?? [];
+
+    // Event live logic
+    final theme = Theme.of(context);
+    DateTime? startDateTime;
+    DateTime? endDateTime;
+    try {
+      if (startDateRaw.isNotEmpty) startDateTime = DateTime.parse(startDateRaw);
+      if (endDateRaw.isNotEmpty) endDateTime = DateTime.parse(endDateRaw);
+    } catch (_) {}
+    final now = DateTime.now();
+    final isLive = startDateTime != null &&
+        endDateTime != null &&
+        now.isAfter(startDateTime) &&
+        now.isBefore(endDateTime);
+
+    String eventStatus;
+    Color statusColor;
+    if (startDateTime != null && now.isBefore(startDateTime)) {
+      eventStatus = 'Upcoming';
+      statusColor = Colors.orange;
+    } else if (isLive) {
+      eventStatus = 'Live';
+      statusColor = Colors.green;
+    } else if (endDateTime != null && now.isAfter(endDateTime)) {
+      eventStatus = 'Concluded';
+      statusColor = Colors.red;
+    } else {
+      eventStatus = 'Not available';
+      statusColor = Colors.grey;
+    }
 
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 10.w, top: 18.h, right: 10.w, bottom: 0),
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.arrow_back, size: 24.sp),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 10.h),
-              // Event banner
-              if (eventBanner.isNotEmpty)
-                Center(
-                  child: Stack(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          final allImages = [eventBanner, ...otherImages].cast<String>();
-                          Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              pageBuilder: (context, animation, secondaryAnimation) => _GalleryView(
-                                images: allImages,
-                                initialIndex: 0,
-                              ),
-                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                return FadeTransition(
-                                  opacity: animation,
-                                  child: ScaleTransition(
-                                    scale: Tween<double>(begin: 0.9, end: 1.0).animate(
-                                      CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
-                                    ),
-                                    child: child,
-                                  ),
-                                );
-                              },
-                            ),
-                          );
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(24.r),
-                          child: Image.network(
-                            eventBanner,
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            height: 300.h,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.vertical(
-                            bottom: Radius.circular(24.r),
-                          ),
-                          child: Container(
-                            height: 90.h,
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Colors.transparent,
-                                  Colors.black.withOpacity(0.7),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 20.w,
-                        bottom: 20.h,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Reward points',
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Colors.white,
-                                fontSize: 12.sp,
-                                fontFamily: 'Metropolis-SemiBold',
-                              ),
-                            ),
-                            SizedBox(height: 4.h),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 16.w,
-                                vertical: 6.h,
-                              ),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFFFBF00),
-                                borderRadius: BorderRadius.circular(8.r),
-                              ),
-                              child: Text(
-                                '${event?['eventDocument']?['rewardEventPoint'] ?? ''} points',
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Colors.black,
-                                  fontSize: 13.sp,
-                                  fontFamily: 'Metropolis-Bold',
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+        body: SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                  left: 10.w, top: 18.h, right: 10.w, bottom: 0),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back, size: 24.sp),
+                    onPressed: () => Navigator.pop(context),
                   ),
-                ),
-              SizedBox(height: 20.h),
-              // Event details
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                ],
+              ),
+            ),
+            SizedBox(height: 10.h),
+            // Event banner
+            if (eventBanner.isNotEmpty)
+              Center(
+                child: Stack(
                   children: [
-                    Text(
-                      eventName,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontSize: 16.sp,
-                        fontFamily: 'Metropolis-SemiBold',
-                      ),
-                    ),
-                    SizedBox(height: 8.h),
-                    Text(
-                      eventDate,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 10.sp,
-                        color: Theme.of(context).hintColor,
-                        fontFamily: 'Metropolis-SemiBold',
-                      ),
-                    ),
-                    SizedBox(height: 8.h),
-                    Text(
-                      eventLocation,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 10.sp,
-                        color: Theme.of(context).hintColor,
-                        fontFamily: 'Metropolis-Regular',
-                      ),
-                    ),
-                    SizedBox(height: 10.h),
-                    Wrap(
-                      spacing: 8.w,
-                      runSpacing: 4.h,
-                      children: eventCategories.map((cat) => Container(
-                        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.4),
-                          borderRadius: BorderRadius.circular(8.r),
+                    GestureDetector(
+                      onTap: () {
+                        final allImages =
+                            [eventBanner, ...otherImages].cast<String>();
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    _GalleryView(
+                              images: allImages,
+                              initialIndex: 0,
+                            ),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: ScaleTransition(
+                                  scale: Tween<double>(begin: 0.9, end: 1.0)
+                                      .animate(
+                                    CurvedAnimation(
+                                        parent: animation,
+                                        curve: Curves.easeOutCubic),
+                                  ),
+                                  child: child,
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(24.r),
+                        child: Image.network(
+                          eventBanner,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          height: 300.h,
+                          fit: BoxFit.cover,
                         ),
-                        child: Text(
-                          cat ?? '',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontSize: 10.sp,
-                            fontFamily: 'Metropolis-SemiBold',
+                      ),
+                    ),
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.vertical(
+                          bottom: Radius.circular(24.r),
+                        ),
+                        child: Container(
+                          height: 90.h,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.transparent,
+                                Colors.black.withOpacity(0.7),
+                              ],
+                            ),
                           ),
                         ),
-                      )).toList(),
+                      ),
                     ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 25.h),
-              // Action buttons
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _actionCircle(
-                      context,
-                      Icons.link_outlined,
-                      'Copy link',
-                      size: 50.sp,
-                      iconSize: 20.sp,
-                      bg: Colors.transparent,
-                      border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.3), width: 1),
-                      onTap: () {
-                        final eventId = widget.eventId;
-                        if (eventId != null) {
-                          final eventLink = 'https://kliks.app/event/$eventId';
-                          Clipboard.setData(ClipboardData(text: eventLink));
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7),
-                                child: Text('Event link copied to clipboard!'),
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                    _actionCircle(
-                      context,
-                      Icons.group_add_outlined,
-                      'Invite guests',
-                      bg: const Color(0xffbbd953),
-                      size: 50.sp,
-                      iconSize: 20.sp,
-                      iconColor: Colors.black,
-                      onTap: () {
-                        if (widget.eventId != null) {
-                          Navigator.pushNamed(
-                            context,
-                            AppRoutes.organizerInviteGuests,
-                            arguments: {'eventId': widget.eventId},
-                          );
-                        }
-                      },
-                    ),
-                    _actionCircle(
-                      context,
-                      Icons.campaign_outlined,
-                      'Announce',
-                      bg: const Color(0xffbbd953),
-                      size: 50.sp,
-                      iconSize: 20.sp,
-                      iconColor: Colors.black,
-                      onTap: () {
-                        Navigator.pushNamed(context, AppRoutes.announcement, arguments: widget.eventId);
-                      },
-                    ),
-                    _actionCircle(
-                      context,
-                      Icons.delete_outline,
-                      'Delete',
-                      bg: Colors.red,
-                      size: 50.sp,
-                      iconSize: 20.sp,
-                      onTap: _showDeleteConfirmation,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 18.h),
-              Divider(),
-              // Rest of the event details...
-              // People Attending
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: Row(
-                  children: [
-                    Expanded(
+                    Positioned(
+                      left: 20.w,
+                      bottom: 20.h,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'People Attending',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              fontSize: 12.sp,
-                              fontFamily: 'Metropolis-Medium',
-                              color: Theme.of(context).hintColor.withOpacity(0.5),
-                            ),
+                            'Reward points',
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Colors.white,
+                                      fontSize: 12.sp,
+                                      fontFamily: 'Metropolis-SemiBold',
+                                    ),
                           ),
                           SizedBox(height: 4.h),
-                          Text(
-                            '${(event?['attendingUserDocuments'] as List?)?.length ?? 0} attending',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontSize: 12.sp,
-                              fontFamily: 'Metropolis-Medium',
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.w,
+                              vertical: 6.h,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFFBF00),
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            child: Text(
+                              '${event?['eventDocument']?['rewardEventPoint'] ?? ''} points',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    color: Colors.black,
+                                    fontSize: 13.sp,
+                                    fontFamily: 'Metropolis-Bold',
+                                  ),
                             ),
                           ),
                         ],
                       ),
                     ),
-                    Icon(Icons.navigate_next, size: 28.sp, color: Theme.of(context).iconTheme.color),
                   ],
                 ),
               ),
-              SizedBox(height: 10.h),
-              Divider(),
-              // About Event
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: Text(
-                  'About Event',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontSize: 14.sp,
-                    fontFamily: 'Metropolis-SemiBold',
-                  ),
-                ),
-              ),
-              SizedBox(height: 10.h),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: Text(
-                  'Description',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 12.sp,
-                    fontFamily: 'Metropolis-Medium',
-                    color: Theme.of(context).hintColor.withOpacity(0.5),
-                    letterSpacing: -0.5,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
-                child: Text(
-                  eventDescription,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 10.sp,
-                    fontFamily: 'Metropolis-Regular',
-                    letterSpacing: 0,
-                    height: 1.7,
-                  ),
-                ),
-              ),
-              Divider(),
-              // Who can attend
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: Text(
-                  'Who can attend',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontSize: 14.sp,
-                    fontFamily: 'Metropolis-Bold',
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
-                child: Text(
-                  whoCanAttend,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 10.sp,
-                    fontFamily: 'Metropolis-Regular',
-                  ),
-                ),
-              ),
-              Divider(),
-              // Time frame
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: Text(
-                  'Time frame',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 14.sp,
-                    fontFamily: 'Metropolis-Bold',
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Starts: $startDate',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 10.sp,
-                        fontFamily: 'Metropolis-Medium',
-                      ),
-                    ),
-                    SizedBox(height: 4.h),
-                    Text(
-                      'Ends: $endDate',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 10.sp,
-                        fontFamily: 'Metropolis-Medium',
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Divider(),
-              // Location
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: Text(
-                  'Location',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 14.sp,
-                    fontFamily: 'Metropolis-Bold',
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
-                child: Text(
-                  eventLocation,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 10.sp,
-                    fontFamily: 'Metropolis-Regular',
-                  ),
-                ),
-              ),
-              SizedBox(height: 15.h),
-              Center(
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  height: 120.h,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(10.r),
-                  ),
-                  child: Center(
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.25,
-                      height: 30.h,
-                      child: CustomButton(
-                        text: 'Open maps',
-                        onPressed: () {},
-                        backgroundColor: Colors.black,
-                        textColor: const Color(0xffbbd953),
-                        textStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontSize: 10.sp,
-                          fontFamily: 'Metropolis-SemiBold',
-                          color: const Color(0xffbbd953),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 30.h),
-              // Other Images Section
-              if (otherImages.isNotEmpty) ...[
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: Text(
-                    'Other Images',
+            SizedBox(height: 20.h),
+            // Event details
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    eventName,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontSize: 16.sp,
+                          fontFamily: 'Metropolis-SemiBold',
+                        ),
+                  ),
+                  SizedBox(height: 8.h),
+                  Text(
+                    eventDate,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontSize: 10.sp,
+                          color: Theme.of(context).hintColor,
+                          fontFamily: 'Metropolis-SemiBold',
+                        ),
+                  ),
+                  SizedBox(height: 8.h),
+                  Text(
+                    eventLocation,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontSize: 10.sp,
+                          color: Theme.of(context).hintColor,
+                          fontFamily: 'Metropolis-Regular',
+                        ),
+                  ),
+                  SizedBox(height: 10.h),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 6.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: statusColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(16.r),
+                      border: Border.all(
+                        color: statusColor,
+                        width: 1,
+                      ),
+                    ),
+                    child: Text(
+                      eventStatus,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: statusColor,
+                        fontSize: 10.sp,
+                        fontFamily: 'Metropolis-Bold',
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10.h),
+                  Wrap(
+                    spacing: 8.w,
+                    runSpacing: 4.h,
+                    children: eventCategories
+                        .map((cat) => Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 14.w, vertical: 7.h),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainerHighest
+                                    .withOpacity(0.4),
+                                borderRadius: BorderRadius.circular(8.r),
+                              ),
+                              child: Text(
+                                cat ?? '',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      fontSize: 10.sp,
+                                      fontFamily: 'Metropolis-SemiBold',
+                                    ),
+                              ),
+                            ))
+                        .toList(),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 25.h),
+            // Action buttons
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _actionCircle(
+                    context,
+                    Icons.link_outlined,
+                    'Copy link',
+                    size: 50.sp,
+                    iconSize: 20.sp,
+                    bg: Colors.transparent,
+                    border: Border.all(
+                        color: Theme.of(context).dividerColor.withOpacity(0.3),
+                        width: 1),
+                    onTap: () {
+                      final eventId = widget.eventId;
+                      if (eventId != null) {
+                        final eventLink = 'https://kliks.app/event/$eventId';
+                        Clipboard.setData(ClipboardData(text: eventLink));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 18, vertical: 7),
+                              child: Text('Event link copied to clipboard!'),
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                  _actionCircle(
+                    context,
+                    Icons.group_add_outlined,
+                    'Invite guests',
+                    bg: const Color(0xffbbd953),
+                    size: 50.sp,
+                    iconSize: 20.sp,
+                    iconColor: Colors.black,
+                    onTap: () {
+                      if (widget.eventId != null) {
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.organizerInviteGuests,
+                          arguments: {'eventId': widget.eventId},
+                        );
+                      }
+                    },
+                  ),
+                  _actionCircle(
+                    context,
+                    Icons.campaign_outlined,
+                    'Announce',
+                    bg: const Color(0xffbbd953),
+                    size: 50.sp,
+                    iconSize: 20.sp,
+                    iconColor: Colors.black,
+                    onTap: () {
+                      Navigator.pushNamed(context, AppRoutes.announcement,
+                          arguments: widget.eventId);
+                    },
+                  ),
+                  _actionCircle(
+                    context,
+                    Icons.delete_outline,
+                    'Delete',
+                    bg: Colors.red,
+                    size: 50.sp,
+                    iconSize: 20.sp,
+                    onTap: _showDeleteConfirmation,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 18.h),
+            Divider(),
+            // Rest of the event details...
+            // People Attending
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'People Attending',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(
+                                fontSize: 12.sp,
+                                fontFamily: 'Metropolis-Medium',
+                                color: Theme.of(context)
+                                    .hintColor
+                                    .withOpacity(0.5),
+                              ),
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          '${(event?['attendingUserDocuments'] as List?)?.length ?? 0} attending',
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontSize: 12.sp,
+                                    fontFamily: 'Metropolis-Medium',
+                                  ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(Icons.navigate_next,
+                      size: 28.sp, color: Theme.of(context).iconTheme.color),
+                ],
+              ),
+            ),
+            SizedBox(height: 10.h),
+            Divider(),
+            // About Event
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Text(
+                'About Event',
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontSize: 14.sp,
+                      fontFamily: 'Metropolis-SemiBold',
+                    ),
+              ),
+            ),
+            SizedBox(height: 10.h),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Text(
+                'Description',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontSize: 12.sp,
+                      fontFamily: 'Metropolis-Medium',
+                      color: Theme.of(context).hintColor.withOpacity(0.5),
+                      letterSpacing: -0.5,
+                    ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
+              child: Text(
+                eventDescription,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontSize: 10.sp,
+                      fontFamily: 'Metropolis-Regular',
+                      letterSpacing: 0,
+                      height: 1.7,
+                    ),
+              ),
+            ),
+            Divider(),
+            // Who can attend
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Text(
+                'Who can attend',
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       fontSize: 14.sp,
                       fontFamily: 'Metropolis-Bold',
                     ),
-                  ),
-                ),
-                SizedBox(height: 10.h),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-                  child: GridView.count(
-                    crossAxisCount: 2,
-                    shrinkWrap: true,
-                    mainAxisSpacing: 10.h,
-                    crossAxisSpacing: 10.w,
-                    physics: const NeverScrollableScrollPhysics(),
-                    childAspectRatio: 0.8,
-                    children: otherImages.asMap().entries.map((entry) {
-                      final img = entry.value;
-                      final idx = entry.key;
-                      return GestureDetector(
-                        onTap: img.isNotEmpty
-                            ? () {
-                                final allImages = [eventBanner, ...otherImages]
-                                    .where((img) => img.isNotEmpty)
-                                    .map((img) => img.toString())
-                                    .toList();
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder: (context, animation, secondaryAnimation) => _GalleryView(
-                                      images: allImages,
-                                      initialIndex: idx + 1,
-                                    ),
-                                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                      return FadeTransition(
-                                        opacity: animation,
-                                        child: ScaleTransition(
-                                          scale: Tween<double>(begin: 0.9, end: 1.0).animate(
-                                            CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
-                                          ),
-                                          child: child,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                );
-                              }
-                            : null,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(14.r),
-                          child: Image.network(
-                            img,
-                            width: double.infinity,
-                            height: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
+              child: Text(
+                whoCanAttend,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontSize: 10.sp,
+                      fontFamily: 'Metropolis-Regular',
+                    ),
+              ),
+            ),
+            Divider(),
+            // Time frame
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Text(
+                'Time frame',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontSize: 14.sp,
+                      fontFamily: 'Metropolis-Bold',
+                    ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Starts: $startDate',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontSize: 10.sp,
+                          fontFamily: 'Metropolis-Medium',
                         ),
-                      );
-                    }).toList(),
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    'Ends: $endDate',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontSize: 10.sp,
+                          fontFamily: 'Metropolis-Medium',
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            Divider(),
+            // Location
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Text(
+                'Location',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontSize: 14.sp,
+                      fontFamily: 'Metropolis-Bold',
+                    ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
+              child: Text(
+                eventLocation,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontSize: 10.sp,
+                      fontFamily: 'Metropolis-Regular',
+                    ),
+              ),
+            ),
+            SizedBox(height: 15.h),
+            Center(
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.9,
+                height: 120.h,
+                decoration: BoxDecoration(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .surfaceContainerHighest
+                      .withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                child: Center(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.25,
+                    height: 30.h,
+                    child: CustomButton(
+                      text: 'Open maps',
+                      onPressed: () {},
+                      backgroundColor: Colors.black,
+                      textColor: const Color(0xffbbd953),
+                      textStyle:
+                          Theme.of(context).textTheme.bodySmall?.copyWith(
+                                fontSize: 10.sp,
+                                fontFamily: 'Metropolis-SemiBold',
+                                color: const Color(0xffbbd953),
+                              ),
+                    ),
                   ),
                 ),
-              ],
-              SizedBox(height: 30.h),
+              ),
+            ),
+            SizedBox(height: 30.h),
+            // Other Images Section
+            if (otherImages.isNotEmpty) ...[
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                child: Text(
+                  'Other Images',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontSize: 14.sp,
+                        fontFamily: 'Metropolis-Bold',
+                      ),
+                ),
+              ),
+              SizedBox(height: 10.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  mainAxisSpacing: 10.h,
+                  crossAxisSpacing: 10.w,
+                  physics: const NeverScrollableScrollPhysics(),
+                  childAspectRatio: 0.8,
+                  children: otherImages.asMap().entries.map((entry) {
+                    final img = entry.value;
+                    final idx = entry.key;
+                    return GestureDetector(
+                      onTap: img.isNotEmpty
+                          ? () {
+                              final allImages = [eventBanner, ...otherImages]
+                                  .where((img) => img.isNotEmpty)
+                                  .map((img) => img.toString())
+                                  .toList();
+                              Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                  pageBuilder: (context, animation,
+                                          secondaryAnimation) =>
+                                      _GalleryView(
+                                    images: allImages,
+                                    initialIndex: idx + 1,
+                                  ),
+                                  transitionsBuilder: (context, animation,
+                                      secondaryAnimation, child) {
+                                    return FadeTransition(
+                                      opacity: animation,
+                                      child: ScaleTransition(
+                                        scale: Tween<double>(
+                                                begin: 0.9,
+                                                end: 1.0)
+                                            .animate(
+                                          CurvedAnimation(
+                                              parent: animation,
+                                              curve: Curves.easeOutCubic),
+                                        ),
+                                        child: child,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            }
+                          : null,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(14.r),
+                        child: Image.network(
+                          img,
+                          width: double.infinity,
+                          height: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
             ],
-          ),
+            SizedBox(height: 30.h),
+          ],
         ),
       ),
-    );
+    ));
   }
 }
 
@@ -998,7 +1139,8 @@ class _GalleryViewState extends State<_GalleryView> {
                 child: CircularProgressIndicator(
                   value: event == null
                       ? 0
-                      : event.cumulativeBytesLoaded / event.expectedTotalBytes!,
+                      : event.cumulativeBytesLoaded /
+                          event.expectedTotalBytes!,
                 ),
               ),
             ),
@@ -1036,4 +1178,4 @@ class _GalleryViewState extends State<_GalleryView> {
       ),
     );
   }
-} 
+}
