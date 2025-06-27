@@ -149,7 +149,9 @@ class _SearchPageState extends State<SearchPage> {
                       CupertinoIcons.line_horizontal_3_decrease,
                       size: 24.sp,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/search-filter');
+                    },
                   ),
                 ],
               ),

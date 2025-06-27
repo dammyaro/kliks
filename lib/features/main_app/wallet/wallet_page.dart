@@ -389,7 +389,7 @@ class _WalletPageState extends State<WalletPage> {
                 Spacer(),
                 GestureDetector(
                   onTap: () {
-                    // TODO: Implement filter functionality
+                    Navigator.pushNamed(context, '/transaction-filter');
                   },
                   child: Opacity(
                     opacity: 0.5,

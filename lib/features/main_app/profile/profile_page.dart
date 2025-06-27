@@ -904,7 +904,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ],
                 ),
                 SizedBox(
-                  height: 500.h, // Increased from 400.h by 100.h
+                  height: 520.h, // Increased from 400.h by 100.h
                   child: TabBarView(
                     children: [
                       // My Events Tab
