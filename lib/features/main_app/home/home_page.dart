@@ -106,11 +106,10 @@ class _HomePageState extends State<HomePage>
     } else if (_selectedFilter == 'nearby') {
       eventsToShow = _events.where((e) => e['isNearBy'] == true).toList();
     } else if (_selectedFilter == 'following') {
-      eventsToShow =
-          _events.where((e) {
-            final userId = e['userId']?.toString();
-            return userId != null && _isFollowingMap[userId] == true;
-          }).toList();
+      eventsToShow = _events.where((e) {
+        final userId = e['ownerDocument']?['id']?.toString();
+        return userId != null && _isFollowingMap[userId] == true;
+      }).toList();
     } else {
       eventsToShow = _events;
     }
@@ -322,8 +321,7 @@ class _HomePageState extends State<HomePage>
                                             },
                                           )
                                           : _events.isEmpty
-                                          ? Expanded(
-                                            child: Center(
+                                          ? Center(
                                               child: Column(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
@@ -372,8 +370,7 @@ class _HomePageState extends State<HomePage>
                                                   ),
                                                 ],
                                               ),
-                                            ),
-                                          )
+                                            )
                                           : RefreshIndicator(
                                             onRefresh: _onRefresh,
                                             child: ListView.builder(
@@ -430,52 +427,26 @@ class _HomePageState extends State<HomePage>
                             ),
                             // Category tabs
                             ..._categories.map<Widget>((cat) {
-                              final catName = cat['category'];
-                              // Start with all events in this category
-                              List<dynamic> filteredEvents =
-                                  _events.where((e) {
-                                    final eventCat = e['category'];
-                                    if (eventCat is Map &&
-                                        eventCat['category'] != null) {
-                                      return eventCat['category'] == catName;
-                                    } else if (eventCat is String) {
-                                      return eventCat == catName;
-                                    } else if (eventCat is List) {
-                                      return eventCat.contains(catName);
-                                    }
-                                    return false;
-                                  }).toList();
-                              // Apply the selected filter to the category events
-                              if (_selectedFilter == 'nearby') {
-                                filteredEvents =
-                                    filteredEvents
-                                        .where((e) => e['isNearBy'] == true)
-                                        .toList();
-                              } else if (_selectedFilter == 'following') {
-                                filteredEvents =
-                                    filteredEvents.where((e) {
-                                      final userId = e['userId']?.toString();
-                                      return userId != null &&
-                                          _isFollowingMap[userId] == true;
-                                    }).toList();
-                              } else if (_selectedFilter == 'attending') {
-                                filteredEvents =
-                                    filteredEvents.where((e) {
-                                      final eventId = e['id'];
-                                      final detail =
-                                          _eventDetailsCache[eventId];
-                                      return detail != null &&
-                                          _userId != null &&
-                                          (detail['attendingUserDocument']
-                                                      as List?)
-                                                  ?.any(
-                                                    (u) =>
-                                                        u['id'].toString() ==
-                                                        _userId,
-                                                  ) ==
-                                              true;
-                                    }).toList();
-                              }
+                              final catName = cat['category'] as String?;
+                              final filteredEvents = eventsToShow.where((e) {
+                                // Handle potentially nested event data
+                                final eventCat = e['eventDocument']?['category'] ?? e['category'];
+                                if (catName == null) return false;
+
+                                if (eventCat is Map &&
+                                    eventCat['category'] != null &&
+                                    eventCat['category'] is String) {
+                                  return (eventCat['category'] as String).trim() ==
+                                      catName.trim();
+                                } else if (eventCat is String) {
+                                  return eventCat.trim() == catName.trim();
+                                } else if (eventCat is List) {
+                                  return eventCat.any((c) =>
+                                      c is String && c.trim() == catName.trim());
+                                }
+                                return false;
+                              }).toList();
+
                               return Column(
                                 children: [
                                   SizedBox(height: 20.h),
@@ -486,31 +457,29 @@ class _HomePageState extends State<HomePage>
                                       },
                                     ),
                                   Expanded(
-                                    child:
-                                        _isLoading
-                                            ? ListView.builder(
-                                              shrinkWrap: true,
-                                              physics:
-                                                  const AlwaysScrollableScrollPhysics(),
-                                              itemCount: 4,
-                                              itemBuilder: (context, idx) {
-                                                return Padding(
-                                                  padding: EdgeInsets.only(
-                                                    bottom: 8.h,
+                                    child: _isLoading
+                                        ? ListView.builder(
+                                            shrinkWrap: true,
+                                            physics:
+                                                const AlwaysScrollableScrollPhysics(),
+                                            itemCount: 4,
+                                            itemBuilder: (context, idx) {
+                                              return Padding(
+                                                padding: EdgeInsets.only(
+                                                  bottom: 8.h,
+                                                ),
+                                                child: Skeletonizer(
+                                                  enabled: true,
+                                                  child: EventCardSkeleton(
+                                                    skeletonColor:
+                                                        skeletonColor!,
                                                   ),
-                                                  child: Skeletonizer(
-                                                    enabled: true,
-                                                    child: EventCardSkeleton(
-                                                      skeletonColor:
-                                                          skeletonColor!,
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            )
-                                            : filteredEvents.isEmpty
-                                            ? Expanded(
-                                              child: Center(
+                                                ),
+                                              );
+                                            },
+                                          )
+                                        : filteredEvents.isEmpty
+                                            ? Center(
                                                 child: Column(
                                                   mainAxisSize:
                                                       MainAxisSize.min,
@@ -563,61 +532,59 @@ class _HomePageState extends State<HomePage>
                                                     ),
                                                   ],
                                                 ),
-                                              ),
-                                            )
+                                              )
                                             : RefreshIndicator(
-                                              onRefresh: _onRefresh,
-                                              child: ListView.builder(
-                                                shrinkWrap: true,
-                                                physics:
-                                                    const AlwaysScrollableScrollPhysics(),
-                                                itemCount:
-                                                    filteredEvents.length + 1,
-                                                itemBuilder: (context, idx) {
-                                                  if (idx ==
-                                                      filteredEvents.length) {
-                                                    return SizedBox(
-                                                      height: 140.h,
-                                                    );
-                                                  }
-                                                  final event =
-                                                      filteredEvents[idx];
-                                                  return Column(
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                              bottom: 8.h,
-                                                            ),
-                                                        child: EventCard(
-                                                          event: event,
+                                                onRefresh: _onRefresh,
+                                                child: ListView.builder(
+                                                  shrinkWrap: true,
+                                                  physics:
+                                                      const AlwaysScrollableScrollPhysics(),
+                                                  itemCount:
+                                                      filteredEvents.length +
+                                                          1,
+                                                  itemBuilder:
+                                                      (context, idx) {
+                                                    if (idx ==
+                                                        filteredEvents
+                                                            .length) {
+                                                      return SizedBox(
+                                                        height: 140.h,
+                                                      );
+                                                    }
+                                                    final event =
+                                                        filteredEvents[idx];
+                                                    return Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                            bottom: 8.h,
+                                                          ),
+                                                          child: EventCard(
+                                                            event: event,
+                                                          ),
                                                         ),
-                                                      ),
-                                                      Divider(
-                                                        height: 1,
-                                                        thickness: 0.5,
-                                                        color:
-                                                            Theme.of(
-                                                                      context,
-                                                                    ).brightness ==
-                                                                    Brightness
-                                                                        .light
-                                                                ? Colors
-                                                                    .grey[300]!
-                                                                    .withOpacity(
-                                                                      0.4,
-                                                                    )
-                                                                : Colors
-                                                                    .grey[100]!
-                                                                    .withOpacity(
-                                                                      0.2,
-                                                                    ),
-                                                      ),
-                                                    ],
-                                                  );
-                                                },
+                                                        Divider(
+                                                          height: 1,
+                                                          thickness: 0.5,
+                                                          color: Theme.of(
+                                                                    context)
+                                                                .brightness ==
+                                                                Brightness.light
+                                                              ? Colors.grey[300]!
+                                                                  .withOpacity(
+                                                                  0.4,
+                                                                )
+                                                              : Colors.grey[100]!
+                                                                  .withOpacity(
+                                                                  0.2,
+                                                                ),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                ),
                                               ),
-                                            ),
                                   ),
                                 ],
                               );
