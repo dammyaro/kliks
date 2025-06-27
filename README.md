@@ -1,113 +1,118 @@
-# Kliks
+# Kliks - Flutter Social Event App
 
-Kliks is an event management tool built with Flutter. It allows users to discover, manage, and participate in events seamlessly. The app is designed to provide a personalized experience for users, making event management simple and efficient.
-
----
+Kliks is a mobile application built with Flutter that allows users to discover, create, and share events. It's designed to be a social platform where users can connect with friends, see what events they are attending, and stay updated with real-time notifications.
 
 ## Features
 
-- Discover nearby events and follow your interests.
-- Personalized onboarding for a tailored experience.
-- Intuitive UI with responsive design.
-- Cross-platform support for Android and iOS.
+- **Event Discovery:** Browse and search for events happening around you.
+- **Event Creation:** Easily create and manage your own public or private events.
+- **Social Feed:** See a feed of events that your friends are interested in or attending.
+- **User Profiles:** Customize your profile, follow friends, and see their activity.
+- **Real-time Notifications:** Get notified about event updates, friend requests, and more, powered by Firebase Cloud Messaging.
+- **Event Check-in:** Check in to events to let your friends know you're there.
+- **Saved Events:** Keep a list of events you're interested in.
+- **Light & Dark Mode:** The app supports both light and dark themes.
 
----
+## Tech Stack & Architecture
 
-## Prerequisites
+This project is built with Flutter and utilizes a number of libraries and services to deliver a rich user experience.
 
-Before running the project, ensure you have the following installed:
+- **State Management:** `provider` is used for state management, providing a simple and efficient way to manage the app's state.
+- **Backend:** Firebase is used for the backend, including:
+    - **Firebase Authentication:** For user sign-in and authentication.
+    - **Firebase Cloud Messaging (FCM):** For push notifications.
+    - **Firebase Core:** For core Firebase integration.
+- **Navigation:** A custom routing solution is implemented in `lib/core/routes.dart` to handle navigation within the app.
+- **Dependency Injection:** `get_it` is used for service locator/dependency injection.
+- **HTTP Client:** `dio` is used for making HTTP requests to external APIs.
+- **Local Storage:** `shared_preferences` and `flutter_secure_storage` are used for persisting data locally on the device.
+- **UI:**
+    - `flutter_screenutil`: For adapting screen and font size to different screen sizes.
+    - `flutter_svg`: For rendering SVG images.
+    - `cached_network_image`: To show images from the internet and keep them in the cache directory.
+- **Mapping:** `flutter_map` and `geolocator` are used for map and location-based features.
 
-- [Flutter SDK](https://docs.flutter.dev/get-started/install) (version 3.0.0 or later)
-- Android Studio or Xcode (for Android and iOS development)
-- A device emulator or a physical device for testing
+## Project Structure
 
----
+The project follows a feature-based structure, with code organized as follows:
 
-## Installation
-
-### 1. Install Flutter
-
-#### On Windows:
-1. Download the Flutter SDK from [Flutter for Windows](https://docs.flutter.dev/get-started/install/windows).
-2. Extract the downloaded file to a directory (e.g., `C:\flutter`).
-3. Add Flutter to your system's PATH:
-   - Open **Environment Variables**.
-   - Add the `flutter/bin` directory to the PATH variable.
-4. Run the following command in a terminal to verify the installation:
-   ```bash
-   flutter doctor
-   ```
-
-#### On macOS:
-1. Download the Flutter SDK from [Flutter for macOS](https://docs.flutter.dev/get-started/install/macos).
-2. Extract the downloaded file to a directory (e.g., `~/flutter`).
-3. Add Flutter to your system's PATH:
-   - Open the terminal and edit your shell configuration file (`.zshrc` or `.bash_profile`).
-   - Add the following line:
-     ```bash
-     export PATH="$PATH:`pwd`/flutter/bin"
-     ```
-   - Save and reload the terminal.
-4. Run the following command in a terminal to verify the installation:
-   ```bash
-   flutter doctor
-   ```
-
----
-
-### 2. Clone the Repository
-
-Clone the Kliks repository to your local machine:
-```bash
-git clone https://github.com/dammyaro/kliks.git
-cd kliks
+```
+lib/
+├── core/
+│   ├── di/               # Dependency injection setup
+│   ├── providers/        # State management providers
+│   ├── services/         # Business logic services
+│   ├── theme_config.dart # App theme configuration
+│   └── routes.dart       # Navigation routes
+├── features/
+│   ├── auth/             # Authentication-related widgets and logic
+│   ├── events/           # Event creation, discovery, and details
+│   ├── home/             # The main home screen
+│   └── profile/          # User profile and settings
+├── shared/
+│   └── widgets/          # Reusable widgets used across multiple features
+└── main.dart             # App entry point
 ```
 
----
+## Getting Started
 
-### 3. Install Dependencies
+To get a local copy up and running, follow these simple steps.
 
-Run the following command to install the required dependencies:
-```bash
-flutter pub get
-```
+### Prerequisites
 
----
+- Flutter SDK: Make sure you have the Flutter SDK installed. You can find instructions on the [Flutter website](https://flutter.dev/docs/get-started/install).
+- An editor like VS Code or Android Studio.
 
-## Running the Project
+### Installation
 
-### On Android (Windows/macOS):
-1. Ensure you have an Android emulator running or a physical Android device connected.
-2. Run the following command to start the app:
-   ```bash
+1. **Clone the repo**
+   ```sh
+   git clone https://github.com/your_username/kliks.git
+   ```
+2. **Install packages**
+   ```sh
+   flutter pub get
+   ```
+3. **Set up Firebase**
+   - Create a new Firebase project at [https://console.firebase.google.com/](https://console.firebase.google.com/).
+   - Follow the instructions to add an Android and/or iOS app to your Firebase project.
+   - Download the `google-services.json` file for Android and place it in the `android/app` directory.
+   - Download the `GoogleService-Info.plist` file for iOS and place it in the `ios/Runner` directory.
+4. **Run the app**
+   ```sh
    flutter run
    ```
 
-### On iOS (macOS only):
-1. Ensure you have Xcode installed and set up.
-2. Open the iOS simulator or connect a physical iOS device.
-3. Run the following command to start the app:
-   ```bash
-   flutter run
-   ```
+## Dependencies
 
----
+Here are some of the key dependencies used in this project:
 
-## Development Notes
+| Package                  | Description                               |
+| ------------------------ | ----------------------------------------- |
+| `provider`               | State management                          |
+| `dio`                    | HTTP client                               |
+| `get_it`                 | Service locator for dependency injection  |
+| `firebase_core`          | Core Firebase integration                 |
+| `firebase_auth`          | Firebase Authentication                   |
+| `firebase_messaging`     | Firebase Cloud Messaging (FCM)            |
+| `flutter_screenutil`     | Screen adaptation                         |
+| `flutter_secure_storage` | Secure local storage                      |
+| `geolocator`             | Geolocation services                      |
+| `flutter_map`            | A versatile mapping library for Flutter   |
+| `cached_network_image`   | Caching for network images                |
+| `shimmer`                | Shimmer effect for loading placeholders   |
 
-- Use `flutter doctor` to check for any missing dependencies or issues in your development environment.
-- For hot reload during development, press `r` in the terminal while the app is running.
+For a full list of dependencies, see the `pubspec.yaml` file.
 
----
+## Contributing
 
-## Resources
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-- [Flutter Documentation](https://docs.flutter.dev/)
-- [Flutter Cookbook](https://docs.flutter.dev/cookbook)
-- [Flutter Codelabs](https://docs.flutter.dev/codelabs)
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
 
----
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
