@@ -255,13 +255,13 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
+      appBar: CustomNavBar(title: 'Announcements'),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CustomNavBar(title: 'Announcements'),
               SizedBox(height: 18.h),
               Text(
                 'Updates on the event details\nwill be communicated to your guests',

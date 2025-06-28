@@ -103,21 +103,13 @@ class _NotificationsPageState extends State<NotificationsPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
+      appBar: CustomNavBar(title: 'Notification Settings'),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Top bar
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 5.w),
-                child: Row(
-                  children: [
-                    CustomNavBar(title: 'Notification Settings'),
-                  ],
-                ),
-              ),
               if (_loading)
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.7,

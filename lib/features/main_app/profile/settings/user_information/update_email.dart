@@ -28,12 +28,12 @@ class _UpdateEmailPageState extends State<UpdateEmailPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
+      appBar: CustomNavBar(title: 'Change email'),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomNavBar(title: 'Change email'),
             SizedBox(height: 10.h),
             Text(
               'Enter a valid email address',

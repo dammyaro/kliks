@@ -121,36 +121,11 @@ class _SettingsPageState extends State<SettingsPage> {
     final profile = Provider.of<AuthProvider>(context).profile;
     // print('Profile: \\${profile}');
     return Scaffold(
+      appBar: CustomNavBar(title: "Settings & Privacy"),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // Top bar
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 10.h),
-                child: Row(
-                  children: [
-                    // IconButton(
-                    //   icon: Icon(Icons.arrow_back, size: 24.sp, color: theme.iconTheme.color),
-                    //   onPressed: () => Navigator.pop(context),
-                    // ),
-                    // SizedBox(width: 8.w),
-                    // Expanded(
-                    //   // child: Center(
-                    //     child: Text(
-                    //       'Settings & Privacy',
-                    //       style: theme.textTheme.bodyLarge?.copyWith(
-                    //             fontSize: 16.sp,
-                    //             fontFamily: 'Metropolis-SemiBold',
-                    //           ),
-                    //     ),
-                    //   ),
-                    // ),
-                    CustomNavBar(title: "Settings & Privacy"),
-                    // SizedBox(width: 48.w), // To balance the row
-                  ],
-                ),
-              ),
               SizedBox(height: 0.h),
               // Profile Management Section
               Padding(

@@ -108,12 +108,12 @@ class _SelfieVerificationPageState extends State<SelfieVerificationPage> {
     final double boxHeight = MediaQuery.of(context).size.height * 0.7;
 
     return Scaffold(
+      appBar: CustomNavBar(title: 'Selfie Verification'),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomNavBar(title: 'Selfie Verification'),
             SizedBox(height: 5.h),
             Center(
               child: Container(

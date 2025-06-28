@@ -126,6 +126,7 @@ class _FollowRequestsPageState extends State<FollowRequestsPage> {
     }
 
     return Scaffold(
+      appBar: CustomNavBar(title: 'Follow requests'),
       body: RefreshIndicator(
         onRefresh: _fetchFollowers,
         child: Padding(
@@ -133,7 +134,6 @@ class _FollowRequestsPageState extends State<FollowRequestsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CustomNavBar(title: 'Follow requests'),
               SizedBox(height: 0.h),
               Column(
                 children: [

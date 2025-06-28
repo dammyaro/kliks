@@ -69,12 +69,12 @@ class _UpdateDobPageState extends State<UpdateDobPage> {
         : 'Select date';
 
     return Scaffold(
+      appBar: CustomNavBar(title: 'Your birthday'),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomNavBar(title: 'Your birthday'),
             SizedBox(height: 32.h),
             Text(
               'Change your Date of birth',

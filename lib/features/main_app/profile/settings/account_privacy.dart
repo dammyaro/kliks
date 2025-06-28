@@ -99,18 +99,13 @@ class _AccountPrivacyPageState extends State<AccountPrivacyPage> {
     }
 
     return Scaffold(
+      appBar: CustomNavBar(title: 'Account Privacy'),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Top bar
-              Row(
-                children: [
-                  CustomNavBar(title: 'Account Privacy'),
-                ],
-              ),
               _privacyTile(
                 label: 'Private account',
                 subText:

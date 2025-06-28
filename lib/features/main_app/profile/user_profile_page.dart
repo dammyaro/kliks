@@ -147,18 +147,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
     final showFollowers = _extraUserData?['showFollowers'] ?? widget.userData['showFollowers'] ?? true;
 
     return Scaffold(
+      appBar: CustomNavBar(title: '@$username'),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 10.h),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.w),
-              child: Row(
-                children: [
-                  CustomNavBar(title: '@$username'),
-                ],
-              ),
-            ),
             SizedBox(height: 0.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w),

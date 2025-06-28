@@ -147,13 +147,13 @@ class _ContactSupportPageState extends State<ContactSupportPage> {
     }
 
     return Scaffold(
+      appBar: CustomNavBar(title: 'Contact support'),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CustomNavBar(title: 'Contact support'),
               // SizedBox(height: 5.h),
               Text(
                 'You can get in touch with us through the platforms below. Our team will reach out to you as soon as possible',

@@ -78,13 +78,10 @@ class _ProfilePageState extends State<ProfilePage> {
     // final location = profile?['location'] ?? 'Ontario, Canada';
 
     return Scaffold(
+      appBar: CustomNavBar(title: 'My Profile'),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5.w),
-              child: Row(children: [CustomNavBar(title: 'My Profile')]),
-            ),
             // SizedBox(height: 24.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w),

@@ -41,12 +41,12 @@ class _BlockedAccountsPageState extends State<BlockedAccountsPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
+      appBar: CustomNavBar(title: 'Blocked Accounts'),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomNavBar(title: 'Blocked Accounts'),
             // SizedBox(height: 5.h),
             TextFormWidget(
               name: 'search',

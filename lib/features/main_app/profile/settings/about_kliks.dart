@@ -50,12 +50,12 @@ class AboutKliksPage extends StatelessWidget {
     }
 
     return Scaffold(
+      appBar: CustomNavBar(title: 'About Kliks'),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 24.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomNavBar(title: 'About Kliks'),
             SizedBox(height: 0.h),
             Text(
               'Kliks offfers a variety of features to make digital interactions with people easier, and in-person networking the ultimate success.',

@@ -61,12 +61,12 @@ class _UpdatePasswordPageState extends State<UpdatePasswordPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
+      appBar: CustomNavBar(title: 'Password'),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomNavBar(title: 'Password'),
             SizedBox(height: 10.h),
             Text(
               'Enter your current password',

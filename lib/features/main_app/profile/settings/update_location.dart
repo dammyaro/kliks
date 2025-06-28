@@ -115,12 +115,12 @@ class _UpdateLocationPageState extends State<UpdateLocationPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
+      appBar: CustomNavBar(title: 'Location'),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomNavBar(title: 'Location'),
             SizedBox(height: 2.h),
             // TextFormWidget(
             //   name: 'search_location',

@@ -283,12 +283,12 @@ class _PeoplePageState extends State<PeoplePage> {
     }
 
     return Scaffold(
+      appBar: CustomNavBar(title: 'People'),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 0.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomNavBar(title: 'People'),
             // SizedBox(height: 5.h),
             Column(
               children: [

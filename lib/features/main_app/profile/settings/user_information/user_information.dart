@@ -51,11 +51,11 @@ class UserInformationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
+      appBar: CustomNavBar(title: 'User Information'),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
         child: Column(
           children: [
-            CustomNavBar(title: 'User Information'),
             SizedBox(height: 5.h),
             Consumer<AuthProvider>(
               builder: (context, authProvider, child) {
