@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:kliks/core/routes.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:kliks/shared/widgets/handle_bar.dart';
 
 class OrganizerEventDetailPage extends StatefulWidget {
   final String? eventId;
@@ -151,6 +152,71 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showAttendeeListModal(BuildContext context, List<dynamic> attendees) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.5,
+          maxChildSize: 0.9,
+          minChildSize: 0.3,
+          builder: (context, scrollController) {
+            return Container(
+              padding: EdgeInsets.all(16.w),
+              child: Column(
+                children: [
+                  const HandleBar(),
+                  SizedBox(height: 10.h),
+                  Text(
+                    'Live Dashboard',
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontSize: 18.sp,
+                          fontFamily: 'Metropolis-Bold',
+                        ),
+                  ),
+                  SizedBox(height: 10.h),
+                  Expanded(
+                    child: GridView.builder(
+                      controller: scrollController,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                      ),
+                      itemCount: attendees.length,
+                      itemBuilder: (context, index) {
+                        final attendee = attendees[index];
+                        return Column(
+                          children: [
+                            CircleAvatar(
+                              radius: 40,
+                              backgroundImage: NetworkImage(attendee['image'] ?? ''),
+                            ),
+                            SizedBox(height: 5.h),
+                            Text(
+                              attendee['fullname'] ?? '',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontSize: 12.sp,
+                                    fontFamily: 'Metropolis-Medium',
+                                  ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -520,6 +586,16 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
     }
 
     return Scaffold(
+        bottomNavigationBar: isLive
+            ? Padding(
+                padding: EdgeInsets.all(16.w),
+                child: CustomButton(
+                  text: 'Live Dashboard',
+                  onPressed: () => _showAttendeeListModal(
+                      context, event?['attendingUserDocuments'] ?? []),
+                ),
+              )
+            : null,
         body: SafeArea(
       child: SingleChildScrollView(
         child: Column(

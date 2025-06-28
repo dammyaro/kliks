@@ -11,6 +11,7 @@ import 'package:kliks/shared/widgets/event_card.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:kliks/core/providers/follow_provider.dart';
 import 'package:kliks/core/providers/checked_in_events_provider.dart';
+import 'package:kliks/core/providers/organizer_live_events_provider.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:kliks/main.dart' show flutterLocalNotificationsPlugin;
 
@@ -45,6 +46,10 @@ class _HomePageState extends State<HomePage>
     final events = await eventProvider.getEvents();
     final categories = await eventProvider.getAllCategory();
     final userId = await authProvider.getUserId();
+
+    if (userId != null) {
+      Provider.of<OrganizerLiveEventsProvider>(context, listen: false).updateLiveEvents(events, userId);
+    }
 
     final List<dynamic> detailedEvents = [];
     for (var event in events) {
@@ -201,6 +206,60 @@ class _HomePageState extends State<HomePage>
                             Column(
                               children: [
                                 SizedBox(height: 20.h),
+                                Consumer<OrganizerLiveEventsProvider>(
+                                  builder: (context, organizerLiveEventsProvider, child) {
+                                    final liveEventIds = organizerLiveEventsProvider.liveEventIds;
+                                    if (liveEventIds.isEmpty) return SizedBox.shrink();
+                                    return Column(
+                                      children: liveEventIds.map((eventId) {
+                                        final eventDetail = _eventDetailsCache[eventId] ?? _events.firstWhere(
+                                          (e) => e['id']?.toString() == eventId || e['eventDocument']?['id']?.toString() == eventId,
+                                          orElse: () => null,
+                                        );
+                                        if (eventDetail == null) return SizedBox.shrink();
+                                        final eventName = eventDetail['eventDocument']?['title'] ?? eventDetail['title'] ?? '';
+                                        final checkedInCount = (eventDetail['checkedInUserDocuments'] as List?)?.length ?? 0;
+                                        return Container(
+                                          width: double.infinity,
+                                          margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
+                                          padding: EdgeInsets.symmetric(horizontal: 18.w),
+                                          height: 40.h,
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xffbbd953),
+                                            borderRadius: BorderRadius.circular(14.r),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  eventName,
+                                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                                    fontSize: 10.sp,
+                                                    fontFamily: 'Metropolis-SemiBold',
+                                                    color: Colors.black,
+                                                  ),
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Icon(Icons.people, size: 15.sp, color: Colors.black),
+                                                  SizedBox(width: 6.w),
+                                                  Text('$checkedInCount', style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                    fontSize: 12.sp,
+                                                    fontFamily: 'Metropolis-Medium',
+                                                    color: Colors.black,
+                                                  )),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      }).toList(),
+                                    );
+                                  },
+                                ),
                                 // Debug button for local notification
                                 /*
                                 Align(
