@@ -11,6 +11,7 @@ import 'dart:io';
 import 'package:kliks/core/services/media_service.dart';
 import 'package:confetti/confetti.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:kliks/shared/widgets/handle_bar.dart';
 
 class NewEventPage extends StatefulWidget {
   const NewEventPage({super.key});
@@ -685,12 +686,19 @@ class _ConfettiSuccessModalState extends State<_ConfettiSuccessModal> {
 
   @override
   Widget build(BuildContext context) {
-    final double modalHeight = MediaQuery.of(context).size.height * 0.75;
-    return SizedBox(
-      height: modalHeight,
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.85, // Increased height to 85% of screen
+      decoration: BoxDecoration(
+        color: theme.scaffoldBackgroundColor,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+      ),
       child: Stack(
         alignment: Alignment.center,
         children: [
+          // Confetti overlay
           ConfettiWidget(
             confettiController: _confettiController,
             blastDirectionality: BlastDirectionality.explosive,
@@ -708,134 +716,197 @@ class _ConfettiSuccessModalState extends State<_ConfettiSuccessModal> {
               Colors.purple,
             ],
           ),
-          Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "You're all set!",
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith( 
-                      fontSize: 16.sp,
-                      // fontWeight: FontWeight.bold,
-                      fontFamily: 'Metropolis-SemiBold',
-                      color: Colors.black,
-                    ),
-                    textAlign: TextAlign.center,
+          // Content
+          Padding(
+            padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 40.h + MediaQuery.of(context).viewPadding.bottom), // Increased bottom padding
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Handle bar
+                const HandleBar(),
+                
+                // Success icon
+                Container(
+                  width: 80.w,
+                  height: 80.h,
+                  decoration: BoxDecoration(
+                    color: const Color(0xffbbd953),
+                    shape: BoxShape.circle,
                   ),
-                  // SizedBox(height: 12),
-                  Text(
-                    'Congratulations, you have created an event\n titled ${widget.eventTitle}',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontSize: 10.sp,
-                      fontFamily: 'Metropolis-Regular',
-                      color: Colors.black.withOpacity(0.7),
-                    ),
-                    textAlign: TextAlign.center,
+                  child: Icon(
+                    Icons.check,
+                    color: Colors.black,
+                    size: 40.sp,
                   ),
-                  SizedBox(height: 28),
-                  Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: 18, vertical: 18),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.grey[300]!),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Share to',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 12.sp,
-                            color: Colors.black.withOpacity(0.7),
-                          ),
-                          textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 24.h),
+                
+                // Success title
+                Text(
+                  "You're all set!",
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    fontSize: 18.sp,
+                    fontFamily: 'Metropolis-SemiBold',
+                    color: theme.textTheme.bodyLarge?.color,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 8.h),
+                
+                // Success message
+                Text(
+                  'Congratulations, you have created an event\ntitled "${widget.eventTitle}"',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    fontSize: 12.sp,
+                    fontFamily: 'Metropolis-Regular',
+                    color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                    height: 1.4,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 32.h),
+                
+                // Share section
+                Expanded( // Wrap share section in Expanded to take available space
+                  child: SingleChildScrollView( // Add scroll view to handle overflow
+                    child: Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(16.w),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(16.r),
+                        border: Border.all(
+                          color: theme.dividerColor.withOpacity(0.2),
+                          width: 1,
                         ),
-                        SizedBox(height: 12.h),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.facebook, color: Color(0xFF4267B2), size: 28),
-                            SizedBox(width: 16.w),
-                            Icon(Icons.alternate_email, color: Colors.black, size: 28), // X (Twitter) placeholder
-                            SizedBox(width: 16.w),
-                            Icon(Icons.camera_alt, color: Color(0xFFE1306C), size: 28), // Instagram placeholder
-                            SizedBox(width: 16.w),
-                            Icon(
-                              Icons.chat_bubble, // Placeholder for WhatsApp
-                              color: Color(0xFF25D366),
-                              size: 28,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Share to',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              fontSize: 14.sp,
+                              fontFamily: 'Metropolis-SemiBold',
+                              color: theme.textTheme.bodyMedium?.color,
                             ),
-                            SizedBox(width: 16.w),
-                            Icon(Icons.send, color: Color(0xFF0088cc), size: 28), // Telegram placeholder
-                          ],
-                        ),
-                        SizedBox(height: 18),
-                        Divider(),
-                        SizedBox(height: 8),
-                        Text(
-                          'or share link',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 12.sp,
-                            color: Colors.black.withOpacity(0.6),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                        SizedBox(height: 8.h),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.grey[300]!),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
+                          SizedBox(height: 12.h),
+                          
+                          // Social media icons - more compact
+                          Wrap(
+                            alignment: WrapAlignment.center,
+                            spacing: 8.w,
+                            runSpacing: 6.h,
                             children: [
-                              Text(
-                                'https://kliks.app/event/12345',
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  fontSize: 12.h,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              SizedBox(width: 8.w),
-                              GestureDetector(
-                                onTap: () {
-                                  // Copy to clipboard logic
-                                  // Clipboard.setData(ClipboardData(text: 'https://kliks.app/event/12345'));
-                                },
-                                child: Icon(Icons.copy, size: 18, color: Colors.black.withOpacity(0.7)),
-                              ),
+                              _buildSocialIcon(Icons.facebook, const Color(0xFF4267B2)),
+                              _buildSocialIcon(Icons.alternate_email, theme.textTheme.bodyLarge?.color ?? Colors.black),
+                              _buildSocialIcon(Icons.camera_alt, const Color(0xFFE1306C)),
+                              _buildSocialIcon(Icons.chat_bubble, const Color(0xFF25D366)),
+                              _buildSocialIcon(Icons.send, const Color(0xFF0088cc)),
                             ],
                           ),
-                        ),
-                      ],
+                          SizedBox(height: 16.h),
+                          
+                          Divider(color: theme.dividerColor.withOpacity(0.3)),
+                          SizedBox(height: 10.h),
+                          
+                          Text(
+                            'or share link',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              fontSize: 12.sp,
+                              fontFamily: 'Metropolis-Medium',
+                              color: theme.textTheme.bodySmall?.color?.withOpacity(0.6),
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: 10.h),
+                          
+                          // Link container - more compact
+                          Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.surface,
+                              borderRadius: BorderRadius.circular(12.r),
+                              border: Border.all(
+                                color: theme.dividerColor.withOpacity(0.3),
+                                width: 1,
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    'https://kliks.app/event/12345',
+                                    style: theme.textTheme.bodySmall?.copyWith(
+                                      fontSize: 11.sp,
+                                      fontFamily: 'Metropolis-Regular',
+                                      color: theme.textTheme.bodySmall?.color,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                SizedBox(width: 8.w),
+                                GestureDetector(
+                                  onTap: () {
+                                    // Copy to clipboard logic
+                                    // Clipboard.setData(ClipboardData(text: 'https://kliks.app/event/12345'));
+                                  },
+                                  child: Icon(
+                                    Icons.copy,
+                                    size: 16.sp,
+                                    color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  SizedBox(height: 10.h),
-                  CustomButton(
+                ),
+                SizedBox(height: 24.h),
+                
+                // View profile button
+                SizedBox(
+                  width: double.infinity,
+                  height: 48.h,
+                  child: CustomButton(
                     text: 'View my profile',
                     onPressed: widget.onProfileTap,
                     backgroundColor: const Color(0xffbbd953),
                     textColor: Colors.black,
-                    textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontSize: 14.h,
+                    textStyle: theme.textTheme.bodyMedium?.copyWith(
+                      fontSize: 14.sp,
                       fontFamily: 'Metropolis-SemiBold',
                       color: Colors.black,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSocialIcon(IconData icon, Color color) {
+    return Container(
+      width: 36.w,
+      height: 36.h,
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        shape: BoxShape.circle,
+      ),
+      child: Icon(
+        icon,
+        color: color,
+        size: 20.sp,
       ),
     );
   }

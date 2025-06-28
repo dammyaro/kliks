@@ -109,7 +109,15 @@ class AppRoutes {
       case emailVerification:
         return MaterialPageRoute(builder: (_) => const EmailVerificationPage());
       case mainApp:
-        return MaterialPageRoute(builder: (_) => const MainAppPage());
+        return PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => const MainAppPage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
+        );
       case guestApp:
         return MaterialPageRoute(builder: (_) => const GuestAppPage());
       case profile:
