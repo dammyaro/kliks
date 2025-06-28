@@ -14,6 +14,7 @@ class TextFormWidget extends StatelessWidget {
   final bool multiline; // New attribute for multiline support
   final double? contentHeight; // New attribute for adjustable height
   final void Function(String?)? onChanged; // Optional onChanged attribute
+  final bool enabled; // New attribute for enabling/disabling the text field
 
   const TextFormWidget({
     super.key,
@@ -28,6 +29,7 @@ class TextFormWidget extends StatelessWidget {
     this.multiline = false, // Default is false
     this.contentHeight, // Optional height parameter
     this.onChanged, // Optional onChanged parameter
+    this.enabled = true, // Default is true
   });
 
   @override
@@ -38,6 +40,7 @@ class TextFormWidget extends StatelessWidget {
       obscureText: obscureText,
       keyboardType: multiline ? TextInputType.multiline : keyboardType,
       maxLines: multiline ? 5 : 1,
+      enabled: enabled,
       style: TextStyle(
         fontSize: 14.sp,
         fontFamily: 'Metropolis-SemiBold',

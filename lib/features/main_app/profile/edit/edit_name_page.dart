@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kliks/core/services/time_lock_service.dart';
 import 'package:kliks/shared/widgets/text_form_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/auth_provider.dart';
@@ -15,13 +16,40 @@ class _EditNamePageState extends State<EditNamePage> {
   final TextEditingController nameController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+  bool _canChangeName = false;
+  Duration _remainingTime = Duration.zero;
+  final _timeLockService = TimeLockService();
+
+  @override
+  void initState() {
+    super.initState();
+    _checkNameChangeStatus();
+  }
+
+  Future<void> _checkNameChangeStatus() async {
+    final canChange = await _timeLockService.canPerformAction('name', const Duration(days: 7));
+    if (mounted) {
+      setState(() {
+        _canChangeName = canChange;
+      });
+      if (!canChange) {
+        final remaining = await _timeLockService.getRemainingTime('name', const Duration(days: 7));
+        if (mounted) {
+          setState(() {
+            _remainingTime = remaining;
+          });
+        }
+      }
+    }
+  }
+
 
   String? _validateName(String? value) {
     if (value == null || value.trim().isEmpty) {
       return 'Name cannot be empty';
     }
     // Accepts letters, spaces, hyphens, apostrophes, and periods. No numbers or special chars.
-    final nameRegExp = RegExp(r"^[A-Za-zÀ-ÖØ-öø-ÿ'’.\- ]{2,50}$");
+    final nameRegExp = RegExp(r"^[A-Za-zÀ-ÖØ-öø-ÿ'’.- ]{2,50}$");
     if (!nameRegExp.hasMatch(value.trim())) {
       return 'Enter a valid name (letters, spaces, hyphens, apostrophes, periods)';
     }
@@ -39,7 +67,7 @@ class _EditNamePageState extends State<EditNamePage> {
 
   Widget _buildDoneButton({required BuildContext context, required VoidCallback onPressed}) {
     return ElevatedButton(
-      onPressed: _isLoading ? null : onPressed,
+      onPressed: _isLoading || !_canChangeName ? null : onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xffbbd953),
         shape: RoundedRectangleBorder(
@@ -74,13 +102,20 @@ class _EditNamePageState extends State<EditNamePage> {
     setState(() => _isLoading = true);
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final success = await authProvider.updateProfile(field: 'fullname', value: newName);
-    setState(() => _isLoading = false);
     if (success) {
-      Navigator.pop(context);
+      await _timeLockService.recordTimestamp('name');
+      if (mounted) {
+        Navigator.pop(context);
+      }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Failed to update name'))),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Failed to update name'))),
+        );
+      }
+    }
+    if (mounted) {
+      setState(() => _isLoading = false);
     }
   }
 
@@ -134,10 +169,13 @@ class _EditNamePageState extends State<EditNamePage> {
                   labelText: 'Name',
                   name: 'name',
                   validator: _validateName,
+                  enabled: _canChangeName,
                 ),
                 SizedBox(height: 10.h),
                 Text(
-                  'Your name can only be changed once every 7 days',
+                  _canChangeName
+                      ? 'Your name can only be changed once every 7 days'
+                      : 'You can change your name again in ${_remainingTime.inDays} days and ${_remainingTime.inHours % 24} hours.',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         fontSize: 12.sp,
                         color: Colors.grey,

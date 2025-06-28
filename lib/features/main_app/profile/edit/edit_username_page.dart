@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kliks/core/services/time_lock_service.dart';
 import 'package:kliks/shared/widgets/text_form_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/auth_provider.dart';
@@ -14,10 +15,36 @@ class EditUsernamePage extends StatefulWidget {
 class _EditUsernamePageState extends State<EditUsernamePage> {
   final TextEditingController usernameController = TextEditingController();
   bool _isLoading = false;
+  bool _canChangeUsername = false;
+  Duration _remainingTime = Duration.zero;
+  final _timeLockService = TimeLockService();
+
+  @override
+  void initState() {
+    super.initState();
+    _checkUsernameChangeStatus();
+  }
+
+  Future<void> _checkUsernameChangeStatus() async {
+    final canChange = await _timeLockService.canPerformAction('username', const Duration(days: 7));
+    if (mounted) {
+      setState(() {
+        _canChangeUsername = canChange;
+      });
+      if (!canChange) {
+        final remaining = await _timeLockService.getRemainingTime('username', const Duration(days: 7));
+        if (mounted) {
+          setState(() {
+            _remainingTime = remaining;
+          });
+        }
+      }
+    }
+  }
 
   Widget _buildDoneButton({required BuildContext context, required VoidCallback onPressed}) {
     return ElevatedButton(
-      onPressed: _isLoading ? null : onPressed,
+      onPressed: _isLoading || !_canChangeUsername ? null : onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xffbbd953),
         shape: RoundedRectangleBorder(
@@ -57,13 +84,20 @@ class _EditUsernamePageState extends State<EditUsernamePage> {
     setState(() => _isLoading = true);
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final success = await authProvider.updateProfile(field: 'username',value: newUsername);
-    setState(() => _isLoading = false);
     if (success) {
-      Navigator.pop(context);
+      await _timeLockService.recordTimestamp('username');
+      if (mounted) {
+        Navigator.pop(context);
+      }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Failed to update username'))),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Padding(padding: EdgeInsets.symmetric(horizontal: 18, vertical: 7), child: Text('Failed to update username'))),
+        );
+      }
+    }
+    if (mounted) {
+      setState(() => _isLoading = false);
     }
   }
 
@@ -114,10 +148,13 @@ class _EditUsernamePageState extends State<EditUsernamePage> {
                 controller: usernameController,
                 labelText: 'Username',
                 name: 'username',
+                enabled: _canChangeUsername,
               ),
               SizedBox(height: 10.h),
               Text(
-                'Your username can only be changed once every 7 days',
+                _canChangeUsername
+                    ? 'Your username can only be changed once every 7 days'
+                    : 'You can change your username again in ${_remainingTime.inDays} days and ${_remainingTime.inHours % 24} hours.',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       fontSize: 12.sp,
                       color: Colors.grey,
