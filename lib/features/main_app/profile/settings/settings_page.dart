@@ -8,6 +8,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:kliks/shared/widgets/custom_navbar.dart';
 import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/auth_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -17,7 +18,12 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  String _userLocation = 'Ontario, Canada';
+  String _userLocation = '';
+
+  void _shareReferralCode(String referralCode) {
+    final message = 'Join Kliks with my referral code: $referralCode';
+    Share.share(message);
+  }
 
   @override
   void initState() {
@@ -603,15 +609,30 @@ class _SettingsPageState extends State<SettingsPage> {
                                       SizedBox(height: 12.h),
                                       Row(
                                       children: [
-                                        Icon(FontAwesomeIcons.facebook, color: Colors.blue, size: 40.sp),
+                                        GestureDetector(
+                                          onTap: () => _shareReferralCode(inviteCode),
+                                          child: Icon(FontAwesomeIcons.facebook, color: Colors.blue, size: 40.sp),
+                                        ),
                                         SizedBox(width: 15.w),
-                                        Icon(FontAwesomeIcons.xTwitter, color: Colors.black, size: 40.sp), // X (Twitter) substitute
+                                        GestureDetector(
+                                          onTap: () => _shareReferralCode(inviteCode),
+                                          child: Icon(FontAwesomeIcons.xTwitter, color: Colors.black, size: 40.sp), // X (Twitter) substitute
+                                        ),
                                         SizedBox(width: 15.w),
-                                        Icon(FontAwesomeIcons.instagram, color: Colors.purple, size: 40.sp), // Instagram substitute
+                                        GestureDetector(
+                                          onTap: () => _shareReferralCode(inviteCode),
+                                          child: Icon(FontAwesomeIcons.instagram, color: Colors.purple, size: 40.sp), // Instagram substitute
+                                        ),
                                         SizedBox(width: 15.w),
-                                        Icon(FontAwesomeIcons.whatsapp, color: Colors.green, size: 40.sp),
+                                        GestureDetector(
+                                          onTap: () => _shareReferralCode(inviteCode),
+                                          child: Icon(FontAwesomeIcons.whatsapp, color: Colors.green, size: 40.sp),
+                                        ),
                                         SizedBox(width: 15.w),
-                                        Icon(FontAwesomeIcons.telegram, color: Colors.blueAccent, size: 40.sp), // Telegram substitute
+                                        GestureDetector(
+                                          onTap: () => _shareReferralCode(inviteCode),
+                                          child: Icon(FontAwesomeIcons.telegram, color: Colors.blueAccent, size: 40.sp), // Telegram substitute
+                                        ),
                                       ],
                                       ),
                                     ],
