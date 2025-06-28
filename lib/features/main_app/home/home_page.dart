@@ -456,6 +456,60 @@ class _HomePageState extends State<HomePage>
                                         print('Onboarding continued');
                                       },
                                     ),
+                                  Consumer2<CheckedInEventsProvider, EventProvider>(
+                                  builder: (context, checkedInProvider, eventProvider, child) {
+                                    final checkedInIds = checkedInProvider.getCheckedInEventIds();
+                                    if (checkedInIds.isEmpty) return SizedBox.shrink();
+                                    return Column(
+                                      children: checkedInIds.map((eventId) {
+                                        final eventDetail = _eventDetailsCache[eventId] ?? _events.firstWhere(
+                                          (e) => e['id']?.toString() == eventId || e['eventDocument']?['id']?.toString() == eventId,
+                                          orElse: () => null,
+                                        );
+                                        if (eventDetail == null) return SizedBox.shrink();
+                                        final eventName = eventDetail['eventDocument']?['title'] ?? eventDetail['title'] ?? '';
+                                        final checkedInCount = (eventDetail['checkedInUserDocuments'] as List?)?.length ?? 0;
+                                        return Container(
+                                          width: double.infinity,
+                                          margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
+                                          padding: EdgeInsets.symmetric(horizontal: 18.w),
+                                          height: 40.h,
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xffbbd953),
+                                            borderRadius: BorderRadius.circular(14.r),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  eventName,
+                                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                                    fontSize: 10.sp,
+                                                    fontFamily: 'Metropolis-SemiBold',
+                                                    color: Colors.black,
+                                                  ),
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Icon(Icons.people, size: 15.sp, color: Colors.black),
+                                                  SizedBox(width: 6.w),
+                                                  Text('$checkedInCount', style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                    fontSize: 12.sp,
+                                                    fontFamily: 'Metropolis-Medium',
+                                                    color: Colors.black,
+                                                  )),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      }).toList(),
+                                    );
+                                  },
+                                ),
                                   Expanded(
                                     child: _isLoading
                                         ? ListView.builder(
