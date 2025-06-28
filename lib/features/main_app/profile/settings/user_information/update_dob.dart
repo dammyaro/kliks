@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kliks/core/providers/auth_provider.dart';
 import 'package:kliks/shared/widgets/custom_navbar.dart';
 import 'package:kliks/shared/widgets/button.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class UpdateDobPage extends StatefulWidget {
   const UpdateDobPage({super.key});
@@ -13,6 +15,7 @@ class UpdateDobPage extends StatefulWidget {
 
 class _UpdateDobPageState extends State<UpdateDobPage> {
   DateTime? _selectedDate;
+  bool _isLoading = false;
 
   Future<void> _pickDate(BuildContext context) async {
     final now = DateTime.now();
@@ -27,6 +30,34 @@ class _UpdateDobPageState extends State<UpdateDobPage> {
       setState(() {
         _selectedDate = picked;
       });
+    }
+  }
+
+  Future<void> _handleUpdate() async {
+    if (_selectedDate == null) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final success = await authProvider.updateProfile(
+      field: 'dob',
+      value: _selectedDate!.toIso8601String(),
+    );
+
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (success) {
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to update date of birth')),
+        );
+      }
     }
   }
 
@@ -99,9 +130,8 @@ class _UpdateDobPageState extends State<UpdateDobPage> {
             SizedBox(height: 32.h),
             CustomButton(
               text: 'Update',
-              onPressed: _selectedDate != null ? () {
-                // Handle update logic
-              } : null,
+              onPressed: _selectedDate != null && !_isLoading ? _handleUpdate : null,
+              isLoading: _isLoading,
               backgroundColor: const Color(0xffbbd953),
               textStyle: theme.textTheme.bodyMedium?.copyWith(
                 fontSize: 14.sp,

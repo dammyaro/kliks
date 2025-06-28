@@ -247,6 +247,29 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> changePassword({
+    required String oldPassword,
+    required String password,
+  }) async {
+    try {
+      final response = await _apiService.post(
+        '/auth/changePassword',
+        data: {
+          'oldPassword': oldPassword,
+          'password': password,
+        },
+      );
+      print('Change password response: ${response.data}');
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print('Change password error: $e');
+      return false;
+    }
+  }
+
   Future<bool> updateLocation({
     required double lat,
     required double lng,
