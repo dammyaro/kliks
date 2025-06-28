@@ -45,7 +45,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _settingsTile({
-    required IconData icon,
+    required dynamic icon,
     required String label,
     String? subLabel,
     Color? subLabelColor,
@@ -63,14 +63,26 @@ class _SettingsPageState extends State<SettingsPage> {
         child: Row(
           crossAxisAlignment: subLabel != null ? CrossAxisAlignment.start : CrossAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              size: 22.sp,
-              color: iconColor ??
-                  (isDestructive
-                      ? theme.colorScheme.error
-                      : theme.iconTheme.color),
-            ),
+            icon is IconData
+                ? Icon(
+                    icon,
+                    size: 22.sp,
+                    color: iconColor ??
+                        (isDestructive
+                            ? theme.colorScheme.error
+                            : theme.iconTheme.color),
+                  )
+                : icon is Widget
+                    ? SizedBox(
+                        width: 22.sp,
+                        height: 22.sp,
+                        child: icon,
+                      )
+                    : Icon(
+                        Icons.error,
+                        size: 22.sp,
+                        color: theme.colorScheme.error,
+                      ),
             SizedBox(width: 18.w),
             Expanded(
               child: Column(
@@ -701,7 +713,11 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               Divider(height: 1, color: theme.dividerColor.withOpacity(0.2)),
               _settingsTile(
-                icon: Icons.apple_outlined,
+                icon: Image.asset(
+                  'assets/icons/about-icon.png',
+                  width: 24.sp,
+                  height: 24.sp,
+                ),
                 label: 'About Kliks',
                 onTap: () {
                   Navigator.pushNamed(context, '/about-kliks');
