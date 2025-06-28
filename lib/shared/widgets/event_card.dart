@@ -81,13 +81,22 @@ class EventCard extends StatelessWidget {
               Row(
                 children: [
                   GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       if (ownerDocument.isNotEmpty) {
-                        Navigator.pushNamed(
+                        final authProvider = Provider.of<AuthProvider>(
                           context,
-                          '/user-profile',
-                          arguments: ownerDocument,
+                          listen: false,
                         );
+                        final currentUserId = await authProvider.getUserId();
+                        final ownerId = ownerDocument['id']?.toString();
+
+                        if (currentUserId != ownerId) {
+                          Navigator.pushNamed(
+                            context,
+                            '/user-profile',
+                            arguments: ownerDocument,
+                          );
+                        }
                       }
                     },
                     child: ProfilePicture(
