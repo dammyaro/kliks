@@ -12,6 +12,7 @@ import 'package:kliks/core/routes.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:kliks/shared/widgets/handle_bar.dart';
+import 'package:kliks/shared/widgets/profile_picture.dart';
 
 class OrganizerEventDetailPage extends StatefulWidget {
   final String? eventId;
@@ -155,67 +156,12 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
     );
   }
 
-  void _showAttendeeListModal(BuildContext context, List<dynamic> attendees) {
+  void _showAttendeeListModal(BuildContext context, Map<String, dynamic> event) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (context) {
-        return DraggableScrollableSheet(
-          expand: false,
-          initialChildSize: 0.5,
-          maxChildSize: 0.9,
-          minChildSize: 0.3,
-          builder: (context, scrollController) {
-            return Container(
-              padding: EdgeInsets.all(16.w),
-              child: Column(
-                children: [
-                  const HandleBar(),
-                  SizedBox(height: 10.h),
-                  Text(
-                    'Live Dashboard',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontSize: 18.sp,
-                          fontFamily: 'Metropolis-Bold',
-                        ),
-                  ),
-                  SizedBox(height: 10.h),
-                  Expanded(
-                    child: GridView.builder(
-                      controller: scrollController,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                      ),
-                      itemCount: attendees.length,
-                      itemBuilder: (context, index) {
-                        final attendee = attendees[index];
-                        return Column(
-                          children: [
-                            CircleAvatar(
-                              radius: 40,
-                              backgroundImage: NetworkImage(attendee['image'] ?? ''),
-                            ),
-                            SizedBox(height: 5.h),
-                            Text(
-                              attendee['fullname'] ?? '',
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    fontSize: 12.sp,
-                                    fontFamily: 'Metropolis-Medium',
-                                  ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
+        return _LiveDashboardModal(event: event);
       },
     );
   }
@@ -591,8 +537,10 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
                 padding: EdgeInsets.all(16.w),
                 child: CustomButton(
                   text: 'Live Dashboard',
+                  textStyle: TextStyle(fontSize: 12.sp),
+                  backgroundColor: Color(0xffbbd953),
                   onPressed: () => _showAttendeeListModal(
-                      context, event?['attendingUserDocuments'] ?? []),
+                      context, event!),
                 ),
               )
             : null,
@@ -1176,6 +1124,166 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
         ),
       ),
     ));
+  }
+}
+
+
+
+class _LiveDashboardModal extends StatefulWidget {
+  final Map<String, dynamic> event;
+
+  const _LiveDashboardModal({required this.event});
+
+  @override
+  State<_LiveDashboardModal> createState() => _LiveDashboardModalState();
+}
+
+class _LiveDashboardModalState extends State<_LiveDashboardModal> {
+  String searchQuery = '';
+
+  @override
+  Widget build(BuildContext context) {
+    final organizerId = widget.event['ownerDocument']?['id']?.toString();
+    final attendees = widget.event['attendingUserDocuments'] as List? ?? [];
+    final checkedInUserIds = widget.event['checkedInUserIds'] as List? ?? [];
+    final filteredAttendees = attendees.where((attendee) {
+      final fullName = attendee['fullname'] as String? ?? '';
+      final username = attendee['username'] as String? ?? '';
+      return fullName.toLowerCase().contains(searchQuery.toLowerCase()) ||
+          username.toLowerCase().contains(searchQuery.toLowerCase());
+    }).toList();
+
+    return DraggableScrollableSheet(
+      expand: false,
+      initialChildSize: 0.5,
+      maxChildSize: 0.9,
+      minChildSize: 0.3,
+      builder: (context, scrollController) {
+        return Container(
+          padding: EdgeInsets.all(16.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const HandleBar(),
+              SizedBox(height: 10.h),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  widget.event['eventDocument']?['title'] ?? '',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontSize: 18.sp,
+                        fontFamily: 'Metropolis-Regular',
+                      ),
+                ),
+              ),
+              SizedBox(height: 4.h),
+              Text(
+                '${attendees.length} users checked in',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontSize: 12.sp,
+                      fontFamily: 'Metropolis-Regular',
+                      color: Theme.of(context).hintColor,
+                    ),
+              ),
+              SizedBox(height: 10.h),
+              // Padding(
+              //   padding: EdgeInsets.symmetric(horizontal: 16.w),
+              //   child: TextField(
+              //     onChanged: (value) {
+              //       setState(() {
+              //         searchQuery = value;
+              //       });
+              //     },
+              //     decoration: InputDecoration(
+              //       hintText: 'Search attendees...',
+              //       prefixIcon: Icon(Icons.search),
+              //       border: OutlineInputBorder(
+              //         borderRadius: BorderRadius.circular(12.r),
+              //         borderSide: BorderSide.none,
+              //       ),
+              //       fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+              //       filled: true,
+              //     ),
+              //   ),
+              // ),
+              SizedBox(height: 10.h),
+              Flexible(
+                child: GridView.builder(
+                  controller: scrollController,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    crossAxisSpacing: 10.w,
+                    mainAxisSpacing: 10.h,
+                    childAspectRatio: 0.8,
+                  ),
+                  itemCount: filteredAttendees.length,
+                  itemBuilder: (context, index) {
+                    final attendee = filteredAttendees[index];
+                    final isCheckedIn = checkedInUserIds.contains(attendee['id']);
+                    return Column(
+                      children: [
+                        Stack(
+                          children: [
+                            ProfilePicture(
+                              fileName: attendee['image'] ?? '',
+                              size: 60.sp,
+                            ),
+                            if (attendee['id'] == organizerId)
+                              Positioned.fill(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: Colors.green, width: 3.w),
+                                  ),
+                                ),
+                              ),
+                            if (isCheckedIn)
+                              Positioned.fill(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.black.withOpacity(0.5),
+                                  ),
+                                  child: Icon(
+                                    Icons.check_circle,
+                                    color: Colors.green,
+                                    size: 24.sp,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                        SizedBox(height: 5.h),
+                        Text(
+                          attendee['fullname'] ?? '',
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                fontSize: 10.sp,
+                                fontFamily: 'Metropolis-Medium',
+                              ),
+                        ),
+                        Text(
+                          attendee['id'] == organizerId ? 'Organizer' : 'Guest',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                fontSize: 8.sp,
+                                fontFamily: 'Metropolis-Bold',
+                                color: attendee['id'] == organizerId
+                                    ? Colors.green
+                                    : Colors.grey,
+                              ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }
 
