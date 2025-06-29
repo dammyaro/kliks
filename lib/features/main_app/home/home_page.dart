@@ -226,7 +226,7 @@ class _HomePageState extends State<HomePage>
                                           height: 40.h,
                                           decoration: BoxDecoration(
                                             color: const Color(0xffbbd953),
-                                            borderRadius: BorderRadius.circular(14.r),
+                                            borderRadius: BorderRadius.circular(20.r),
                                           ),
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
