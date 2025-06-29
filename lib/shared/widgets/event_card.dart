@@ -33,10 +33,26 @@ class EventCard extends StatelessWidget {
             ? [eventDocument['category']['category']]
             : [];
     String formattedDate = '';
+    String eventStatus = '';
+    Color statusColor = Colors.grey;
+
     try {
       if (startDate.isNotEmpty) {
         final dt = DateTime.parse(startDate);
         formattedDate = DateFormat('EEE, d MMM, yyyy, h:mm a').format(dt);
+        final now = DateTime.now();
+        final endDate = eventDocument['endDate'] != null ? DateTime.parse(eventDocument['endDate']) : dt.add(const Duration(hours: 2));
+
+        if (now.isAfter(dt) && now.isBefore(endDate)) {
+          eventStatus = 'Live';
+          statusColor = Colors.orange;
+        } else if (now.isBefore(dt)) {
+          eventStatus = 'Upcoming';
+          statusColor = const Color(0xffbbd953);
+        } else {
+          eventStatus = 'Concluded';
+          statusColor = Colors.grey;
+        }
       }
     } catch (_) {}
 
@@ -128,28 +144,24 @@ class EventCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Spacer(),
-                  // Container(
-                  //   padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-                  //   decoration: BoxDecoration(
-                  //     color: const Color(0xFFFFBF00),
-                  //     borderRadius: BorderRadius.circular(10.r),
-                  //   ),
-                  //   child: Row(
-                  //     children: [
-                  //       Icon(Icons.emoji_events, color: Colors.black, size: 16.sp),
-                  //       SizedBox(width: 4.w),
-                  //       Text(
-                  //         '1 POINTS',
-                  //         style: TextStyle(
-                  //           color: Colors.black,
-                  //           fontSize: 11.sp,
-                  //           fontFamily: 'Metropolis-Bold',
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
+                  const Spacer(),
+                  if (eventStatus.isNotEmpty)
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                    decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(10.r),
+                      border: Border.all(color: statusColor, width: 1.5),
+                    ),
+                    child: Text(
+                      eventStatus,
+                      style: TextStyle(
+                        color: statusColor,
+                        fontSize: 11.sp,
+                        fontFamily: 'Metropolis-Bold',
+                      ),
+                    ),
+                  ),
                 ],
               ),
               SizedBox(height: 12.h),
