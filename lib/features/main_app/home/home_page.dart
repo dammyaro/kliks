@@ -1,3 +1,4 @@
+import 'package:kliks/shared/widgets/user_avatar_summary.dart';
 import 'package:kliks/shared/widgets/checked_in_bottom_sheet.dart';
 import 'package:kliks/shared/widgets/live_event_dashboard.dart';
 import 'package:flutter/material.dart';
@@ -240,32 +241,34 @@ class _HomePageState extends State<HomePage>
                                             height: 40.h,
                                             decoration: BoxDecoration(
                                               color: const Color(0xffbbd953),
-                                              borderRadius: BorderRadius.circular(20.r),
+                                              borderRadius: BorderRadius.circular(10.r),
                                             ),
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
+                                                UserAvatarSummary(
+                                                  users: (eventDetail['attendingUserDocuments'] as List? ?? []),
+                                                  avatarSize: 24.sp,
+                                                ),
+                                                SizedBox(width: 4.w),
+                                                Text(
+                                                  '•',
+                                                  style: TextStyle(
+                                                    fontSize: 14.sp,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 4.w),
                                                 Expanded(
                                                   child: Text(
                                                     eventName,
                                                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                                      fontSize: 10.sp,
-                                                      fontFamily: 'Metropolis-Bold',
+                                                      fontSize: 12.sp,
+                                                      fontFamily: 'Metropolis-Medium',
                                                       color: Colors.black,
                                                     ),
                                                     overflow: TextOverflow.ellipsis,
                                                   ),
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    Icon(Icons.people, size: 15.sp, color: Colors.black),
-                                                    SizedBox(width: 6.w),
-                                                    Text('$checkedInCount', style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                      fontSize: 12.sp,
-                                                      fontFamily: 'Metropolis-Medium',
-                                                      color: Colors.black,
-                                                    )),
-                                                  ],
                                                 ),
                                               ],
                                             ),
@@ -329,7 +332,8 @@ class _HomePageState extends State<HomePage>
                                         );
                                         if (eventDetail == null) return SizedBox.shrink();
                                         final eventName = eventDetail['eventDocument']?['title'] ?? eventDetail['title'] ?? '';
-                                        final checkedInCount = (eventDetail['checkedInUserDocuments'] as List?)?.length ?? 0;
+                                        final checkedInUsers = eventDetail['attendingUserDocuments'] as List? ?? [];
+
                                         return GestureDetector(
                                           onTap: () {
                                             showModalBottomSheet(
@@ -354,32 +358,34 @@ class _HomePageState extends State<HomePage>
                                             decoration: BoxDecoration(
                                               color: const Color(0xffbbd953),
                                               borderRadius:
-                                                  BorderRadius.circular(20.r),
+                                                  BorderRadius.circular(10.r),
                                             ),
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
+                                                UserAvatarSummary(
+                                                  users: checkedInUsers,
+                                                  avatarSize: 24.sp,
+                                                ),
+                                                SizedBox(width: 4.w),
+                                                Text(
+                                                  '•',
+                                                  style: TextStyle(
+                                                    fontSize: 14.sp,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 4.w),
                                                 Expanded(
                                                   child: Text(
                                                     eventName,
                                                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                                      fontSize: 10.sp,
-                                                      fontFamily: 'Metropolis-Bold',
+                                                      fontSize: 12.sp,
+                                                      fontFamily: 'Metropolis-Medium',
                                                       color: Colors.black,
                                                     ),
                                                     overflow: TextOverflow.ellipsis,
                                                   ),
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    Icon(Icons.people, size: 15.sp, color: Colors.black),
-                                                    SizedBox(width: 6.w),
-                                                    Text('$checkedInCount', style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                      fontSize: 12.sp,
-                                                      fontFamily: 'Metropolis-Medium',
-                                                      color: Colors.black,
-                                                    )),
-                                                  ],
                                                 ),
                                               ],
                                             ),
@@ -560,7 +566,8 @@ class _HomePageState extends State<HomePage>
                                         );
                                         if (eventDetail == null) return SizedBox.shrink();
                                         final eventName = eventDetail['eventDocument']?['title'] ?? eventDetail['title'] ?? '';
-                                        final checkedInCount = (eventDetail['checkedInUserDocuments'] as List?)?.length ?? 0;
+                                        final checkedInUsers = eventDetail['attendingUserDocuments'] as List? ?? [];
+
                                         return GestureDetector(
                                           onTap: () {
                                             showModalBottomSheet(
@@ -585,32 +592,34 @@ class _HomePageState extends State<HomePage>
                                             decoration: BoxDecoration(
                                               color: const Color(0xffbbd953),
                                               borderRadius:
-                                                  BorderRadius.circular(20.r),
+                                                  BorderRadius.circular(10.r),
                                             ),
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
+                                                UserAvatarSummary(
+                                                  users: checkedInUsers,
+                                                  avatarSize: 18.sp,
+                                                ),
+                                                SizedBox(width: 4.w),
+                                                Text(
+                                                  '•',
+                                                  style: TextStyle(
+                                                    fontSize: 14.sp,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 4.w),
                                                 Expanded(
                                                   child: Text(
                                                     eventName,
                                                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                                      fontSize: 10.sp,
-                                                      fontFamily: 'Metropolis-Bold',
+                                                      fontSize: 12.sp,
+                                                      fontFamily: 'Metropolis-Medium',
                                                       color: Colors.black,
                                                     ),
                                                     overflow: TextOverflow.ellipsis,
                                                   ),
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    Icon(Icons.people, size: 15.sp, color: Colors.black),
-                                                    SizedBox(width: 6.w),
-                                                    Text('$checkedInCount', style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                      fontSize: 12.sp,
-                                                      fontFamily: 'Metropolis-Medium',
-                                                      color: Colors.black,
-                                                    )),
-                                                  ],
                                                 ),
                                               ],
                                             ),
