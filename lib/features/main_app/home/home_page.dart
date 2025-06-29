@@ -1,3 +1,4 @@
+import 'package:kliks/shared/widgets/live_event_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:kliks/shared/widgets/main_app_bar.dart';
 import 'package:kliks/shared/widgets/event_filter.dart';
@@ -81,6 +82,16 @@ class _HomePageState extends State<HomePage>
       _userId = userId;
       _hasLoaded = true;
     });
+  }
+
+  void _showLiveDashboardModal(BuildContext context, Map<String, dynamic> event) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return LiveEventDashboard(event: event);
+      },
+    );
   }
 
   @override
@@ -219,41 +230,44 @@ class _HomePageState extends State<HomePage>
                                         if (eventDetail == null) return SizedBox.shrink();
                                         final eventName = eventDetail['eventDocument']?['title'] ?? eventDetail['title'] ?? '';
                                         final checkedInCount = (eventDetail['checkedInUserDocuments'] as List?)?.length ?? 0;
-                                        return Container(
-                                          width: double.infinity,
-                                          margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
-                                          padding: EdgeInsets.symmetric(horizontal: 18.w),
-                                          height: 40.h,
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xffbbd953),
-                                            borderRadius: BorderRadius.circular(20.r),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                  eventName,
-                                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                                    fontSize: 10.sp,
-                                                    fontFamily: 'Metropolis-Bold',
-                                                    color: Colors.black,
+                                        return GestureDetector(
+                                          onTap: () => _showLiveDashboardModal(context, eventDetail),
+                                          child: Container(
+                                            width: double.infinity,
+                                            margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
+                                            padding: EdgeInsets.symmetric(horizontal: 18.w),
+                                            height: 40.h,
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xffbbd953),
+                                              borderRadius: BorderRadius.circular(20.r),
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    eventName,
+                                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                                      fontSize: 10.sp,
+                                                      fontFamily: 'Metropolis-Bold',
+                                                      color: Colors.black,
+                                                    ),
+                                                    overflow: TextOverflow.ellipsis,
                                                   ),
-                                                  overflow: TextOverflow.ellipsis,
                                                 ),
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Icon(Icons.people, size: 15.sp, color: Colors.black),
-                                                  SizedBox(width: 6.w),
-                                                  Text('$checkedInCount', style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                    fontSize: 12.sp,
-                                                    fontFamily: 'Metropolis-Medium',
-                                                    color: Colors.black,
-                                                  )),
-                                                ],
-                                              ),
-                                            ],
+                                                Row(
+                                                  children: [
+                                                    Icon(Icons.people, size: 15.sp, color: Colors.black),
+                                                    SizedBox(width: 6.w),
+                                                    Text('$checkedInCount', style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                      fontSize: 12.sp,
+                                                      fontFamily: 'Metropolis-Medium',
+                                                      color: Colors.black,
+                                                    )),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         );
                                       }).toList(),
