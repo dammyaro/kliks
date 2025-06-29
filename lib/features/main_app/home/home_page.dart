@@ -236,7 +236,7 @@ class _HomePageState extends State<HomePage>
                                                   eventName,
                                                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                                     fontSize: 10.sp,
-                                                    fontFamily: 'Metropolis-SemiBold',
+                                                    fontFamily: 'Metropolis-Bold',
                                                     color: Colors.black,
                                                   ),
                                                   overflow: TextOverflow.ellipsis,
@@ -322,7 +322,7 @@ class _HomePageState extends State<HomePage>
                                           height: 40.h,
                                           decoration: BoxDecoration(
                                             color: const Color(0xffbbd953),
-                                            borderRadius: BorderRadius.circular(14.r),
+                                            borderRadius: BorderRadius.circular(20.r),
                                           ),
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -332,7 +332,7 @@ class _HomePageState extends State<HomePage>
                                                   eventName,
                                                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                                     fontSize: 10.sp,
-                                                    fontFamily: 'Metropolis-SemiBold',
+                                                    fontFamily: 'Metropolis-Bold',
                                                     color: Colors.black,
                                                   ),
                                                   overflow: TextOverflow.ellipsis,
@@ -535,7 +535,7 @@ class _HomePageState extends State<HomePage>
                                           height: 40.h,
                                           decoration: BoxDecoration(
                                             color: const Color(0xffbbd953),
-                                            borderRadius: BorderRadius.circular(14.r),
+                                            borderRadius: BorderRadius.circular(20.r),
                                           ),
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -545,7 +545,7 @@ class _HomePageState extends State<HomePage>
                                                   eventName,
                                                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                                     fontSize: 10.sp,
-                                                    fontFamily: 'Metropolis-SemiBold',
+                                                    fontFamily: 'Metropolis-Bold',
                                                     color: Colors.black,
                                                   ),
                                                   overflow: TextOverflow.ellipsis,

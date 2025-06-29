@@ -49,7 +49,7 @@ class _EditNamePageState extends State<EditNamePage> {
       return 'Name cannot be empty';
     }
     // Accepts letters, spaces, hyphens, apostrophes, and periods. No numbers or special chars.
-    final nameRegExp = RegExp(r"^[A-Za-zÀ-ÖØ-öø-ÿ'’.- ]{2,50}$");
+    final nameRegExp = RegExp(r"^[A-Za-z\s'.-]{2,50}$");
     if (!nameRegExp.hasMatch(value.trim())) {
       return 'Enter a valid name (letters, spaces, hyphens, apostrophes, periods)';
     }
