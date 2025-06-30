@@ -27,6 +27,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin<HomePage> {
+  final ScrollController _mainScrollController = ScrollController();
   List<dynamic> _events = [];
   List<dynamic> _categories = [];
   bool _isLoading = true;
@@ -142,6 +143,7 @@ class _HomePageState extends State<HomePage>
       body: RefreshIndicator(
         onRefresh: _onRefresh,
         child: SingleChildScrollView(
+          controller: _mainScrollController,
           child: Column(
             children: [
               SizedBox(height: 10.h),
@@ -213,7 +215,27 @@ class _HomePageState extends State<HomePage>
                         ],
                       ),
                       Expanded(
-                        child: TabBarView(
+                        child: NotificationListener<ScrollNotification>(
+                          onNotification: (scrollNotification) {
+                            // For scrolling down: Trigger when the user scrolls down inside the list.
+                            if (scrollNotification is ScrollUpdateNotification && scrollNotification.scrollDelta! > 0) {
+                              _mainScrollController.animateTo(
+                                _mainScrollController.position.maxScrollExtent,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeOut,
+                              );
+                            }
+                            // For scrolling up: Trigger when the user tries to scroll past the top of the list.
+                            if (scrollNotification is OverscrollNotification && scrollNotification.overscroll < 0) {
+                              _mainScrollController.animateTo(
+                                0.0,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeOut,
+                              );
+                            }
+                            return true;
+                          },
+                          child: TabBarView(
                           children: [
                             // All events tab (original logic)
                             Column(
@@ -765,7 +787,7 @@ class _HomePageState extends State<HomePage>
                           ],
                         ),
                       ),
-                    ],
+                  )],
                   ),
                 ),
               ),
@@ -774,5 +796,11 @@ class _HomePageState extends State<HomePage>
         ),
       ),
     );
+   }
+
+  @override
+  void dispose() {
+    _mainScrollController.dispose();
+    super.dispose();
   }
 }
