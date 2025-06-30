@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kliks/core/debug/printWrapped.dart';
 import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/notifications_provider.dart';
 import 'package:kliks/core/providers/event_provider.dart';
@@ -173,18 +174,28 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
               data['eventId']?.toString() ??
               notification['eventId']?.toString();
           final event = eventId != null ? _inviteEventCache[eventId] : null;
+
+          // If event is not in cache, fetch it
+          if (eventId != null && event == null && mounted) {
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
+              if (!mounted) return;
+              final eventProvider = Provider.of<EventProvider>(context, listen: false);
+              final fetchedEvent = await eventProvider.getEventDetailById(eventId);
+              if (fetchedEvent != null && mounted) {
+                setState(() {
+                  _inviteEventCache[eventId] = fetchedEvent;
+                });
+              }
+            });
+          }
+
           final inviter =
               event?['userCreator'] ?? event?['ownerDocument'] ?? {};
           final inviterName = inviter['fullname'] ?? 'Someone';
           final inviterImage = inviter['image'];
-          final eventName =
-              event?['eventDocument']?['title'] ??
-              data['eventName'] ??
-              'an event';
 
           title = inviterName;
-          // subtitle = 'Invited you to $eventName';
-          subtitle = 'Invited you to an event';
+          subtitle = notification['message'] as String? ?? 'Invited you to an event';
           imageUrl = inviterImage;
           trailingWidget = Align(
             alignment: Alignment.center,
@@ -192,14 +203,20 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
               height: 22.h,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  foregroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  backgroundColor: Colors.transparent,
+                  foregroundColor: const Color(0xffbbd953),
+                  shadowColor: Colors.transparent,
+                  elevation: 0,
                   padding: EdgeInsets.symmetric(
                     horizontal: 12.w,
                     vertical: 4.h,
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.r),
+                    side: const BorderSide(
+                      color: Color(0xffbbd953),
+                      width: 1,
+                    ),
                   ),
                   visualDensity: VisualDensity.compact,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -209,11 +226,35 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     fontSize: 8.sp,
                     fontFamily: 'Metropolis-Medium',
-                    color: Theme.of(context).scaffoldBackgroundColor,
+                    color: const Color(0xffbbd953),
                   ),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   if (event == null) return;
+
+                  // Fetch the invite code just-in-time
+                  final eventProvider =
+                      Provider.of<EventProvider>(context, listen: false);
+                  final invitedEvents =
+                      await eventProvider.getInvitedEvents();
+                      // printWrapped('the iv events: $invitedEvents');
+                  final specificInvitedEvent = invitedEvents.firstWhere(
+                    (e) => e?['eventInvitation']?['eventId'] == eventId,
+                    orElse: () => null,
+                  );
+
+                  final inviteCode =
+                      specificInvitedEvent?['eventInvitation']?['inviteCode']?.toString();
+
+                  if (specificInvitedEvent == null || inviteCode == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('This event invitation is no longer valid.'),
+                      ),
+                    );
+                    return;
+                  }
+
                   showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
@@ -230,7 +271,6 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
                           event['eventDocument']?['location'] ?? '';
                       final guestsCount =
                           event['eventAttendCount']?.toString() ?? '0';
-                      final inviteCode = event['inviteCode'] ?? '';
                       bool isAcceptLoading = false;
                       bool isRejectLoading = false;
                       return StatefulBuilder(
@@ -721,6 +761,8 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
                                     Flexible(
                                       child: Text(
                                         subtitle,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
                                         style: Theme.of(
                                           context,
                                         ).textTheme.bodyMedium?.copyWith(
@@ -729,7 +771,6 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
                                           letterSpacing: -0.5,
                                           color: textColor?.withOpacity(0.5),
                                         ),
-                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                     SizedBox(width: 6.w),

@@ -248,9 +248,10 @@ class EventProvider with ChangeNotifier {
       final url =
           '/event/getInvitedEvents${uri.query.isNotEmpty ? '?${uri.query}' : ''}';
       final response = await _apiService.get(url);
+      // printWrapped(' Invited Events ${response.data as List<dynamic>?}');
       return response.data as List<dynamic>? ?? [];
     } catch (e) {
-      // print('getInvitedEvents error: $e');
+      print('getInvitedEvents error: $e');
       return [];
     }
   }
