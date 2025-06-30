@@ -164,8 +164,10 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
 
       case 'EventAnnouncement':
         title = 'Event Announcement';
-        subtitle = data['announcement'] ?? 'There is an update to your event.';
+        subtitle = notification['message'] as String? ?? 'There is an update to your event.';
         icon = CupertinoIcons.bell;
+        isTappable = true;
+        tapUserData = {};
         break;
 
       case 'InviteEvent':
@@ -828,7 +830,44 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
           }
 
           // Handle tap actions
-          if (type == 'CheckProfile' && tapUserData?['id'] != null) {
+          if (type == 'EventAnnouncement') {
+            print("tapping announcement");
+            final eventId = notification['eventId']?.toString();
+            print(eventId);
+            if (eventId != null) {
+              final authProvider = Provider.of<AuthProvider>(context, listen: false);
+              final eventProvider = Provider.of<EventProvider>(context, listen: false);
+              final currentUser = authProvider.profile;
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) =>
+                    const Center(child: CircularProgressIndicator()),
+              );
+              final event = await eventProvider.getEventDetailById(eventId);
+              Navigator.of(context).pop(); // Remove loading dialog
+              if (event != null) {
+                final eventCreatorId = event['eventDocument']?['userId']?.toString();
+                if (currentUser != null && currentUser['id'] == eventCreatorId) {
+                  Navigator.pushNamed(
+                    context,
+                    '/organizer-event-detail',
+                    arguments: eventId,
+                  );
+                } else {
+                  Navigator.pushNamed(
+                    context,
+                    '/event-detail',
+                    arguments: eventId,
+                  );
+                }
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Could not load event details.')),
+                );
+              }
+            }
+          } else if (type == 'CheckProfile' && tapUserData?['id'] != null) {
             Navigator.pushNamed(
               context,
               '/user-profile',
