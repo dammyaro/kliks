@@ -1493,34 +1493,51 @@ class _EventDetailPageState extends State<EventDetailPage> {
                     child: CustomButton(
                       text: 'Attend Event for Free',
                       isLoading: _isAttendingLoading,
-                      onPressed:
-                          _isAttendingLoading
-                              ? null
-                              : () async {
-                                setState(() {
-                                  _isAttendingLoading = true;
-                                });
-                                final eventProvider = Provider.of<EventProvider>(
-                                  context,
-                                  listen: false,
-                                );
-                                final success = await eventProvider.attendEvent(
-                                  widget.eventId ?? '',
-                                );
-                                if (success) {
-                                  await _loadEvent();
-                                }
-                                setState(() {
-                                  _isAttendingLoading = false;
-                                });
-                              },
+                      onPressed: _isAttendingLoading
+                          ? null
+                          : () {
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(24),
+                                  ),
+                                ),
+                                builder: (context) =>
+                                    _AttendConfirmationSheet(
+                                  event: event!,
+                                  onConfirm: () async {
+                                    setState(() {
+                                      _isAttendingLoading = true;
+                                    });
+                                    final eventProvider =
+                                        Provider.of<EventProvider>(
+                                      context,
+                                      listen: false,
+                                    );
+                                    final success =
+                                        await eventProvider.attendEvent(
+                                      widget.eventId ?? '',
+                                    );
+                                    if (success) {
+                                      await _loadEvent();
+                                    }
+                                    setState(() {
+                                      _isAttendingLoading = false;
+                                    });
+                                  },
+                                ),
+                              );
+                            },
                       backgroundColor: const Color(0xffbbd953),
                       textColor: Colors.black,
-                      textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontSize: 10.sp,
-                        fontFamily: 'Metropolis-Medium',
-                        color: Colors.black,
-                      ),
+                      textStyle:
+                          Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                fontSize: 10.sp,
+                                fontFamily: 'Metropolis-Medium',
+                                color: Colors.black,
+                              ),
                     ),
                   ),
                 )
@@ -1655,6 +1672,177 @@ class _GalleryView extends StatelessWidget {
               icon: const Icon(Icons.close, color: Colors.white, size: 32),
               onPressed: () => Navigator.pop(context),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AttendConfirmationSheet extends StatelessWidget {
+  final Map<String, dynamic> event;
+  final VoidCallback onConfirm;
+
+  const _AttendConfirmationSheet({
+    required this.event,
+    required this.onConfirm,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final profile = authProvider.profile;
+    final availablePoints = profile?['points'] ?? 0;
+    final requiredPoints = event['eventDocument']?['requiredPoints'] ?? 0;
+    final eventBanner = event['eventDocument']?['bannerImageUrl'] ?? '';
+    final eventName = event['eventDocument']?['title'] ?? '';
+
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 24.w,
+        right: 24.w,
+        top: 12.h,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 24.h,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Container(
+              width: 40.w,
+              height: 5.h,
+              margin: EdgeInsets.only(bottom: 16.h),
+              decoration: BoxDecoration(
+                color: theme.dividerColor,
+                borderRadius: BorderRadius.circular(3.r),
+              ),
+            ),
+          ),
+          SizedBox(height: 8.h),
+          if (eventBanner.isNotEmpty)
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16.r),
+              child: Image.network(
+                eventBanner,
+                height: 150.h,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            ),
+          SizedBox(height: 16.h),
+          Text(
+            eventName,
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontFamily: 'Metropolis-Bold',
+            ),
+          ),
+          SizedBox(height: 16.h),
+          Text(
+            'You are attending an event that requires $requiredPoints points, are you sure you want to proceed?',
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodyLarge?.copyWith(
+              fontSize: 14.sp,
+              fontFamily: 'Metropolis-Medium',
+            ),
+          ),
+          SizedBox(height: 24.h),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface.withOpacity(0.5),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Available points',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.hintColor,
+                        fontFamily: 'Metropolis-Regular',
+                      ),
+                    ),
+                    SizedBox(height: 4.h),
+                    Text(
+                      '$availablePoints points',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontFamily: 'Metropolis-Bold',
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      'Required points',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.hintColor,
+                        fontFamily: 'Metropolis-Regular',
+                      ),
+                    ),
+                    SizedBox(height: 4.h),
+                    Text(
+                      '$requiredPoints points',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontFamily: 'Metropolis-Bold',
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 16.h),
+          Container(
+            padding: EdgeInsets.all(22.w),
+            decoration: BoxDecoration(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey[850]
+                  : Colors.grey[300],
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Row(
+              children: [
+                Image.asset(
+                  'assets/k-logo.png',
+                  width: 30.w,
+                  height: 30.h,
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Text(
+                    "Attend events with rewards to earn\nmore points",
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontSize: 12.sp,
+                          fontFamily: 'Metropolis-SemiBold',
+                        ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 24.h),
+          CustomButton(
+            text: 'Yes, Book a slot',
+            onPressed: () {
+              Navigator.pop(context);
+              onConfirm();
+            },
+            backgroundColor: const Color(0xffbbd953),
+            textColor: Colors.black,
+          ),
+          SizedBox(height: 12.h),
+          CustomButton(
+            text: 'No, Cancel',
+            onPressed: () => Navigator.pop(context),
+            backgroundColor: theme.colorScheme.surface,
+            textColor: theme.textTheme.bodyLarge?.color,
           ),
         ],
       ),
