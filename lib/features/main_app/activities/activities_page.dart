@@ -831,7 +831,7 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
 
           // Handle tap actions
           if (type == 'EventAnnouncement') {
-            print("tapping announcement");
+            // print("tapping announcement");
             final eventId = notification['eventId']?.toString();
             print(eventId);
             if (eventId != null) {

@@ -27,6 +27,7 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
   Map<String, dynamic>? event;
   bool _isLoading = true;
   bool _isDeletingEvent = false;
+  bool _isAnnouncementsExpanded = false;
 
   @override
   void initState() {
@@ -881,6 +882,68 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
               ),
             ),
             SizedBox(height: 10.h),
+            Divider(),
+            // Announcements Section
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _isAnnouncementsExpanded = !_isAnnouncementsExpanded;
+                  });
+                },
+                child: Container(
+                  color: Colors.grey.withOpacity(0.1),
+                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.announcement_outlined,
+                        size: 20.sp,
+                      ),
+                      SizedBox(width: 10.w),
+                      Expanded(
+                        child: Text(
+                          _isAnnouncementsExpanded ? 'Hide Announcement' : 'Show Announcement',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontSize: 12.sp,
+                            fontFamily: 'Metropolis-Medium',
+                          ),
+                        ),
+                      ),
+                      Icon(
+                        _isAnnouncementsExpanded ? Icons.expand_less : Icons.expand_more,
+                        size: 28.sp,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            if (_isAnnouncementsExpanded)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                child: Column(
+                  children: (event?['announcementDocuments'] as List<dynamic>? ?? []).map((announcement) {
+                    return ListTile(
+                      title: Text(
+                        announcement['announcement'] ?? '',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontSize: 14.sp,
+                          fontFamily: 'Metropolis-SemiBold',
+                        ),
+                      ),
+                      subtitle: Text(
+                        announcement['description'] ?? '',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontSize: 12.sp,
+                          fontFamily: 'Metropolis-Regular',
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
             Divider(),
             // About Event
             Padding(
