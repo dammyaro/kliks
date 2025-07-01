@@ -6,6 +6,10 @@ import 'dart:async';
 import 'package:kliks/shared/widgets/profile_picture.dart';
 import 'package:flutter/cupertino.dart';
 
+import 'package:kliks/core/providers/event_provider.dart';
+import 'package:kliks/shared/widgets/event_search_tile.dart';
+import 'package:kliks/shared/widgets/user_search_tile.dart';
+
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
 
@@ -16,13 +20,15 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  List<Map<String, dynamic>> _users = [];
+  List<Map<String, dynamic>> _results = [];
   List<Map<String, dynamic>> _searchHistory = [];
   bool _isLoading = false;
   bool _isLoadingHistory = false;
-  bool _hasMore = true;
-  int _offset = 0;
-  final int _limit = 20;
+  bool _hasMoreUsers = true;
+  bool _hasMoreEvents = true;
+  int _userOffset = 0;
+  int _eventOffset = 0;
+  final int _limit = 10; 
   String _searchTerm = '';
   Timer? _debounce;
 
@@ -52,39 +58,72 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200 && !_isLoading && _hasMore) {
-      _fetchUsers();
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 200 &&
+        !_isLoading &&
+        (_hasMoreUsers || _hasMoreEvents)) {
+      _fetchResults();
     }
   }
 
   void _onSearchChanged(String value) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 400), () {
+      if (!mounted) return;
       setState(() {
         _searchTerm = value;
-        _users.clear();
-        _offset = 0;
-        _hasMore = true;
+        _results.clear();
+        _userOffset = 0;
+        _eventOffset = 0;
+        _hasMoreUsers = true;
+        _hasMoreEvents = true;
       });
-      _fetchUsers(reset: true);
+      _fetchResults(reset: true);
     });
   }
 
-  Future<void> _fetchUsers({bool reset = false}) async {
-    if (_isLoading || (!_hasMore && !reset)) return;
+  Future<void> _fetchResults({bool reset = false}) async {
+    if (_isLoading || (!_hasMoreUsers && !_hasMoreEvents && !reset)) return;
+    if (!mounted) return;
     setState(() => _isLoading = true);
-    final provider = Provider.of<AuthProvider>(context, listen: false);
-    final newUsers = await provider.fetchUsers(
-      searchName: _searchTerm,
-      limit: _limit,
-      offset: _offset,
-    );
+
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final eventProvider = Provider.of<EventProvider>(context, listen: false);
+
+    final futureUsers = _hasMoreUsers
+        ? authProvider.fetchUsers(
+            searchName: _searchTerm,
+            limit: _limit,
+            offset: _userOffset,
+          )
+        : Future.value(<Map<String, dynamic>>[]);
+
+    final futureEvents = _hasMoreEvents
+        ? eventProvider.getEvents(
+            search: _searchTerm,
+            limit: _limit,
+            offset: _eventOffset,
+          )
+        : Future.value(<Map<String, dynamic>>[]);
+
+    final results = await Future.wait([futureUsers, futureEvents]);
+    if (!mounted) return;
+    final newUsers = List<Map<String, dynamic>>.from(results[0]);
+    final newEvents = List<Map<String, dynamic>>.from(results[1]);
+
     setState(() {
-      if (reset) _users = [];
-      _users.addAll(newUsers);
+      if (reset) _results = [];
       _isLoading = false;
-      _offset += newUsers.length;
-      _hasMore = newUsers.length == _limit;
+
+      _userOffset += newUsers.length;
+      _hasMoreUsers = newUsers.length == _limit;
+
+      _eventOffset += newEvents.length;
+      _hasMoreEvents = newEvents.length == _limit;
+
+      final combined = [...newUsers, ...newEvents];
+      combined.shuffle();
+      _results.addAll(combined);
     });
   }
 
@@ -213,59 +252,15 @@ class _SearchPageState extends State<SearchPage> {
                 Expanded(
                   child: ListView.builder(
                     controller: _scrollController,
-                    itemCount: _users.length + (_hasMore ? 1 : 0),
+                    itemCount: _results.length + (_hasMoreUsers || _hasMoreEvents ? 1 : 0),
                     itemBuilder: (context, index) {
-                      if (index < _users.length) {
-                        final user = _users[index];
-                        if (user['fullname'] == null || user['fullname'].toString().trim().isEmpty) {
-                          return const SizedBox.shrink();
+                      if (index < _results.length) {
+                        final item = _results[index];
+                        if (item.containsKey('username')) {
+                          return UserSearchTile(user: item);
+                        } else {
+                          return EventSearchTile(event: item);
                         }
-                        return ListTile(
-                          contentPadding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-                          leading: ProfilePicture(
-                            fileName: user['image'],
-                            userId: user['id']?.toString() ?? '',
-                            size: 40,
-                          ),
-                          onTap: () {
-                            Navigator.pushNamed(context, '/user-profile', arguments: user);
-                          },
-                          title: Row(
-                            children: [
-                              SizedBox(width: 0.w),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      user['fullname'] ?? 'No Name',
-                                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                        fontSize: 13.sp,
-                                        fontFamily: 'Metropolis-Medium',
-                                        color: Theme.of(context).textTheme.bodyLarge?.color,
-                                      ),
-                                    ),
-                                    SizedBox(height: 0.h),
-                                    Text(
-                                      '@${user['username']}' ?? '',
-                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                        fontSize: 10.sp,
-                                        fontFamily: 'Metropolis-Light',
-                                        color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.8),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          trailing: Icon(
-                            Icons.north_west,
-                            size: 12.sp,
-                            color: const Color(0xffbbd953),
-                          ),
-                        );
                       } else {
                         return const Padding(
                           padding: EdgeInsets.symmetric(vertical: 16),
