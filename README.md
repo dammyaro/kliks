@@ -67,7 +67,7 @@ To get a local copy up and running, follow these simple steps.
 
 1. **Clone the repo**
    ```sh
-   git clone https://github.com/your_username/kliks.git
+   git clone https://github.com/dammyaro/kliks.git
    ```
 2. **Install packages**
    ```sh
