@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kliks/core/models/event.dart';
+import 'package:kliks/core/providers/auth_provider.dart';
 import 'package:kliks/core/providers/event_provider.dart';
+import 'package:kliks/shared/widgets/button.dart';
 import 'package:kliks/shared/widgets/handle_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
@@ -55,13 +58,17 @@ class _EventLocatorPageState extends State<EventLocatorPage> {
         if (event.lat != null && event.lng != null) {
           _markers.add(
             Marker(
-              width: 80.0,
-              height: 80.0,
-              point: LatLng(event.lat!, event.lng!),
-              child: _EventMarker(
-                imageUrl: event.bannerImageUrl,
-              ),
-            ),
+                width: 80.0,
+                height: 80.0,
+                point: LatLng(event.lat!, event.lng!),
+                child: GestureDetector(
+                  onTap: () {
+                    _showEventBottomSheet(event);
+                  },
+                  child: _EventMarker(
+                    imageUrl: event.bannerImageUrl,
+                  ),
+                )),
           );
         }
       }
@@ -147,7 +154,7 @@ class _EventLocatorPageState extends State<EventLocatorPage> {
   void _showLocationSheet() {
     _searchController.clear();
     _searchResults = [];
-    
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -170,7 +177,8 @@ class _EventLocatorPageState extends State<EventLocatorPage> {
                 children: [
                   const HandleBar(),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 20.w, vertical: 10.h),
                     child: TextField(
                       controller: _searchController,
                       onChanged: (_) => _onSearchChanged(sheetSetState),
@@ -188,9 +196,8 @@ class _EventLocatorPageState extends State<EventLocatorPage> {
                             : Colors.grey[800],
                         hintText: 'Where are Klikers?',
                         hintStyle: theme.textTheme.bodySmall?.copyWith(
-                          fontSize: 12.sp,
-                          fontFamily: 'Metropolis-Medium'
-                        ),
+                            fontSize: 12.sp,
+                            fontFamily: 'Metropolis-Medium'),
                       ),
                       style: theme.textTheme.bodySmall?.copyWith(
                         fontSize: 13.sp,
@@ -212,20 +219,25 @@ class _EventLocatorPageState extends State<EventLocatorPage> {
                             itemBuilder: (context, index) {
                               final loc = _searchResults[index];
                               return Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 16.w, vertical: 6.h),
                                 child: ListTile(
-                                  leading: Icon(Icons.location_on_outlined, size: 30.sp),
+                                  leading: Icon(Icons.location_on_outlined,
+                                      size: 30.sp),
                                   contentPadding: EdgeInsets.zero,
                                   title: Text(
                                     loc['display_name'] ?? 'Unknown',
                                     style: theme.textTheme.bodySmall?.copyWith(
                                       fontSize: 13.sp,
-                                      color: theme.textTheme.bodyLarge?.color?.withOpacity(0.85),
+                                      color: theme.textTheme.bodyLarge?.color
+                                          ?.withOpacity(0.85),
                                     ),
                                   ),
                                   onTap: () {
-                                    final lat = double.tryParse(loc['lat'] ?? '');
-                                    final lon = double.tryParse(loc['lon'] ?? '');
+                                    final lat =
+                                        double.tryParse(loc['lat'] ?? '');
+                                    final lon =
+                                        double.tryParse(loc['lon'] ?? '');
 
                                     if (lat != null && lon != null) {
                                       final newCenter = LatLng(lat, lon);
@@ -245,6 +257,122 @@ class _EventLocatorPageState extends State<EventLocatorPage> {
         );
       },
     );
+  }
+
+  void _showEventBottomSheet(Event event) {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+        ),
+        builder: (context) {
+          final theme = Theme.of(context);
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.70,
+            decoration: BoxDecoration(
+              color: theme.scaffoldBackgroundColor,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const HandleBar(),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Stack(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 20.w),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12.r),
+                                child: Image.network(
+                                  event.bannerImageUrl,
+                                  height: 250.h,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 10.h,
+                              left: 30.w,
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.5,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 12.w, vertical: 6.h),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFFFBF00),
+                                  borderRadius: BorderRadius.circular(20.r),
+                                ),
+                                child: Text(
+                                  event.title,
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    fontSize: 12.sp,
+                                    color: Colors.black,
+                                    fontFamily: 'Metropolis-SemiBold',
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(20.w),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                DateFormat('EEE, d MMM, yyyy, h:mm a')
+                                    .format(event.startDate),
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.hintColor,
+                                ),
+                              ),
+                              SizedBox(height: 5.h),
+                              Text(
+                                event.location.toUpperCase(),
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.hintColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(20.w),
+                  child: CustomButton(
+                    backgroundColor: Color(0xffbbd953),
+                    onPressed: () async {
+                      final authProvider =
+                          Provider.of<AuthProvider>(context, listen: false);
+                      final currentUserId = await authProvider.getUserId();
+                      final ownerId = event.ownerId;
+
+                      Navigator.pushNamed(
+                        context,
+                        currentUserId == ownerId
+                            ? '/organizer-event-detail'
+                            : '/event-detail',
+                        arguments: event.id,
+                      );
+                    },
+                    text: 'View Event Details',
+                  ),
+                )
+              ],
+            ),
+          );
+        });
   }
 
   @override
@@ -310,9 +438,10 @@ class _EventLocatorPageState extends State<EventLocatorPage> {
                               SizedBox(width: 10.w),
                               Expanded(
                                 child: Text(
-                                  'Search for a location',
+                                  'Where are Klikers?',
                                   style: theme.textTheme.bodySmall?.copyWith(
-                                    fontSize: 12.sp,
+                                    fontSize: 13.sp,
+                                    fontFamily: 'Metropolis-Medium'
                                   ),
                                   overflow: TextOverflow.ellipsis,
                                 ),
