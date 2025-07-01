@@ -693,20 +693,20 @@ class _PaginatedEventsTabState extends State<_PaginatedEventsTab> {
     final eventsToShow = widget.events.sublist(start, end);
     return Column(
       children: [
-        GridView.builder(
-          padding: EdgeInsets.only(top: 16.h),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 12.h,
-            crossAxisSpacing: 12.w,
-            childAspectRatio: 0.7,
+        Expanded(
+          child: GridView.builder(
+            padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 0),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 12.h,
+              crossAxisSpacing: 12.w,
+              childAspectRatio: 0.7,
+            ),
+            itemCount: eventsToShow.length,
+            itemBuilder: (context, idx) {
+              return ProfileEventCard(event: eventsToShow[idx]);
+            },
           ),
-          itemCount: eventsToShow.length,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemBuilder: (context, idx) {
-            return ProfileEventCard(event: eventsToShow[idx]);
-          },
         ),
         if (totalPages > 1)
           Padding(
