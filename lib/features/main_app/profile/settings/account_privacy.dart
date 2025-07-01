@@ -130,14 +130,14 @@ class _AccountPrivacyPageState extends State<AccountPrivacyPage> {
                 onChanged: (val) => provider.updateSettings(settings.copyWith(showFollowers: val)),
                 context: context,
               ),
-              _privacyTile(
-                label: 'Hide profile',
-                subText:
-                    'Hide your profile from search and public listings. You will not appear to other users while hidden.',
-                value: settings.isActive,
-                onChanged: (val) => provider.updateSettings(settings.copyWith(isActive: val)),
-                context: context,
-              ),
+              // _privacyTile(
+              //   label: 'Hide profile',
+              //   subText:
+              //       'Hide your profile from search and public listings. You will not appear to other users while hidden.',
+              //   value: settings.isActive,
+              //   onChanged: (val) => provider.updateSettings(settings.copyWith(isActive: val)),
+              //   context: context,
+              // ),
             ],
           ),
         ),

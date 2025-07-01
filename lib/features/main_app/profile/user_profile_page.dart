@@ -55,6 +55,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     }
     fullname = extraData?['fullname'] ?? widget.userData['fullname'];
     printWrapped('Fullname: $fullname');
+    printWrapped(extraData.toString());
     setState(() {
       _extraUserData = extraData;
     });
@@ -335,22 +336,30 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     ),
             ),
             Divider(height: 32.h, thickness: 1, indent: 0, endIndent: 0),
-                    GestureDetector(
-                      onTap: () {
-                // Optionally navigate to people page
-                      },
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(child: _buildStatItem(context, 'Followers', followerCount.toString(), align: TextAlign.left)),
-                          Expanded(child: _buildStatItem(context, 'Following', followingCount.toString(), align: TextAlign.right)),
-                        ],
-                      ),
+            if (showFollowers)
+              GestureDetector(
+                onTap: () {
+                  // Optionally navigate to people page
+                },
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                          child: _buildStatItem(context, 'Followers',
+                              followerCount.toString(),
+                              align: TextAlign.left)),
+                      Expanded(
+                          child: _buildStatItem(context, 'Following',
+                              followingCount.toString(),
+                              align: TextAlign.right)),
+                    ],
+                  ),
+                ),
               ),
-            ),
-            Divider(height: 32.h, thickness: 1, indent: 0, endIndent: 0),
+            if (showFollowers)
+              Divider(height: 32.h, thickness: 1, indent: 0, endIndent: 0),
             _buildSection(context, 'Bio', bio),
             Divider(height: 32.h, thickness: 1, indent: 0, endIndent: 0),
             _buildInterestsSection(context, interests),
