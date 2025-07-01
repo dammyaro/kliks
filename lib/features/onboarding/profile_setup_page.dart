@@ -148,6 +148,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                 textStyle: theme.textTheme.bodyMedium?.copyWith(
                   fontSize: 14.sp,
                   fontFamily: 'Metropolis-SemiBold',
+                  color: Colors.black,
                 ),
               ),
             ],
