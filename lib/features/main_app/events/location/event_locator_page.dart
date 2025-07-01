@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kliks/core/models/event.dart';
+import 'package:kliks/core/providers/event_provider.dart';
 import 'package:kliks/shared/widgets/handle_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
@@ -8,6 +10,7 @@ import 'dart:async';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 
 class EventLocatorPage extends StatefulWidget {
   const EventLocatorPage({super.key});
@@ -20,19 +23,18 @@ class _EventLocatorPageState extends State<EventLocatorPage> {
   final TextEditingController _searchController = TextEditingController();
   final MapController _mapController = MapController();
   Timer? _debounce;
-  Timer? _reverseGeocodeDebounce;
   List<Map<String, dynamic>> _searchResults = [];
   bool _isLoading = false;
   bool _isLoadingLocation = true;
 
   LatLng _currentCenter = const LatLng(51.509364, -0.128928); // Default to London
   final List<Marker> _markers = [];
-  Map<String, dynamic>? _selectedLocationData;
 
   @override
   void initState() {
     super.initState();
     _getCurrentLocationAndSetInitialView();
+    _fetchEvents();
   }
 
   @override
@@ -40,8 +42,30 @@ class _EventLocatorPageState extends State<EventLocatorPage> {
     _searchController.dispose();
     _mapController.dispose();
     _debounce?.cancel();
-    _reverseGeocodeDebounce?.cancel();
     super.dispose();
+  }
+
+  Future<void> _fetchEvents() async {
+    final eventProvider = Provider.of<EventProvider>(context, listen: false);
+    final events = await eventProvider.getEvents();
+    setState(() {
+      _markers.clear();
+      for (var eventData in events) {
+        final event = Event.fromJson(eventData);
+        if (event.lat != null && event.lng != null) {
+          _markers.add(
+            Marker(
+              width: 80.0,
+              height: 80.0,
+              point: LatLng(event.lat!, event.lng!),
+              child: _EventMarker(
+                imageUrl: event.bannerImageUrl,
+              ),
+            ),
+          );
+        }
+      }
+    });
   }
 
   Future<void> _getCurrentLocationAndSetInitialView() async {
@@ -120,72 +144,6 @@ class _EventLocatorPageState extends State<EventLocatorPage> {
     }
   }
 
-  void _handleMapTap(TapPosition tapPosition, LatLng latlng) {
-    if (_reverseGeocodeDebounce?.isActive ?? false) {
-      _reverseGeocodeDebounce!.cancel();
-    }
-    // Clear previous search results if any
-    _searchController.clear();
-    _searchResults = [];
-
-    // Update marker on map immediately
-    setState(() {
-      _markers.clear();
-      _markers.add(
-        Marker(
-          width: 150.0,
-          height: 150.0,
-          point: latlng,
-          child: _CustomMapMarker(),
-        ),
-      );
-      // Show temporary loading state
-      _selectedLocationData = {
-        'location': 'Loading address...',
-        'lat': latlng.latitude,
-        'lng': latlng.longitude,
-      };
-    });
-
-    _reverseGeocodeDebounce = Timer(const Duration(milliseconds: 500), () {
-      _reverseGeocode(latlng);
-    });
-  }
-
-  void _reverseGeocode(LatLng latlng) async {
-    try {
-      final url = Uri.parse(
-          'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latlng.latitude}&lon=${latlng.longitude}');
-      final response = await http.get(url, headers: {
-        'User-Agent': 'com.example.kliks',
-      });
-
-      if (response.statusCode == 200 && mounted) {
-        final data = json.decode(response.body);
-        final displayName = data['display_name'] ?? 'Unknown location';
-        setState(() {
-          _selectedLocationData = {
-            'location': displayName,
-            'lat': latlng.latitude,
-            'lng': latlng.longitude,
-          };
-        });
-      } else {
-        if (mounted) {
-          setState(() {
-            _selectedLocationData?['location'] = 'Could not find address';
-          });
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _selectedLocationData?['location'] = 'Could not find address';
-        });
-      }
-    }
-  }
-
   void _showLocationSheet() {
     _searchController.clear();
     _searchResults = [];
@@ -228,9 +186,10 @@ class _EventLocatorPageState extends State<EventLocatorPage> {
                         fillColor: theme.brightness == Brightness.light
                             ? Colors.grey[200]
                             : Colors.grey[800],
-                        hintText: 'Search for a location',
+                        hintText: 'Where are Klikers?',
                         hintStyle: theme.textTheme.bodySmall?.copyWith(
-                          fontSize: 11.sp,
+                          fontSize: 12.sp,
+                          fontFamily: 'Metropolis-Medium'
                         ),
                       ),
                       style: theme.textTheme.bodySmall?.copyWith(
@@ -255,6 +214,7 @@ class _EventLocatorPageState extends State<EventLocatorPage> {
                               return Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
                                 child: ListTile(
+                                  leading: Icon(Icons.location_on_outlined, size: 30.sp),
                                   contentPadding: EdgeInsets.zero,
                                   title: Text(
                                     loc['display_name'] ?? 'Unknown',
@@ -270,24 +230,6 @@ class _EventLocatorPageState extends State<EventLocatorPage> {
                                     if (lat != null && lon != null) {
                                       final newCenter = LatLng(lat, lon);
                                       _mapController.move(newCenter, 15.0);
-
-                                      setState(() {
-                                        _markers.clear();
-                                        _markers.add(
-                                          Marker(
-                                            width: 150.0,
-                                            height: 150.0,
-                                            point: newCenter,
-                                            child: _CustomMapMarker(),
-                                          ),
-                                        );
-                                        _selectedLocationData = {
-                                          'location': loc['display_name'],
-                                          'lat': lat,
-                                          'lng': lon,
-                                        };
-                                      });
-
                                       Navigator.pop(context);
                                     }
                                   },
@@ -317,7 +259,6 @@ class _EventLocatorPageState extends State<EventLocatorPage> {
                 options: MapOptions(
                   initialCenter: _currentCenter,
                   initialZoom: 16.0,
-                  onTap: _handleMapTap,
                 ),
                 children: [
                   TileLayer(
@@ -369,8 +310,7 @@ class _EventLocatorPageState extends State<EventLocatorPage> {
                               SizedBox(width: 10.w),
                               Expanded(
                                 child: Text(
-                                  _selectedLocationData?['location'] ??
-                                      'Search for a location',
+                                  'Search for a location',
                                   style: theme.textTheme.bodySmall?.copyWith(
                                     fontSize: 12.sp,
                                   ),
@@ -385,72 +325,28 @@ class _EventLocatorPageState extends State<EventLocatorPage> {
                   ],
                 ),
               ),
-              if (_selectedLocationData != null)
-                Positioned(
-                  bottom: 30.h,
-                  left: 20.w,
-                  right: 20.w,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 16.h),
-                      backgroundColor: Colors.white,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop(_selectedLocationData);
-                    },
-                    child: Text(
-                      'Confirm Location',
-                      style: TextStyle(
-                        color: const Color(0xff000000),
-                        fontSize: 16,
-                        fontFamily: 'Metropolis-SemiBold',
-                      ),
-                    ),
-                  ),
-                ),
             ],
           );
   }
 }
 
-class _CustomMapMarker extends StatelessWidget {
+class _EventMarker extends StatelessWidget {
+  final String imageUrl;
+
+  const _EventMarker({required this.imageUrl});
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: Alignment.center,
-      child: Container(
-        width: 90,
-        height: 90,
-        decoration: BoxDecoration(
-          color: const Color(0xffa0a788).withOpacity(0.6),
-          shape: BoxShape.circle,
-        ),
-        alignment: Alignment.center,
-        child: Container(
-          width: 50,
-          height: 50,
-          decoration: const BoxDecoration(
-            color: Color(0xffa0a788),
-            shape: BoxShape.circle,
-          ),
-          alignment: Alignment.center,
-          child: Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.transparent, width: 2),
-            ),
-            alignment: Alignment.center,
-            child: const Icon(
-              CupertinoIcons.location_solid,
-              color: Colors.white,
-              size: 30,
-            ),
-          ),
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        image: DecorationImage(
+          image: NetworkImage(imageUrl),
+          fit: BoxFit.cover,
         ),
       ),
     );
   }
-} 
+}
