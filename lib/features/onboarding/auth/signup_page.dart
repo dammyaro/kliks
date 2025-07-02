@@ -291,7 +291,7 @@ class _SignupPageState extends State<SignupPage> {
                           }
                         },
                       ),
-                      SizedBox(height: 20.h),
+                      SizedBox(height: 60.h),
                       Center(
                         child: Text.rich(
                           TextSpan(
