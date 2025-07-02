@@ -31,11 +31,8 @@ class _EventFilterState extends State<EventFilter> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10), 
               decoration: BoxDecoration(
-          color: selected == 'nearby' ? Theme.of(context).primaryColor // Selected color (adapts to theme)
-            : Theme.of(context).brightness == Brightness.light 
-              ? Colors.grey[200] 
-              : Colors.grey[700], // Unselected
-          borderRadius: BorderRadius.circular(10), 
+          color: selected == 'nearby' ? const Color(0xffbbd953) : Colors.grey[700],
+          borderRadius: BorderRadius.circular(30), 
               ),
               child: Text(
           'Nearby Events',
@@ -44,8 +41,7 @@ class _EventFilterState extends State<EventFilter> {
             // 
             fontFamily: 'Metropolis-Medium',
             letterSpacing: 0,
-            color: selected == 'nearby' ? Theme.of(context).scaffoldBackgroundColor// Text color when selected
-            : Theme.of(context).colorScheme.onSurface.withOpacity(0.7), // Unselected
+            color: selected == 'nearby' ? Colors.black : Colors.white,
           ),
               ),
             ),
@@ -60,11 +56,8 @@ class _EventFilterState extends State<EventFilter> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10), 
               decoration: BoxDecoration(
-          color: selected == 'following' ? Theme.of(context).primaryColor // Selected color (adapts to theme)
-          : Theme.of(context).brightness == Brightness.light 
-              ? Colors.grey[200] 
-              : Colors.grey[700], // Unselected
-          borderRadius: BorderRadius.circular(10), 
+          color: selected == 'following' ? const Color(0xffbbd953) : Colors.grey[700],
+          borderRadius: BorderRadius.circular(30), 
               ),
               child: Text(
           'Following',
@@ -73,9 +66,32 @@ class _EventFilterState extends State<EventFilter> {
             // fontWeight: FontWeight.bold,
             fontFamily: 'Metropolis-Medium',
             letterSpacing: 0,
-            color: selected == 'following' ? Theme.of(context).scaffoldBackgroundColor// Text color when selected
-            : Theme.of(context).colorScheme.onSurface.withOpacity(0.7), // Unselected
+            color: selected == 'following' ? Colors.black : Colors.white,
           ),
+              ),
+            ),
+          ),
+
+          
+          const SizedBox(width: 15), 
+
+
+          GestureDetector(
+            onTap: () => select(selected == 'live' ? 'none' : 'live'),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              decoration: BoxDecoration(
+                color: selected == 'live' ? const Color(0xffbbd953) : Colors.grey[700],
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Text(
+                'Live',
+                style: TextStyle(
+                  fontSize: 10.sp,
+                  fontFamily: 'Metropolis-Medium',
+                  letterSpacing: 0,
+                  color: selected == 'live' ? Colors.black : Colors.white,
+                ),
               ),
             ),
           ),

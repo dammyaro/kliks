@@ -17,6 +17,8 @@ import 'package:kliks/core/providers/checked_in_events_provider.dart';
 import 'package:kliks/core/providers/organizer_live_events_provider.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:kliks/main.dart' show flutterLocalNotificationsPlugin;
+import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -38,6 +40,31 @@ class _HomePageState extends State<HomePage>
   Map<String, bool> _isFollowingMap = {};
   String? _userId;
   bool _hasLoaded = false;
+  Position? _currentPosition;
+
+  Future<void> _getCurrentLocation() async {
+    try {
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        return;
+      }
+
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      if (mounted) {
+        setState(() {
+          _currentPosition = position;
+        });
+      }
+    } catch (e) {
+      // Handle error
+    }
+  }
 
   Future<void> _loadData({bool forceReload = false}) async {
     if (_hasLoaded && !forceReload) return;
@@ -101,6 +128,7 @@ class _HomePageState extends State<HomePage>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _getCurrentLocation();
       await _loadData();
     });
   }
@@ -123,12 +151,28 @@ class _HomePageState extends State<HomePage>
     if (_selectedFilter == 'attending') {
       eventsToShow = _attendingEvents;
     } else if (_selectedFilter == 'nearby') {
-      eventsToShow = _events.where((e) => e['isNearBy'] == true).toList();
+      if (_currentPosition != null) {
+        final center = LatLng(_currentPosition!.latitude, _currentPosition!.longitude);
+        eventsToShow = _events.where((e) {
+          final eventLat = e['eventDocument']['lat'];
+          final eventLng = e['eventDocument']['lng'];
+          if (eventLat is num && eventLng is num) {
+            final eventPosition = LatLng(eventLat.toDouble(), eventLng.toDouble());
+            final distance = const Distance().as(LengthUnit.Kilometer, center, eventPosition);
+            return distance <= 25;
+          }
+          return false;
+        }).toList();
+      } else {
+        eventsToShow = [];
+      }
     } else if (_selectedFilter == 'following') {
       eventsToShow = _events.where((e) {
         final userId = e['ownerDocument']?['id']?.toString();
         return userId != null && _isFollowingMap[userId] == true;
       }).toList();
+    } else if (_selectedFilter == 'live') {
+      eventsToShow = _events.where((e) => e['eventDocument']['isLive'] == true).toList();
     } else {
       eventsToShow = _events;
     }
