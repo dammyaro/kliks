@@ -887,7 +887,8 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Column(
               children: [
                 TabBar(
-                  isScrollable: false,
+                  isScrollable: true,
+                  tabAlignment: TabAlignment.start,
                   indicatorColor: const Color(0xffbbd953),
                   labelColor: Theme.of(context).textTheme.bodyLarge?.color,
                   unselectedLabelColor:
