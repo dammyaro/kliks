@@ -302,21 +302,21 @@ class _HomePageState extends State<HomePage>
                                           onTap: () => _showLiveDashboardModal(context, eventDetail),
                                           child: Container(
                                             width: double.infinity,
-                                            margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
-                                            padding: EdgeInsets.symmetric(horizontal: 18.w),
+                                            margin: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                                            padding: EdgeInsets.symmetric(horizontal: 5.w),
                                             height: 40.h,
                                             decoration: BoxDecoration(
                                               color: const Color(0xffbbd953),
-                                              borderRadius: BorderRadius.circular(10.r),
+                                              borderRadius: BorderRadius.circular(50.r),
                                             ),
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
                                                 UserAvatarSummary(
                                                   users: (eventDetail['attendingUserDocuments'] as List? ?? []),
-                                                  avatarSize: 24.sp,
+                                                  avatarSize: 35.sp,
                                                 ),
-                                                SizedBox(width: 4.w),
+                                                SizedBox(width: 0.w),
                                                 Text(
                                                   '•',
                                                   style: TextStyle(
@@ -417,23 +417,23 @@ class _HomePageState extends State<HomePage>
                                           child: Container(
                                             width: double.infinity,
                                             margin: EdgeInsets.symmetric(
-                                                horizontal: 20.w, vertical: 6.h),
+                                                horizontal: 10.w, vertical: 6.h),
                                             padding: EdgeInsets.symmetric(
-                                                horizontal: 18.w),
+                                                horizontal: 5.w),
                                             height: 40.h,
                                             decoration: BoxDecoration(
                                               color: const Color(0xffbbd953),
                                               borderRadius:
-                                                  BorderRadius.circular(10.r),
+                                                  BorderRadius.circular(50.r),
                                             ),
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
                                                 UserAvatarSummary(
                                                   users: checkedInUsers,
-                                                  avatarSize: 24.sp,
+                                                  avatarSize: 35.sp,
                                                 ),
-                                                SizedBox(width: 4.w),
+                                                SizedBox(width: 0.w),
                                                 Text(
                                                   '•',
                                                   style: TextStyle(
@@ -651,23 +651,23 @@ class _HomePageState extends State<HomePage>
                                           child: Container(
                                             width: double.infinity,
                                             margin: EdgeInsets.symmetric(
-                                                horizontal: 20.w, vertical: 6.h),
+                                                horizontal: 10.w, vertical: 6.h),
                                             padding: EdgeInsets.symmetric(
-                                                horizontal: 18.w),
+                                                horizontal: 5.w),
                                             height: 40.h,
                                             decoration: BoxDecoration(
                                               color: const Color(0xffbbd953),
                                               borderRadius:
-                                                  BorderRadius.circular(10.r),
+                                                  BorderRadius.circular(50.r),
                                             ),
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
                                                 UserAvatarSummary(
                                                   users: checkedInUsers,
-                                                  avatarSize: 18.sp,
+                                                  avatarSize: 35.sp,
                                                 ),
-                                                SizedBox(width: 4.w),
+                                                SizedBox(width: 0.w),
                                                 Text(
                                                   '•',
                                                   style: TextStyle(

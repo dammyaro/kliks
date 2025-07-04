@@ -20,7 +20,7 @@ class UserAvatarSummary extends StatelessWidget {
     final remainingCount = users.length - displayUsers.length;
 
     final double itemStep = avatarSize * 0.7;
-    final double textGap = 8.0; // Space between avatars and text
+    final double textGap = 7.0; // Space between avatars and text
 
     final double textLeft = (displayUsers.length * itemStep) + textGap;
 
@@ -52,9 +52,9 @@ class UserAvatarSummary extends StatelessWidget {
               height: avatarSize,
               child: Center(
                 child: Text(
-                  '+$remainingCount',
+                  '+ $remainingCount',
                   style: TextStyle(
-                    fontSize: 11.sp,
+                    fontSize: 12.sp,
                     fontFamily: 'Metropolis-Medium',
                     color: Colors.black,
                   ),

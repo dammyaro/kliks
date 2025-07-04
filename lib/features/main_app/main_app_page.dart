@@ -102,7 +102,7 @@ class _MainAppPageState extends State<MainAppPage> with TickerProviderStateMixin
               border: Border(
                 top: BorderSide(
                   color: Colors.grey[500]!,
-                  width: 1.0,
+                  width: 0.5,
                 
                 ),
               ),

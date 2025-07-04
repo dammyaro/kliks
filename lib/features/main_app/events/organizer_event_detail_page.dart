@@ -686,7 +686,7 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
                   Text(
                     eventName,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontSize: 16.sp,
+                          fontSize: 18.sp,
                           fontFamily: 'Metropolis-SemiBold',
                         ),
                   ),
@@ -694,7 +694,7 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
                   Text(
                     eventDate,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontSize: 10.sp,
+                          fontSize: 12.sp,
                           color: Theme.of(context).hintColor,
                           fontFamily: 'Metropolis-SemiBold',
                         ),
@@ -703,7 +703,7 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
                   Text(
                     eventLocation,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontSize: 10.sp,
+                          fontSize: 12.sp,
                           color: Theme.of(context).hintColor,
                           fontFamily: 'Metropolis-Regular',
                         ),
@@ -726,7 +726,7 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
                       eventStatus,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: statusColor,
-                        fontSize: 10.sp,
+                        fontSize: 11.sp,
                         fontFamily: 'Metropolis-Bold',
                       ),
                     ),
@@ -752,7 +752,7 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
                                     .textTheme
                                     .bodySmall
                                     ?.copyWith(
-                                      fontSize: 10.sp,
+                                      fontSize: 12.sp,
                                       fontFamily: 'Metropolis-SemiBold',
                                     ),
                               ),
@@ -962,7 +962,7 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
               child: Text(
                 'Description',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontSize: 12.sp,
+                      fontSize: 13.sp,
                       fontFamily: 'Metropolis-Medium',
                       color: Theme.of(context).hintColor.withOpacity(0.5),
                       letterSpacing: -0.5,
@@ -974,7 +974,7 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
               child: Text(
                 eventDescription,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontSize: 10.sp,
+                      fontSize: 11.sp,
                       fontFamily: 'Metropolis-Regular',
                       letterSpacing: 0,
                       height: 1.7,
@@ -998,7 +998,7 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
               child: Text(
                 whoCanAttend,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontSize: 10.sp,
+                      fontSize: 11.sp,
                       fontFamily: 'Metropolis-Regular',
                     ),
               ),
@@ -1023,7 +1023,7 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
                   Text(
                     'Starts: $startDate',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontSize: 10.sp,
+                          fontSize: 11.sp,
                           fontFamily: 'Metropolis-Medium',
                         ),
                   ),
@@ -1031,7 +1031,7 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
                   Text(
                     'Ends: $endDate',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontSize: 10.sp,
+                          fontSize: 11.sp,
                           fontFamily: 'Metropolis-Medium',
                         ),
                   ),
@@ -1055,7 +1055,7 @@ class _OrganizerEventDetailPageState extends State<OrganizerEventDetailPage> {
               child: Text(
                 eventLocation,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontSize: 10.sp,
+                      fontSize: 11.sp,
                       fontFamily: 'Metropolis-Regular',
                     ),
               ),

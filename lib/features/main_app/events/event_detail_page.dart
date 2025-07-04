@@ -77,7 +77,11 @@ class _EventDetailPageState extends State<EventDetailPage> {
       if (endDateRaw.isNotEmpty) endDateTime = DateTime.parse(endDateRaw);
     } catch (_) {}
     final now = DateTime.now();
-    final isLive = startDateTime != null && endDateTime != null && now.isAfter(startDateTime) && now.isBefore(endDateTime);
+    final isLive =
+        startDateTime != null &&
+        endDateTime != null &&
+        now.isAfter(startDateTime) &&
+        now.isBefore(endDateTime);
 
     String eventStatus;
     Color statusColor;
@@ -514,7 +518,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
     if (event?['eventDocument'] != null &&
         event?['eventDocument']?['otherImageUrl'] is List &&
         (event?['eventDocument']?['otherImageUrl'] as List).isNotEmpty) {
-      otherImages = List<String>.from(event?['eventDocument']?['otherImageUrl']);
+      otherImages = List<String>.from(
+        event?['eventDocument']?['otherImageUrl'],
+      );
     }
 
     final eventLat = event?['eventDocument']?['lat'] as double?;
@@ -556,16 +562,32 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                 Navigator.push(
                                   context,
                                   PageRouteBuilder(
-                                    pageBuilder: (context, animation, secondaryAnimation) => _GalleryView(
-                                      images: allImages,
-                                      initialIndex: 0,
-                                    ),
-                                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                    pageBuilder:
+                                        (
+                                          context,
+                                          animation,
+                                          secondaryAnimation,
+                                        ) => _GalleryView(
+                                          images: allImages,
+                                          initialIndex: 0,
+                                        ),
+                                    transitionsBuilder: (
+                                      context,
+                                      animation,
+                                      secondaryAnimation,
+                                      child,
+                                    ) {
                                       return FadeTransition(
                                         opacity: animation,
                                         child: ScaleTransition(
-                                          scale: Tween<double>(begin: 0.9, end: 1.0).animate(
-                                            CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+                                          scale: Tween<double>(
+                                            begin: 0.9,
+                                            end: 1.0,
+                                          ).animate(
+                                            CurvedAnimation(
+                                              parent: animation,
+                                              curve: Curves.easeOutCubic,
+                                            ),
                                           ),
                                           child: child,
                                         ),
@@ -633,7 +655,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                               context,
                             ).textTheme.bodySmall?.copyWith(
                               color: Colors.white,
-                              fontSize: 12.sp,
+                              fontSize: 13.sp,
                               fontFamily: 'Metropolis-SemiBold',
                             ),
                           ),
@@ -653,7 +675,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                 context,
                               ).textTheme.bodySmall?.copyWith(
                                 color: Colors.black,
-                                fontSize: 13.sp,
+                                fontSize: 14.sp,
                                 fontFamily: 'Metropolis-Bold',
                               ),
                             ),
@@ -674,7 +696,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                     Text(
                       eventName,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontSize: 16.sp,
+                        fontSize: 17.sp,
                         fontFamily: 'Metropolis-SemiBold',
                       ),
                     ),
@@ -682,7 +704,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                     Text(
                       eventDate,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 10.sp,
+                        fontSize: 11.sp,
                         color: Theme.of(context).hintColor,
                         fontFamily: 'Metropolis-SemiBold',
                       ),
@@ -691,7 +713,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                     Text(
                       eventLocation,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 10.sp,
+                        fontSize: 11.sp,
                         color: Theme.of(context).hintColor,
                         fontFamily: 'Metropolis-Regular',
                       ),
@@ -705,16 +727,13 @@ class _EventDetailPageState extends State<EventDetailPage> {
                       decoration: BoxDecoration(
                         color: statusColor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(16.r),
-                        border: Border.all(
-                          color: statusColor,
-                          width: 1,
-                        ),
+                        border: Border.all(color: statusColor, width: 1),
                       ),
                       child: Text(
                         eventStatus,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: statusColor,
-                          fontSize: 10.sp,
+                          fontSize: 11.sp,
                           fontFamily: 'Metropolis-Bold',
                         ),
                       ),
@@ -743,7 +762,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                     style: Theme.of(
                                       context,
                                     ).textTheme.bodySmall?.copyWith(
-                                      fontSize: 10.sp,
+                                      fontSize: 11.sp,
                                       fontFamily: 'Metropolis-SemiBold',
                                     ),
                                   ),
@@ -774,8 +793,10 @@ class _EventDetailPageState extends State<EventDetailPage> {
                               SizedBox(width: 8.w),
                               Text(
                                 'Spot Reserved',
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  fontSize: 10.sp,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.bodySmall?.copyWith(
+                                  fontSize: 11.sp,
                                   fontFamily: 'Metropolis-Bold',
                                   color: Colors.black,
                                 ),
@@ -797,7 +818,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                     Text(
                       'Organizer',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 12.sp,
+                        fontSize: 13.sp,
                         fontFamily: 'Metropolis-Medium',
                         color: Theme.of(context).hintColor.withOpacity(0.5),
                       ),
@@ -833,7 +854,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                 style: Theme.of(
                                   context,
                                 ).textTheme.bodyMedium?.copyWith(
-                                  fontSize: 12.sp,
+                                  fontSize: 14.sp,
                                   fontFamily: 'Metropolis-SemiBold',
                                   color:
                                       Theme.of(
@@ -846,7 +867,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                 style: Theme.of(
                                   context,
                                 ).textTheme.bodySmall?.copyWith(
-                                  fontSize: 8.sp,
+                                  fontSize: 12.sp,
                                   color: Theme.of(context).hintColor,
                                   fontFamily: 'Metropolis-Medium',
                                 ),
@@ -1060,7 +1081,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                             style: Theme.of(
                               context,
                             ).textTheme.bodySmall?.copyWith(
-                              fontSize: 12.sp,
+                              fontSize: 13.sp,
                               fontFamily: 'Metropolis-Medium',
                               color: Theme.of(
                                 context,
@@ -1073,7 +1094,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                             style: Theme.of(
                               context,
                             ).textTheme.bodyMedium?.copyWith(
-                              fontSize: 12.sp,
+                              fontSize: 13.sp,
                               fontFamily: 'Metropolis-Medium',
                             ),
                           ),
@@ -1104,25 +1125,31 @@ class _EventDetailPageState extends State<EventDetailPage> {
                   },
                   child: Container(
                     color: Colors.grey.withOpacity(0.1),
-                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 12.h,
+                    ),
                     child: Row(
                       children: [
-                        Icon(
-                          Icons.announcement_outlined,
-                          size: 20.sp,
-                        ),
+                        Icon(Icons.announcement_outlined, size: 20.sp),
                         SizedBox(width: 10.w),
                         Expanded(
                           child: Text(
-                            _isAnnouncementsExpanded ? 'Hide Announcements' : 'Show Announcements',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontSize: 12.sp,
+                            _isAnnouncementsExpanded
+                                ? 'Hide Announcements'
+                                : 'Show Announcements',
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium?.copyWith(
+                              fontSize: 13.sp,
                               fontFamily: 'Metropolis-Medium',
                             ),
                           ),
                         ),
                         Icon(
-                          _isAnnouncementsExpanded ? Icons.expand_less : Icons.expand_more,
+                          _isAnnouncementsExpanded
+                              ? Icons.expand_less
+                              : Icons.expand_more,
                           size: 28.sp,
                         ),
                       ],
@@ -1132,26 +1159,37 @@ class _EventDetailPageState extends State<EventDetailPage> {
               ),
               if (_isAnnouncementsExpanded)
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20.w,
+                    vertical: 10.h,
+                  ),
                   child: Column(
-                    children: (event?['announcementDocuments'] as List<dynamic>? ?? []).map((announcement) {
-                      return ListTile(
-                        title: Text(
-                          announcement['announcement'] ?? '',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontSize: 12.sp,
-                            fontFamily: 'Metropolis-Medium',
-                          ),
-                        ),
-                        subtitle: Text(
-                          announcement['description'] ?? '',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontSize: 10.sp,
-                            fontFamily: 'Metropolis-Regular',
-                          ),
-                        ),
-                      );
-                    }).toList(),
+                    children:
+                        (event?['announcementDocuments'] as List<dynamic>? ??
+                                [])
+                            .map((announcement) {
+                              return ListTile(
+                                title: Text(
+                                  announcement['announcement'] ?? '',
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodyMedium?.copyWith(
+                                    fontSize: 13.sp,
+                                    fontFamily: 'Metropolis-Medium',
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  announcement['description'] ?? '',
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodySmall?.copyWith(
+                                    fontSize: 11.sp,
+                                    fontFamily: 'Metropolis-Regular',
+                                  ),
+                                ),
+                              );
+                            })
+                            .toList(),
                   ),
                 ),
               Padding(
@@ -1164,7 +1202,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                 child: Text(
                   'About Event',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontSize: 14.sp,
+                    fontSize: 15.sp,
                     fontFamily: 'Metropolis-SemiBold',
                   ),
                 ),
@@ -1286,50 +1324,58 @@ class _EventDetailPageState extends State<EventDetailPage> {
                 ),
               ),
               SizedBox(height: 15.h),
-            if (eventLat != null && eventLng != null)
-              Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16.r),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    height: 200.h,
-                    child: Stack(
-                      children: [
-                        FlutterMap(
-                          options: MapOptions(
-                            initialCenter: LatLng(eventLat, eventLng),
-                            initialZoom: 15.0,
-                            interactionOptions: InteractionOptions(flags: InteractiveFlag.none), // Make the map non-interactive
-                          ),
-                          children: [
-                            TileLayer(
-                              urlTemplate:
-                                  'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              if (eventLat != null && eventLng != null)
+                Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16.r),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      height: 200.h,
+                      child: Stack(
+                        children: [
+                          FlutterMap(
+                            options: MapOptions(
+                              initialCenter: LatLng(eventLat, eventLng),
+                              initialZoom: 15.0,
+                              interactionOptions: InteractionOptions(
+                                flags: InteractiveFlag.none,
+                              ), // Make the map non-interactive
                             ),
-                          ],
-                        ),
-                        Center(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: const Color(0xffbbd953), // Text color
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.r), // Reduced border radius
+                            children: [
+                              TileLayer(
+                                urlTemplate:
+                                    'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                              ),
+                            ],
+                          ),
+                          Center(
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: const Color(
+                                  0xffbbd953,
+                                ), // Text color
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    8.r,
+                                  ), // Reduced border radius
+                                ),
+                              ),
+                              onPressed: () {
+                                // TODO: Implement open maps functionality
+                              },
+                              child: Text(
+                                'Open maps',
+                                style: TextStyle(
+                                  fontFamily: 'Metropolis-Medium',
+                                ),
                               ),
                             ),
-                            onPressed: () {
-                              // TODO: Implement open maps functionality
-                            },
-                            child: Text(
-                              'Open maps',
-                              style: TextStyle(fontFamily: 'Metropolis-Medium'),
-                            ),
                           ),
-                        )
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
               SizedBox(height: 15.h),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
@@ -1371,16 +1417,32 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                     Navigator.push(
                                       context,
                                       PageRouteBuilder(
-                                        pageBuilder: (context, animation, secondaryAnimation) => _GalleryView(
-                                          images: allImages,
-                                          initialIndex: idx + 1,
-                                        ),
-                                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                        pageBuilder:
+                                            (
+                                              context,
+                                              animation,
+                                              secondaryAnimation,
+                                            ) => _GalleryView(
+                                              images: allImages,
+                                              initialIndex: idx + 1,
+                                            ),
+                                        transitionsBuilder: (
+                                          context,
+                                          animation,
+                                          secondaryAnimation,
+                                          child,
+                                        ) {
                                           return FadeTransition(
                                             opacity: animation,
                                             child: ScaleTransition(
-                                              scale: Tween<double>(begin: 0.9, end: 1.0).animate(
-                                                CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+                                              scale: Tween<double>(
+                                                begin: 0.9,
+                                                end: 1.0,
+                                              ).animate(
+                                                CurvedAnimation(
+                                                  parent: animation,
+                                                  curve: Curves.easeOutCubic,
+                                                ),
                                               ),
                                               child: child,
                                             ),
@@ -1424,167 +1486,177 @@ class _EventDetailPageState extends State<EventDetailPage> {
         ),
       ),
       bottomNavigationBar:
-        isUserAttending && isLive
-          ? Padding(
-              padding: EdgeInsets.only(
-                left: 20.w,
-                right: 20.w,
-                bottom: 20.h + MediaQuery.of(context).viewPadding.bottom,
-                top: 10.h,
-              ),
-              child: SizedBox(
-                width: double.infinity,
-                height: 40.h,
-                child: CustomButton(
-                  text: 'Check In',
-                  isLoading: _isAttendingLoading,
-                  backgroundColor: const Color(0xffbbd953),
-                  textColor: Colors.black,
-                  textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontSize: 10.sp,
-                    fontFamily: 'Metropolis-Medium',
-                    color: Colors.black,
-                  ),
-                  onPressed: _isAttendingLoading
-                      ? null
-                      : () async {
-                          String? eventId = event?['id']?.toString();
-                          eventId ??= event?['eventDocument']?['id']?.toString();
-                          final isCheckedIn = eventId != null && checkedInProvider.isCheckedIn(eventId);
-                          if (isCheckedIn) {
-                            showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              builder: (context) => _CheckInModal(
-                                event: event!,
-                                onCheckOut: () {
-                                  _loadEvent();
-                                },
-                                forceCheckedIn: true,
-                              ),
-                            );
-                          } else {
-                            showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              builder: (context) => _CheckInModal(
-                                event: event!,
-                                onCheckOut: () {
-                                  _loadEvent();
-                                },
-                              ),
-                            );
-                          }
-                        },
-                ),
-              ),
-            )
-          : (!isUserAttending
+          isUserAttending && isLive
               ? Padding(
-                  padding: EdgeInsets.only(
-                    left: 20.w,
-                    right: 20.w,
-                    bottom: 20.h + MediaQuery.of(context).viewPadding.bottom,
-                    top: 10.h,
-                  ),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 40.h,
-                    child: CustomButton(
-                      text: 'Attend Event for Free',
-                      isLoading: _isAttendingLoading,
-                      onPressed: _isAttendingLoading
-                          ? null
-                          : () {
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(24),
-                                  ),
-                                ),
-                                builder: (context) =>
-                                    _AttendConfirmationSheet(
-                                  event: event!,
-                                  onConfirm: () async {
-                                    setState(() {
-                                      _isAttendingLoading = true;
-                                    });
-                                    final eventProvider =
-                                        Provider.of<EventProvider>(
-                                      context,
-                                      listen: false,
-                                    );
-                                    final success =
-                                        await eventProvider.attendEvent(
-                                      widget.eventId ?? '',
-                                    );
-                                    if (success) {
-                                      await _loadEvent();
-                                    }
-                                    setState(() {
-                                      _isAttendingLoading = false;
-                                    });
-                                  },
-                                ),
-                              );
-                            },
-                      backgroundColor: const Color(0xffbbd953),
-                      textColor: Colors.black,
-                      textStyle:
-                          Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                fontSize: 10.sp,
-                                fontFamily: 'Metropolis-Medium',
-                                color: Colors.black,
-                              ),
+                padding: EdgeInsets.only(
+                  left: 20.w,
+                  right: 20.w,
+                  bottom: 20.h + MediaQuery.of(context).viewPadding.bottom,
+                  top: 10.h,
+                ),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 40.h,
+                  child: CustomButton(
+                    text: 'Check In',
+                    isLoading: _isAttendingLoading,
+                    backgroundColor: const Color(0xffbbd953),
+                    textColor: Colors.black,
+                    textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontSize: 10.sp,
+                      fontFamily: 'Metropolis-Medium',
+                      color: Colors.black,
                     ),
-                  ),
-                )
-              : Padding(
-                  padding: EdgeInsets.only(
-                    left: 20.w,
-                    right: 20.w,
-                    bottom: 20.h + MediaQuery.of(context).viewPadding.bottom,
-                    top: 10.h,
-                  ),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 40.h,
-                    child: CustomButton(
-                      text: 'Cancel Attendance',
-                      isLoading: _isAttendingLoading,
-                      backgroundColor: Colors.red,
-                      textColor: Colors.white,
-                      textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontSize: 10.sp,
-                        fontFamily: 'Metropolis-Medium',
-                        color: Colors.white,
-                      ),
-                      onPressed: _isAttendingLoading
-                          ? null
-                          : () async {
-                              setState(() {
-                                _isAttendingLoading = true;
-                              });
-                              final eventProvider = Provider.of<EventProvider>(
-                                context,
-                                listen: false,
-                              );
-                              final success = await eventProvider.cancelAttend(
-                                widget.eventId ?? '',
-                              );
-                              if (success) {
-                                await _loadEvent();
+                    onPressed:
+                        _isAttendingLoading
+                            ? null
+                            : () async {
+                              String? eventId = event?['id']?.toString();
+                              eventId ??=
+                                  event?['eventDocument']?['id']?.toString();
+                              final isCheckedIn =
+                                  eventId != null &&
+                                  checkedInProvider.isCheckedIn(eventId);
+                              if (isCheckedIn) {
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  builder:
+                                      (context) => _CheckInModal(
+                                        event: event!,
+                                        onCheckOut: () {
+                                          _loadEvent();
+                                        },
+                                        forceCheckedIn: true,
+                                      ),
+                                );
+                              } else {
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  builder:
+                                      (context) => _CheckInModal(
+                                        event: event!,
+                                        onCheckOut: () {
+                                          _loadEvent();
+                                        },
+                                      ),
+                                );
                               }
-                              setState(() {
-                                _isAttendingLoading = false;
-                              });
                             },
-                    ),
                   ),
-                )
-            ),
+                ),
+              )
+              : (!isUserAttending
+                  ? Padding(
+                    padding: EdgeInsets.only(
+                      left: 20.w,
+                      right: 20.w,
+                      bottom: 20.h + MediaQuery.of(context).viewPadding.bottom,
+                      top: 10.h,
+                    ),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 40.h,
+                      child: CustomButton(
+                        text: 'Attend Event for Free',
+                        isLoading: _isAttendingLoading,
+                        onPressed:
+                            _isAttendingLoading
+                                ? null
+                                : () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(24),
+                                      ),
+                                    ),
+                                    builder:
+                                        (context) => _AttendConfirmationSheet(
+                                          event: event!,
+                                          onConfirm: () async {
+                                            setState(() {
+                                              _isAttendingLoading = true;
+                                            });
+                                            final eventProvider =
+                                                Provider.of<EventProvider>(
+                                                  context,
+                                                  listen: false,
+                                                );
+                                            final success = await eventProvider
+                                                .attendEvent(
+                                                  widget.eventId ?? '',
+                                                );
+                                            if (success) {
+                                              await _loadEvent();
+                                            }
+                                            setState(() {
+                                              _isAttendingLoading = false;
+                                            });
+                                          },
+                                        ),
+                                  );
+                                },
+                        backgroundColor: const Color(0xffbbd953),
+                        textColor: Colors.black,
+                        textStyle: Theme.of(
+                          context,
+                        ).textTheme.bodyLarge?.copyWith(
+                          fontSize: 12.sp,
+                          fontFamily: 'Metropolis-Regular',
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  )
+                  : Padding(
+                    padding: EdgeInsets.only(
+                      left: 20.w,
+                      right: 20.w,
+                      bottom: 20.h + MediaQuery.of(context).viewPadding.bottom,
+                      top: 10.h,
+                    ),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 40.h,
+                      child: CustomButton(
+                        text: 'Cancel Attendance',
+                        isLoading: _isAttendingLoading,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        textStyle: Theme.of(
+                          context,
+                        ).textTheme.bodyLarge?.copyWith(
+                          fontSize: 10.sp,
+                          fontFamily: 'Metropolis-Medium',
+                          color: Colors.white,
+                        ),
+                        onPressed:
+                            _isAttendingLoading
+                                ? null
+                                : () async {
+                                  setState(() {
+                                    _isAttendingLoading = true;
+                                  });
+                                  final eventProvider =
+                                      Provider.of<EventProvider>(
+                                        context,
+                                        listen: false,
+                                      );
+                                  final success = await eventProvider
+                                      .cancelAttend(widget.eventId ?? '');
+                                  if (success) {
+                                    await _loadEvent();
+                                  }
+                                  setState(() {
+                                    _isAttendingLoading = false;
+                                  });
+                                },
+                      ),
+                    ),
+                  )),
     );
   }
 
@@ -1621,7 +1693,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
             ),
             child: Icon(
               icon,
-              color: iconColor ?? (bg != null && bg != Colors.transparent
+              color:
+                  iconColor ??
+                  (bg != null && bg != Colors.transparent
                       ? Colors.white
                       : theme.iconTheme.color),
               size: iconSize,
@@ -1632,7 +1706,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
         Text(
           label,
           style: theme.textTheme.bodySmall?.copyWith(
-            fontSize: 10.sp,
+            fontSize: 11.sp,
             fontFamily: 'Metropolis-Medium',
           ),
         ),
@@ -1802,26 +1876,23 @@ class _AttendConfirmationSheet extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(22.w),
             decoration: BoxDecoration(
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.grey[850]
-                  : Colors.grey[300],
+              color:
+                  Theme.of(context).brightness == Brightness.dark
+                      ? Colors.grey[850]
+                      : Colors.grey[300],
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Row(
               children: [
-                Image.asset(
-                  'assets/k-logo.png',
-                  width: 30.w,
-                  height: 30.h,
-                ),
+                Image.asset('assets/k-logo.png', width: 30.w, height: 30.h),
                 SizedBox(width: 12.w),
                 Expanded(
                   child: Text(
                     "Attend events with rewards to earn\nmore points",
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontSize: 12.sp,
-                          fontFamily: 'Metropolis-SemiBold',
-                        ),
+                      fontSize: 12.sp,
+                      fontFamily: 'Metropolis-SemiBold',
+                    ),
                   ),
                 ),
               ],
@@ -2200,7 +2271,11 @@ class _CheckInModal extends StatefulWidget {
   final VoidCallback onCheckOut;
   final bool forceCheckedIn;
 
-  const _CheckInModal({required this.event, required this.onCheckOut, this.forceCheckedIn = false});
+  const _CheckInModal({
+    required this.event,
+    required this.onCheckOut,
+    this.forceCheckedIn = false,
+  });
 
   @override
   State<_CheckInModal> createState() => _CheckInModalState();
@@ -2265,7 +2340,10 @@ class _CheckInModalState extends State<_CheckInModal> {
 
   @override
   Widget build(BuildContext context) {
-    final checkedInUsers = (_currentEventState['attendingUserDocuments'] as List? ?? []).map((e) => e as Map<String, dynamic>).toList();
+    final checkedInUsers =
+        (_currentEventState['attendingUserDocuments'] as List? ?? [])
+            .map((e) => e as Map<String, dynamic>)
+            .toList();
     final organizerId = _currentEventState['ownerDocument']?['id']?.toString();
 
     // Sort the list to bring the organizer to the front
@@ -2285,114 +2363,127 @@ class _CheckInModalState extends State<_CheckInModal> {
       builder: (context, scrollController) {
         return Container(
           padding: EdgeInsets.all(16.w),
-          child: _isCheckedIn
-              ? Column(
-                  children: [
-                    const HandleBar(),
-                    SizedBox(height: 16.h),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        _currentEventState['eventDocument']?['title'] ?? 'Checked In',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontFamily: 'Metropolis-Regular',
-                            ),
-                      ),
-                    ),
-                    SizedBox(height: 4.h),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        '${checkedInUsers.length} users checked in',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).hintColor,
-                            ),
-                      ),
-                    ),
-                    SizedBox(height: 16.h),
-                    Expanded(
-                      child: GridView.builder(
-                        controller: scrollController,
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 4,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
-                          childAspectRatio: 0.8,
+          child:
+              _isCheckedIn
+                  ? Column(
+                    children: [
+                      const HandleBar(),
+                      SizedBox(height: 16.h),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          _currentEventState['eventDocument']?['title'] ??
+                              'Checked In',
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(fontFamily: 'Metropolis-Regular'),
                         ),
-                        itemCount: checkedInUsers.length,
-                        itemBuilder: (context, index) {
-                          final user = checkedInUsers[index];
-                          final isOrganizer = user['id']?.toString() == organizerId;
-                          return Column(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: isOrganizer
-                                        ? const Color(0xffbbd953)
-                                        : Colors.transparent,
-                                    width: 3,
+                      ),
+                      SizedBox(height: 4.h),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          '${checkedInUsers.length} users checked in',
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: Theme.of(context).hintColor),
+                        ),
+                      ),
+                      SizedBox(height: 16.h),
+                      Expanded(
+                        child: GridView.builder(
+                          controller: scrollController,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 4,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                                childAspectRatio: 0.8,
+                              ),
+                          itemCount: checkedInUsers.length,
+                          itemBuilder: (context, index) {
+                            final user = checkedInUsers[index];
+                            final isOrganizer =
+                                user['id']?.toString() == organizerId;
+                            return Column(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color:
+                                          isOrganizer
+                                              ? const Color(0xffbbd953)
+                                              : Colors.transparent,
+                                      width: 3,
+                                    ),
+                                  ),
+                                  child: CircleAvatar(
+                                    radius: 30,
+                                    backgroundImage: NetworkImage(
+                                      user['image'] ?? '',
+                                    ),
                                   ),
                                 ),
-                                child: CircleAvatar(
-                                  radius: 30,
-                                  backgroundImage: NetworkImage(user['image'] ?? ''),
+                                SizedBox(height: 5.h),
+                                Text(
+                                  user['fullname'] ?? '',
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodySmall?.copyWith(
+                                    fontSize: 10.sp,
+                                    fontFamily: 'Metropolis-Medium',
+                                  ),
                                 ),
-                              ),
-                              SizedBox(height: 5.h),
-                              Text(
-                                user['fullname'] ?? '',
-                                textAlign: TextAlign.center,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      fontSize: 10.sp,
-                                      fontFamily: 'Metropolis-Medium',
-                                    ),
-                              ),
-                              Text(
-                                isOrganizer ? 'Organizer' : 'Guest',
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      fontSize: 10.sp,
-                                      fontFamily: 'Metropolis-Regular',
-                                      color: Theme.of(context).hintColor,
-                                    ),
-                              ),
-                            ],
-                          );
-                        },
+                                Text(
+                                  isOrganizer ? 'Organizer' : 'Guest',
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodySmall?.copyWith(
+                                    fontSize: 10.sp,
+                                    fontFamily: 'Metropolis-Regular',
+                                    color: Theme.of(context).hintColor,
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 16.h),
-                    CustomButton(
-                      text: 'Check Out',
-                      isLoading: _isCheckingOut,
-                      onPressed: () async {
-                        setState(() => _isCheckingOut = true);
-                        final eventId =
-                            _currentEventState['id']?.toString() ??
-                                _currentEventState['eventDocument']?['id']?.toString();
-                        if (eventId != null) {
-                          final success =
-                              await Provider.of<EventProvider>(context, listen: false)
-                                  .checkOut(eventId: eventId);
-                          if (success) {
-                            Provider.of<CheckedInEventsProvider>(context, listen: false)
-                                .removeCheckedInEvent(eventId);
-                            widget.onCheckOut();
-                            Navigator.pop(context);
+                      SizedBox(height: 16.h),
+                      CustomButton(
+                        text: 'Check Out',
+                        isLoading: _isCheckingOut,
+                        onPressed: () async {
+                          setState(() => _isCheckingOut = true);
+                          final eventId =
+                              _currentEventState['id']?.toString() ??
+                              _currentEventState['eventDocument']?['id']
+                                  ?.toString();
+                          if (eventId != null) {
+                            final success = await Provider.of<EventProvider>(
+                              context,
+                              listen: false,
+                            ).checkOut(eventId: eventId);
+                            if (success) {
+                              Provider.of<CheckedInEventsProvider>(
+                                context,
+                                listen: false,
+                              ).removeCheckedInEvent(eventId);
+                              widget.onCheckOut();
+                              Navigator.pop(context);
+                            }
                           }
-                        }
-                        setState(() => _isCheckingOut = false);
-                      },
-                      backgroundColor: Colors.red,
-                      textColor: Colors.white,
-                    ),
-                  ],
-                )
-              : _buildCheckInInterface(context),
+                          setState(() => _isCheckingOut = false);
+                        },
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                      ),
+                    ],
+                  )
+                  : _buildCheckInInterface(context),
         );
       },
     );
@@ -2406,17 +2497,17 @@ class _CheckInModalState extends State<_CheckInModal> {
         SizedBox(height: 16.h),
         Text(
           'Check In',
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontFamily: 'Metropolis-Bold',
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.headlineSmall?.copyWith(fontFamily: 'Metropolis-Bold'),
         ),
         SizedBox(height: 8.h),
         Text(
           'To check in, you must be within 500 meters of the event location.',
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).hintColor,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(color: Theme.of(context).hintColor),
         ),
         SizedBox(height: 16.h),
         if (_isLocationLoading)
@@ -2437,14 +2528,17 @@ class _CheckInModalState extends State<_CheckInModal> {
                   setState(() => _isCheckingIn = true);
                   final eventId =
                       _currentEventState['id']?.toString() ??
-                          _currentEventState['eventDocument']?['id']?.toString();
+                      _currentEventState['eventDocument']?['id']?.toString();
                   if (eventId != null) {
-                    final success =
-                        await Provider.of<EventProvider>(context, listen: false)
-                            .checkIn(eventId: eventId);
+                    final success = await Provider.of<EventProvider>(
+                      context,
+                      listen: false,
+                    ).checkIn(eventId: eventId);
                     if (success) {
-                      Provider.of<CheckedInEventsProvider>(context, listen: false)
-                          .addCheckedInEvent(eventId);
+                      Provider.of<CheckedInEventsProvider>(
+                        context,
+                        listen: false,
+                      ).addCheckedInEvent(eventId);
                       setState(() {
                         _isCheckedIn = true;
                       });
