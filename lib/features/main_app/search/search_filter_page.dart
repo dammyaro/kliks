@@ -22,6 +22,18 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
   TimeOfDay? _startTime;
   DateTime? _endDate;
   TimeOfDay? _endTime;
+  Future<List<dynamic>>? _categoriesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCategories();
+  }
+
+  void _fetchCategories() {
+    _categoriesFuture =
+        Provider.of<EventProvider>(context, listen: false).getAllCategory();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +76,9 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
-                fillColor: Colors.grey[400],
+                fillColor: theme.brightness == Brightness.dark
+                    ? Colors.grey[900]
+                    : Colors.grey[200],
                 contentPadding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 12.w),
               ),
               style: theme.textTheme.bodyMedium?.copyWith(
@@ -85,10 +99,19 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
             ),
             SizedBox(height: 6.h),
             FutureBuilder<List<dynamic>>(
-              future: Provider.of<EventProvider>(context, listen: false).getAllCategory(),
+              future: _categoriesFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return Center(
+                    child: SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Color(0xffbbd953)),
+                      ),
+                    ),
+                  );
                 } else if (snapshot.hasError) {
                   return Text('Error loading categories', style: theme.textTheme.bodySmall);
                 } else {
@@ -103,20 +126,28 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
                     child: DropdownButtonFormField<String>(
                       isExpanded: true,
                       value: _selectedCategory,
-                      hint: Text('All categories',
+                      hint: Text(
+                        'All categories',
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontSize: 13.sp,
                           color: Colors.black,
                           fontFamily: 'Metropolis-Regular',
                         ),
                       ),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontSize: 13.sp,
+                        color: Colors.black,
+                        fontFamily: 'Metropolis-Regular',
+                      ),
+                      icon: Icon(Icons.arrow_drop_down, color: Colors.black),
                       items: categories
                           .map((category) => DropdownMenuItem(
                                 value: category,
-                                child: Text(category!,
+                                child: Text(
+                                  category!,
                                   style: theme.textTheme.bodyMedium?.copyWith(
                                     fontSize: 13.sp,
-                                    color: Colors.black,
+                                    color: theme.brightness == Brightness.dark ? Colors.white : Colors.black,
                                     fontFamily: 'Metropolis-Regular',
                                   ),
                                 ),
