@@ -129,7 +129,7 @@ class EventCard extends StatelessWidget {
                       Text(
                         fullName,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontSize: 12.sp,
+                              fontSize: 13.sp,
                               fontFamily: 'Metropolis-SemiBold',
                             ),
                       ),
@@ -137,7 +137,7 @@ class EventCard extends StatelessWidget {
                       Text(
                         '@$username',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              fontSize: 10.sp,
+                              fontSize: 11.sp,
                               color: Theme.of(context).hintColor,
                               fontFamily: 'Metropolis-Medium',
                             ),
@@ -157,7 +157,7 @@ class EventCard extends StatelessWidget {
                       eventStatus,
                       style: TextStyle(
                         color: statusColor,
-                        fontSize: 11.sp,
+                        fontSize: 12.sp,
                         fontFamily: 'Metropolis-Bold',
                       ),
                     ),
@@ -228,7 +228,7 @@ class EventCard extends StatelessWidget {
                             style: Theme.of(
                               context,
                             ).textTheme.bodyLarge?.copyWith(
-                                  fontSize: 16.sp,
+                                  fontSize: 17.sp,
                                   fontFamily: 'Metropolis-Bold',
                                   color: Colors.white,
                                   shadows: [
@@ -264,7 +264,7 @@ class EventCard extends StatelessWidget {
                                   style: Theme.of(
                                     context,
                                   ).textTheme.bodySmall?.copyWith(
-                                        fontSize: 10.sp,
+                                        fontSize: 11.sp,
                                         color: Colors.black,
                                         fontFamily: 'Metropolis-SemiBold',
                                       ),
@@ -300,7 +300,7 @@ class EventCard extends StatelessWidget {
                                 .textTheme
                                 .bodySmall
                                 ?.copyWith(
-                                    fontSize: 10.sp, color: Colors.white),
+                                    fontSize: 11.sp, color: Colors.white),
                           ),
                         ],
                       ),
@@ -317,7 +317,7 @@ class EventCard extends StatelessWidget {
                   Text(
                     formattedDate.toUpperCase(),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontSize: 12.sp,
+                          fontSize: 13.sp,
                           fontFamily: 'Metropolis-SemiBold',
                           color: Theme.of(context).hintColor,
                           letterSpacing: -0.5,
@@ -334,7 +334,7 @@ class EventCard extends StatelessWidget {
                     child: Text(
                       eventLocation,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontSize: 10.sp,
+                            fontSize: 11.sp,
                             color: Theme.of(context).hintColor,
                             fontFamily: 'Metropolis-Regular',
                             letterSpacing: -0.5,
@@ -371,7 +371,7 @@ class EventCard extends StatelessWidget {
                           cat.toString(),
                           style:
                               Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    fontSize: 11.sp,
+                                    fontSize: 12.sp,
                                     fontFamily: 'Metropolis-Medium',
                                     // color: Colors.black,
                                   ),

@@ -248,7 +248,16 @@ class _SearchPageState extends State<SearchPage> {
                 ),
                 SizedBox(height: 16.h),
                 if (_isLoadingHistory)
-                  Center(child: CircularProgressIndicator())
+                  Center(
+                    child: SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Color(0xffbbd953)),
+                      ),
+                    ),
+                  )
                 else if (_searchHistory.isEmpty)
                   Center(
                     child: Text(
@@ -313,7 +322,16 @@ class _SearchPageState extends State<SearchPage> {
                       } else {
                         return const Padding(
                           padding: EdgeInsets.symmetric(vertical: 16),
-                          child: Center(child: CircularProgressIndicator()),
+                          child: Center(
+                            child: SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.2,
+                                valueColor: AlwaysStoppedAnimation<Color>(Color(0xffbbd953)),
+                              ),
+                            ),
+                          ),
                         );
                       }
                     },
