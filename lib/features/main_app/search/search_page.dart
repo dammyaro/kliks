@@ -7,6 +7,8 @@ import 'package:kliks/shared/widgets/profile_picture.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:kliks/core/providers/event_provider.dart';
+import 'package:kliks/core/providers/search_filter_provider.dart';
+import 'package:kliks/features/main_app/search/filter_options.dart';
 import 'package:kliks/shared/widgets/event_search_tile.dart';
 import 'package:kliks/shared/widgets/user_search_tile.dart';
 
@@ -28,7 +30,7 @@ class _SearchPageState extends State<SearchPage> {
   bool _hasMoreEvents = true;
   int _userOffset = 0;
   int _eventOffset = 0;
-  final int _limit = 10; 
+  final int _limit = 10;
   String _searchTerm = '';
   Timer? _debounce;
 
@@ -37,6 +39,9 @@ class _SearchPageState extends State<SearchPage> {
     super.initState();
     _scrollController.addListener(_onScroll);
     _loadSearchHistory();
+    final filterProvider =
+        Provider.of<SearchFilterProvider>(context, listen: false);
+    filterProvider.addListener(_onFilterChanged);
   }
 
   Future<void> _loadSearchHistory() async {
@@ -54,6 +59,9 @@ class _SearchPageState extends State<SearchPage> {
     _controller.dispose();
     _scrollController.dispose();
     _debounce?.cancel();
+    final filterProvider =
+        Provider.of<SearchFilterProvider>(context, listen: false);
+    filterProvider.removeListener(_onFilterChanged);
     super.dispose();
   }
 
@@ -82,6 +90,18 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
+  void _onFilterChanged() {
+    if (!mounted) return;
+    setState(() {
+      _results.clear();
+      _userOffset = 0;
+      _eventOffset = 0;
+      _hasMoreUsers = true;
+      _hasMoreEvents = true;
+    });
+    _fetchResults(reset: true);
+  }
+
   Future<void> _fetchResults({bool reset = false}) async {
     if (_isLoading || (!_hasMoreUsers && !_hasMoreEvents && !reset)) return;
     if (!mounted) return;
@@ -89,6 +109,9 @@ class _SearchPageState extends State<SearchPage> {
 
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final eventProvider = Provider.of<EventProvider>(context, listen: false);
+    final filterOptions =
+        Provider.of<SearchFilterProvider>(context, listen: false)
+            .filterOptions;
 
     final futureUsers = _hasMoreUsers
         ? authProvider.fetchUsers(
@@ -98,11 +121,25 @@ class _SearchPageState extends State<SearchPage> {
           )
         : Future.value(<Map<String, dynamic>>[]);
 
+    num? ageLimitMin;
+    num? ageLimitMax;
+    if (filterOptions.ageGroup == '18+') {
+      ageLimitMin = 18;
+    } else if (filterOptions.ageGroup == 'kids') {
+      ageLimitMin = 0;
+      ageLimitMax = 17;
+    }
+
     final futureEvents = _hasMoreEvents
         ? eventProvider.getEvents(
             search: _searchTerm,
             limit: _limit,
             offset: _eventOffset,
+            category: filterOptions.category,
+            ageLimitMin: ageLimitMin,
+            ageLimitMax: ageLimitMax,
+            dateMin: filterOptions.startDate?.toIso8601String(),
+            dateMax: filterOptions.endDate?.toIso8601String(),
           )
         : Future.value(<Map<String, dynamic>>[]);
 
@@ -146,7 +183,8 @@ class _SearchPageState extends State<SearchPage> {
                     child: Container(
                       height: 50.h,
                       margin: EdgeInsets.symmetric(horizontal: 5.w),
-                      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 0),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 12.w, vertical: 0),
                       decoration: BoxDecoration(
                         color: Theme.of(context).brightness == Brightness.light
                             ? Colors.grey[200]
@@ -161,14 +199,17 @@ class _SearchPageState extends State<SearchPage> {
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: 'Search',
-                            hintStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  fontSize: 13.sp,
-                                  fontFamily: 'Metropolis-Medium',
-                                  color: Colors.grey[500],
-                                ),
-                            prefixIcon: Icon(Icons.search, color: Colors.grey, size: 20.sp),
+                            hintStyle:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      fontSize: 13.sp,
+                                      fontFamily: 'Metropolis-Medium',
+                                      color: Colors.grey[500],
+                                    ),
+                            prefixIcon: Icon(Icons.search,
+                                color: Colors.grey, size: 20.sp),
                             isDense: true,
-                            contentPadding: EdgeInsets.symmetric(vertical: 15.h),
+                            contentPadding:
+                                EdgeInsets.symmetric(vertical: 15.h),
                           ),
                           style: TextStyle(
                             fontSize: 14.sp,
@@ -182,9 +223,6 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                   IconButton(
                     icon: Icon(
-                      // Cupertino filter icon
-                      // CupertinoIcons.line_horizontal_3_decrease is the filter icon
-                      // Import CupertinoIcons if not already imported
                       CupertinoIcons.line_horizontal_3_decrease,
                       size: 24.sp,
                     ),
@@ -195,64 +233,75 @@ class _SearchPageState extends State<SearchPage> {
                 ],
               ),
               SizedBox(height: 24.h),
-              if (_controller.text.isEmpty)
-                ...[
-                  Text(
-                    'Recently searched',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontSize: 12.sp,
-                          fontFamily: 'Metropolis-SemiBold',
-                          color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
-                        ),
-                  ),
-                  SizedBox(height: 16.h),
-                  if (_isLoadingHistory)
-                    Center(child: CircularProgressIndicator())
-                  else if (_searchHistory.isEmpty)
-                    Center(
-                      child: Text(
-                        'No recent searches',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              fontSize: 12.sp,
-                              color: Theme.of(context).hintColor,
-                            ),
+              if (_controller.text.isEmpty) ...[
+                Text(
+                  'Recently searched',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontSize: 12.sp,
+                        fontFamily: 'Metropolis-SemiBold',
+                        color: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.color
+                            ?.withOpacity(0.7),
                       ),
-                    )
-                  else
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: _searchHistory.length,
-                        itemBuilder: (context, index) {
-                          final historyItem = _searchHistory[index];
-                          return ListTile(
-                            contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 0.h),
-                            onTap: () {
-                              _controller.text = historyItem['searchParam'] ?? '';
-                              _onSearchChanged(_controller.text);
-                            },
-                            title: Text(
-                              historyItem['searchParam'] ?? '',
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                fontSize: 12.sp,
-                                fontFamily: 'Metropolis-Regular',
-                                color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.8),
-                              ),
-                            ),
-                            trailing: Icon(
-                              Icons.north_west,
-                              size: 12.sp,
-                              color: const Color(0xffbbd953),
-                            ),
-                          );
-                        },
-                      ),
+                ),
+                SizedBox(height: 16.h),
+                if (_isLoadingHistory)
+                  Center(child: CircularProgressIndicator())
+                else if (_searchHistory.isEmpty)
+                  Center(
+                    child: Text(
+                      'No recent searches',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            fontSize: 12.sp,
+                            color: Theme.of(context).hintColor,
+                          ),
                     ),
-                ]
-              else
+                  )
+                else
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: _searchHistory.length,
+                      itemBuilder: (context, index) {
+                        final historyItem = _searchHistory[index];
+                        return ListTile(
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16.w, vertical: 0.h),
+                          onTap: () {
+                            _controller.text = historyItem['searchParam'] ?? '';
+                            _onSearchChanged(_controller.text);
+                          },
+                          title: Text(
+                            historyItem['searchParam'] ?? '',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  fontSize: 12.sp,
+                                  fontFamily: 'Metropolis-Regular',
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.color
+                                      ?.withOpacity(0.8),
+                                ),
+                          ),
+                          trailing: Icon(
+                            Icons.north_west,
+                            size: 12.sp,
+                            color: const Color(0xffbbd953),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+              ] else
                 Expanded(
                   child: ListView.builder(
                     controller: _scrollController,
-                    itemCount: _results.length + (_hasMoreUsers || _hasMoreEvents ? 1 : 0),
+                    itemCount:
+                        _results.length + (_hasMoreUsers || _hasMoreEvents ? 1 : 0),
                     itemBuilder: (context, index) {
                       if (index < _results.length) {
                         final item = _results[index];

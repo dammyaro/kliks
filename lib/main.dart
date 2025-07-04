@@ -21,6 +21,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:kliks/core/services/fcm_token_service.dart';
 import 'package:kliks/core/providers/checked_in_events_provider.dart';
 import 'package:kliks/core/providers/organizer_live_events_provider.dart';
+import 'package:kliks/core/providers/search_filter_provider.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart' as fln;
 import 'package:another_flushbar/flushbar.dart';
@@ -188,6 +189,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CheckedInEventsProvider()),
         ChangeNotifierProvider(create: (_) => OrganizerLiveEventsProvider()),
         ChangeNotifierProvider(create: (_) => MainAppNavigationProvider()),
+        ChangeNotifierProvider(create: (_) => SearchFilterProvider()),
         // Add other providers here if needed
       ],
       child: ScreenUtilInit(

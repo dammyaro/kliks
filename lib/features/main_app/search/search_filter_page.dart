@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:kliks/core/providers/event_provider.dart';
+import 'package:kliks/features/main_app/search/filter_options.dart';
+import 'package:kliks/core/providers/search_filter_provider.dart';
 import 'package:kliks/shared/widgets/button.dart';
 import 'package:kliks/shared/widgets/custom_navbar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -28,11 +30,34 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
   void initState() {
     super.initState();
     _fetchCategories();
+    final filterOptions = Provider.of<SearchFilterProvider>(context, listen: false).filterOptions;
+    _selectedCategory = filterOptions.category;
+    _locationRange = filterOptions.locationRange;
+    _selectedAgeGroup = filterOptions.ageGroup;
+    _selectedGuests = filterOptions.guests;
+    _startDate = filterOptions.startDate;
+    _startTime = filterOptions.startTime;
+    _endDate = filterOptions.endDate;
+    _endTime = filterOptions.endTime;
   }
 
   void _fetchCategories() {
     _categoriesFuture =
         Provider.of<EventProvider>(context, listen: false).getAllCategory();
+  }
+
+  void _clearFilters() {
+    Provider.of<SearchFilterProvider>(context, listen: false).clearFilters();
+    setState(() {
+      _selectedCategory = null;
+      _locationRange = 50;
+      _selectedAgeGroup = 'everyone';
+      _selectedGuests = 'anyone';
+      _startDate = null;
+      _startTime = null;
+      _endDate = null;
+      _endTime = null;
+    });
   }
 
   @override
@@ -121,6 +146,9 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
                       .where((cat) => cat != null && cat.isNotEmpty)
                       .toSet()
                       .toList();
+                  if (_selectedCategory != null && !categories.contains(_selectedCategory)) {
+                    _selectedCategory = null;
+                  }
                   return SizedBox(
                     width: MediaQuery.of(context).size.width / 2,
                     child: DropdownButtonFormField<String>(
@@ -147,7 +175,7 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
                                   category!,
                                   style: theme.textTheme.bodyMedium?.copyWith(
                                     fontSize: 13.sp,
-                                    color: theme.brightness == Brightness.dark ? Colors.white : Colors.black,
+                                    color: Colors.black,
                                     fontFamily: 'Metropolis-Regular',
                                   ),
                                 ),
@@ -537,26 +565,55 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
             ),
             SizedBox(height: 30.h),
             // Apply Filters Button
-            Align(
-              alignment: Alignment.centerLeft,
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width / 3,
-                child: CustomButton(
-                  text: 'Apply filters',
-                  onPressed: () {
-                    // Apply filters logic
-                  },
-                  backgroundColor: const Color(0xffbbd953),
-                  textColor: Colors.black,
-                  textStyle: theme.textTheme.bodyLarge?.copyWith(
-                    fontSize: 14.sp,
-                    fontFamily: 'Metropolis-Bold',
-                    color: Colors.black,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 3,
+                  child: CustomButton(
+                    text: 'Apply filters',
+                    onPressed: () {
+                      final filterOptions = FilterOptions(
+                        category: _selectedCategory,
+                        locationRange: _locationRange,
+                        ageGroup: _selectedAgeGroup,
+                        guests: _selectedGuests,
+                        startDate: _startDate,
+                        startTime: _startTime,
+                        endDate: _endDate,
+                        endTime: _endTime,
+                      );
+                      Provider.of<SearchFilterProvider>(context, listen: false)
+                          .updateFilters(filterOptions);
+                      Navigator.pop(context);
+                    },
+                    backgroundColor: const Color(0xffbbd953),
+                    textStyle: theme.textTheme.bodyLarge?.copyWith(
+                      fontSize: 14.sp,
+                      fontFamily: 'Metropolis-Medium',
+                      color: Colors.black,
+                    ),
+                    height: 48.h,
+                    borderRadius: 12.r,
                   ),
-                  height: 48.h,
-                  borderRadius: 12.r,
                 ),
-              ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 3,
+                  child: CustomButton(
+                    text: 'Clear',
+                    onPressed: _clearFilters,
+                    backgroundColor: Colors.grey[300]!,
+                    textColor: Colors.black,
+                    textStyle: theme.textTheme.bodyLarge?.copyWith(
+                      fontSize: 14.sp,
+                      fontFamily: 'Metropolis-Medium',
+                      color: Colors.black,
+                    ),
+                    height: 48.h,
+                    borderRadius: 12.r,
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 20.h),
           ],
@@ -565,3 +622,4 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
     );
   }
 }
+
